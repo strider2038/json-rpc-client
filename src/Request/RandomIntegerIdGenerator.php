@@ -8,12 +8,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Service;
+namespace Strider2038\JsonRpcClient\Request;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-interface RequestObjectInterface
+class RandomIntegerIdGenerator implements IdGeneratorInterface
 {
-
+    public function generateId(): int
+    {
+        return random_int(1, PHP_INT_MAX);
+    }
 }

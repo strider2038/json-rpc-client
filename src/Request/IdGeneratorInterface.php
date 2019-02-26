@@ -8,17 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Service;
-
-use Strider2038\JsonRpcClient\Request\RequestObject;
+namespace Strider2038\JsonRpcClient\Request;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class Caller
+interface IdGeneratorInterface
 {
-    public function call(RequestObject $request)
-    {
-
-    }
+    public function generateId();
 }

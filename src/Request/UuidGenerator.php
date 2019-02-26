@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Service;
+namespace Strider2038\JsonRpcClient\Request;
+
+use Ramsey\Uuid\Uuid;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-interface IdGeneratorInterface
+class UuidGenerator implements IdGeneratorInterface
 {
-    public function generateId();
+    public function generateId(): string
+    {
+        return Uuid::uuid4()->toString();
+    }
 }

@@ -8,12 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Tests\Unit\Service;
+namespace Strider2038\JsonRpcClient\Tests\Unit\Request;
 
-use Strider2038\JsonRpcClient\Service\IdGeneratorInterface;
-use Strider2038\JsonRpcClient\Service\RequestObject;
-use Strider2038\JsonRpcClient\Service\RequestObjectFactory;
 use PHPUnit\Framework\TestCase;
+use Strider2038\JsonRpcClient\Request\IdGeneratorInterface;
+use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
@@ -23,12 +22,12 @@ class RequestObjectFactoryTest extends TestCase
     private const METHOD = 'method';
     private const PARAMS = 'params';
 
-    /** @var IdGeneratorInterface */
+    /** @var \Strider2038\JsonRpcClient\Request\IdGeneratorInterface */
     private $idGenerator;
 
     protected function setUp(): void
     {
-        $this->idGenerator = \Phake::mock(IdGeneratorInterface::class);
+        $this->idGenerator = \Phake::mock(\Strider2038\JsonRpcClient\Request\IdGeneratorInterface::class);
     }
 
     /** @test */
@@ -58,7 +57,7 @@ class RequestObjectFactoryTest extends TestCase
         $this->assertSame(self::PARAMS, $object->params);
     }
 
-    private function createRequestObjectFactory(): RequestObjectFactory
+    private function createRequestObjectFactory(): \Strider2038\JsonRpcClient\Request\RequestObjectFactory
     {
         return new RequestObjectFactory($this->idGenerator);
     }
