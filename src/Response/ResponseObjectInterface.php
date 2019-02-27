@@ -8,11 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Request;
+namespace Strider2038\JsonRpcClient\Response;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-interface RequestObjectInterface
+interface ResponseObjectInterface
 {
+    public function getResult();
+
+    public function hasError(): bool;
 }
