@@ -10,14 +10,14 @@
 
 namespace Strider2038\JsonRpcClient\Service;
 
-use Strider2038\JsonRpcClient\Request\RequestObject;
+use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class Caller
 {
-    public function call(RequestObject $request)
+    public function call(RequestObjectInterface $request)
     {
 
     }

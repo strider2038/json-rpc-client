@@ -15,5 +15,10 @@ namespace Strider2038\JsonRpcClient;
  */
 interface ClientInterface extends RequestInterface
 {
+    /**
+     * Creates and returns fluent batch request object
+     *
+     * @return BatchRequestInterface
+     */
     public function batch(): BatchRequestInterface;
 }

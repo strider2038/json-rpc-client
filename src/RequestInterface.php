@@ -15,6 +15,21 @@ namespace Strider2038\JsonRpcClient;
  */
 interface RequestInterface
 {
+    /**
+     * Calls remote procedure with given parameters. Successful result of procedure is returned.
+     *
+     * @param string $method
+     * @param $params
+     * @return array|object
+     */
     public function call(string $method, $params);
+
+    /**
+     * Calls remote procedure with given parameters. No result is expected.
+     *
+     * @param string $method
+     * @param $params
+     * @return void
+     */
     public function notify(string $method, $params);
 }

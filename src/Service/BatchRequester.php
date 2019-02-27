@@ -11,13 +11,12 @@
 namespace Strider2038\JsonRpcClient\Service;
 
 use Strider2038\JsonRpcClient\BatchRequestInterface;
-use Strider2038\JsonRpcClient\ClientInterface;
 use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class ClientService implements ClientInterface
+class BatchRequester implements BatchRequestInterface
 {
     /** @var RequestObjectFactory */
     private $requestObjectFactory;
@@ -31,22 +30,15 @@ class ClientService implements ClientInterface
         $this->caller = $caller;
     }
 
-    public function batch(): BatchRequestInterface
+    public function call(string $method, $params): BatchRequestInterface
     {
-        return new BatchRequester($this->requestObjectFactory, $this->caller);
     }
 
-    public function call(string $method, $params)
+    public function notify(string $method, $params): BatchRequestInterface
     {
-        $requestObject = $this->requestObjectFactory->createRequest($method, $params);
-
-        return $this->caller->call($requestObject);
     }
 
-    public function notify(string $method, $params): void
+    public function send()
     {
-        $notificationObject = $this->requestObjectFactory->createNotification($method, $params);
-
-        $this->caller->call($notificationObject);
     }
 }
