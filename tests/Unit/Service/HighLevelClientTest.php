@@ -11,14 +11,14 @@
 namespace Strider2038\JsonRpcClient\Tests\Unit\Service;
 
 use PHPUnit\Framework\TestCase;
-use Strider2038\JsonRpcClient\Service\LowLevelBatchRequester;
-use Strider2038\JsonRpcClient\Service\LowLevelClient;
+use Strider2038\JsonRpcClient\Service\HighLevelBatchRequester;
+use Strider2038\JsonRpcClient\Service\HighLevelClient;
 use Strider2038\JsonRpcClient\Tests\TestCase\ClientTestCaseTrait;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class LowLevelClientTest extends TestCase
+class HighLevelClientTest extends TestCase
 {
     use ClientTestCaseTrait;
 
@@ -37,7 +37,7 @@ class LowLevelClientTest extends TestCase
 
         $requester = $client->batch();
 
-        $this->assertInstanceOf(LowLevelBatchRequester::class, $requester);
+        $this->assertInstanceOf(HighLevelBatchRequester::class, $requester);
     }
 
     /** @test */
@@ -45,12 +45,14 @@ class LowLevelClientTest extends TestCase
     {
         $client = $this->createClient();
         $requestObject = $this->givenCreatedRequestObject();
-        $expectedResult = $this->givenResultReturnedByCaller();
+        $responseObject = $this->givenResponseReturnedByCaller();
+        $expectedResult = $this->givenResultInResponse($responseObject);
 
         $result = $client->call(self::METHOD, self::PARAMS);
 
         $this->assertRequestObjectCreatedWithExpectedMethodAndParams(self::METHOD, self::PARAMS);
         $this->assertRemoteProcedureWasCalledWithRequestObject($requestObject);
+        $this->assertResultWasExtractedFromResponse($responseObject);
         $this->assertSame($expectedResult, $result);
     }
 
@@ -66,8 +68,23 @@ class LowLevelClientTest extends TestCase
         $this->assertRemoteProcedureWasCalledWithRequestObject($requestObject);
     }
 
-    private function createClient(): LowLevelClient
+    private function createClient(): HighLevelClient
     {
-        return new LowLevelClient($this->requestObjectFactory, $this->caller);
+        return new HighLevelClient($this->requestObjectFactory, $this->caller);
+    }
+
+    private function assertResultWasExtractedFromResponse(\Strider2038\JsonRpcClient\Response\ResponseObjectInterface $responseObject): void
+    {
+        \Phake::verify($responseObject)
+            ->getResult();
+    }
+
+    private function givenResultInResponse(\Strider2038\JsonRpcClient\Response\ResponseObjectInterface $responseObject): string
+    {
+        $expectedResult = 'result';
+        \Phake::when($responseObject)
+            ->getResult()
+            ->thenReturn($expectedResult);
+        return $expectedResult;
     }
 }

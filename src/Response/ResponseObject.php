@@ -27,6 +27,11 @@ class ResponseObject implements ResponseObjectInterface
     /** @var string|int|null */
     public $id;
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function getResult()
     {
         return $this->result;

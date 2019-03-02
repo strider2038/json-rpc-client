@@ -15,4 +15,8 @@ namespace Strider2038\JsonRpcClient\Request;
  */
 interface RequestObjectInterface
 {
+    /**
+     * @return string|int|null
+     */
+    public function getId();
 }

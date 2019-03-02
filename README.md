@@ -4,16 +4,20 @@ Tiny JSON RPC v2 client for PHP
 
 ## Roadmap
 
-* [ ] base client functions
-  * [ ] single request
-  * [ ] batch request
-* [ ] high level client / low level client
-  * [ ] high level client returns results and throws exceptions
-  * [ ] low level client returns results without validation
+* [x] base client functions
+  * [x] single request
+  * [x] batch request
+* [x] high level client / low level client
+  * [x] high level client returns results and throws exceptions
+  * [x] low level client returns results without validation
 * [x] serializer interface
-* [ ] json array serializer
+* [ ] functional testing
 * [ ] add tcp transport support
 * [ ] add http transport support via guzzle
+* [ ] integration testing with server mock
+* [ ] json array serializer
+* [ ] client builder
+* [ ] middleware interfaces
+* [ ] logging?
 * [ ] bridge for symfony serializer
 * [ ] bridge for jms serializer
-* [ ] middleware interfaces

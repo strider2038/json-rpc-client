@@ -14,12 +14,11 @@ use Strider2038\JsonRpcClient\BatchRequestInterface;
 use Strider2038\JsonRpcClient\ClientInterface;
 use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
 use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
-use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class LowLevelClient implements ClientInterface
+class HighLevelClient implements ClientInterface
 {
     /** @var RequestObjectFactory */
     private $requestObjectFactory;
@@ -35,27 +34,26 @@ class LowLevelClient implements ClientInterface
 
     public function batch(): BatchRequestInterface
     {
-        return new LowLevelBatchRequester($this->requestObjectFactory, $this->caller);
+        return new HighLevelBatchRequester($this->requestObjectFactory, $this->caller);
     }
 
     /**
-     * Calls remote procedure with given parameters. Server response is returned.
-     *
      * @param string $method
-     * @param $params
-     * @return ResponseObjectInterface
+     * @param array|object $params
+     * @return array|object
      * @throws JsonRpcClientException
      */
     public function call(string $method, $params)
     {
         $requestObject = $this->requestObjectFactory->createRequest($method, $params);
+        $responseObject = $this->caller->call($requestObject);
 
-        return $this->caller->call($requestObject);
+        return $responseObject->getResult();
     }
 
     /**
      * @param string $method
-     * @param $params
+     * @param array|object $params
      * @throws JsonRpcClientException
      */
     public function notify(string $method, $params): void

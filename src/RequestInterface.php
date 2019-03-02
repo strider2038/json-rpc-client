@@ -18,10 +18,11 @@ use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
 interface RequestInterface
 {
     /**
-     * Calls remote procedure with given parameters. Procedure result is returned.
+     * Calls remote procedure with given parameters. Procedure result (for high level client)
+     * or server response (for low level client) is returned.
      *
      * @param string $method
-     * @param $params
+     * @param array|object $params
      * @return array|object
      *
      * @throws JsonRpcClientException
@@ -32,7 +33,7 @@ interface RequestInterface
      * Calls remote procedure with given parameters. No result is expected.
      *
      * @param string $method
-     * @param $params
+     * @param array|object $params
      * @return void
      *
      * @throws JsonRpcClientException

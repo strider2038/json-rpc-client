@@ -16,7 +16,7 @@ namespace Strider2038\JsonRpcClient;
 interface ClientInterface extends RequestInterface
 {
     /**
-     * Creates and returns fluent batch request object
+     * Creates and returns fluent batch request object. For sending batch request use send() method.
      *
      * @return BatchRequestInterface
      */

@@ -42,7 +42,7 @@ class Caller
 
     /**
      * @param RequestObjectInterface|RequestObjectInterface[] $request
-     * @return ResponseObjectInterface|ResponseObjectInterface[]
+     * @return ResponseObjectInterface|ResponseObjectInterface[]|null
      */
     public function call($request)
     {

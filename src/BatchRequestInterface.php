@@ -18,7 +18,7 @@ use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
 interface BatchRequestInterface extends RequestInterface
 {
     /**
-     * Adds remote procedure call to delayed queue in batch request. Method returns fluent batch
+     * Adds remote procedure call to the delayed queue in batch request. Method returns fluent batch
      * request object. Batch request is executed by method send().
      *
      * @param string $method
@@ -29,7 +29,7 @@ interface BatchRequestInterface extends RequestInterface
     public function call(string $method, $params): BatchRequestInterface;
 
     /**
-     * Adds remote procedure call to delayed queue in batch request. Method returns fluent batch
+     * Adds remote procedure call to the delayed queue in batch request. Method returns fluent batch
      * request object. Batch request is executed by method send().
      *
      * @param string $method
@@ -40,10 +40,11 @@ interface BatchRequestInterface extends RequestInterface
     public function notify(string $method, $params): BatchRequestInterface;
 
     /**
-     * Executes batch request and returns properly ordered results in array.
+     * Executes batch request and returns unsorted responses (for low level client)
+     * or properly ordered results in array (for high level client).
      *
      * @return array
      * @throws JsonRpcClientException
      */
-    public function send();
+    public function send(): array;
 }
