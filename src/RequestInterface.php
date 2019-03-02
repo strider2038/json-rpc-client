@@ -10,17 +10,21 @@
 
 namespace Strider2038\JsonRpcClient;
 
+use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
+
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 interface RequestInterface
 {
     /**
-     * Calls remote procedure with given parameters. Successful result of procedure is returned.
+     * Calls remote procedure with given parameters. Procedure result is returned.
      *
      * @param string $method
      * @param $params
      * @return array|object
+     *
+     * @throws JsonRpcClientException
      */
     public function call(string $method, $params);
 
@@ -30,6 +34,8 @@ interface RequestInterface
      * @param string $method
      * @param $params
      * @return void
+     *
+     * @throws JsonRpcClientException
      */
     public function notify(string $method, $params);
 }

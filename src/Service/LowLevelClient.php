@@ -17,7 +17,7 @@ use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class ClientService implements ClientInterface
+class LowLevelClient implements ClientInterface
 {
     /** @var RequestObjectFactory */
     private $requestObjectFactory;

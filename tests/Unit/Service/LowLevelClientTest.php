@@ -17,12 +17,12 @@ use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
 use Strider2038\JsonRpcClient\Service\BatchRequester;
 use Strider2038\JsonRpcClient\Service\Caller;
-use Strider2038\JsonRpcClient\Service\ClientService;
+use Strider2038\JsonRpcClient\Service\LowLevelClient;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class ClientServiceTest extends TestCase
+class LowLevelClientTest extends TestCase
 {
     private const METHOD = 'method';
     private const PARAMS = ['params'];
@@ -126,9 +126,9 @@ class ClientServiceTest extends TestCase
         return $result;
     }
 
-    private function createClientService(): ClientService
+    private function createClientService(): LowLevelClient
     {
-        $client = new ClientService($this->requestObjectFactory, $this->caller);
+        $client = new LowLevelClient($this->requestObjectFactory, $this->caller);
         return $client;
     }
 }

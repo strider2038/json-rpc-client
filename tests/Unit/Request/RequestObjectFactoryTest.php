@@ -11,6 +11,7 @@
 namespace Strider2038\JsonRpcClient\Tests\Unit\Request;
 
 use PHPUnit\Framework\TestCase;
+use Strider2038\JsonRpcClient\Exception\InvalidRequestParamsException;
 use Strider2038\JsonRpcClient\Request\IdGeneratorInterface;
 use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 
@@ -20,14 +21,14 @@ use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 class RequestObjectFactoryTest extends TestCase
 {
     private const METHOD = 'method';
-    private const PARAMS = 'params';
+    private const PARAMS = ['params'];
 
-    /** @var \Strider2038\JsonRpcClient\Request\IdGeneratorInterface */
+    /** @var IdGeneratorInterface */
     private $idGenerator;
 
     protected function setUp(): void
     {
-        $this->idGenerator = \Phake::mock(\Strider2038\JsonRpcClient\Request\IdGeneratorInterface::class);
+        $this->idGenerator = \Phake::mock(IdGeneratorInterface::class);
     }
 
     /** @test */
@@ -57,7 +58,27 @@ class RequestObjectFactoryTest extends TestCase
         $this->assertSame(self::PARAMS, $object->params);
     }
 
-    private function createRequestObjectFactory(): \Strider2038\JsonRpcClient\Request\RequestObjectFactory
+    /** @test */
+    public function createRequest_methodAndInvalidParams_exceptionThrown(): void
+    {
+        $factory = $this->createRequestObjectFactory();
+
+        $this->expectException(InvalidRequestParamsException::class);
+
+        $factory->createRequest(self::METHOD, 'invalid');
+    }
+
+    /** @test */
+    public function createNotification_methodAndInvalidParams_exceptionThrown(): void
+    {
+        $factory = $this->createRequestObjectFactory();
+
+        $this->expectException(InvalidRequestParamsException::class);
+
+        $factory->createNotification(self::METHOD, 'invalid');
+    }
+
+    private function createRequestObjectFactory(): RequestObjectFactory
     {
         return new RequestObjectFactory($this->idGenerator);
     }
