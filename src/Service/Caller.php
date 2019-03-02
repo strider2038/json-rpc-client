@@ -11,6 +11,7 @@
 namespace Strider2038\JsonRpcClient\Service;
 
 use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
+use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 use Strider2038\JsonRpcClient\Response\ResponseValidatorInterface;
 use Strider2038\JsonRpcClient\Serialization\MessageSerializerInterface;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
@@ -41,7 +42,7 @@ class Caller
 
     /**
      * @param RequestObjectInterface|RequestObjectInterface[] $request
-     * @return array|object
+     * @return ResponseObjectInterface|ResponseObjectInterface[]
      */
     public function call($request)
     {
@@ -50,6 +51,6 @@ class Caller
         $response = $this->serializer->deserialize($serializedResponse);
         $this->validator->validate($response);
 
-        return $response->getResult();
+        return $response;
     }
 }

@@ -8,19 +8,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Response;
+namespace Strider2038\JsonRpcClient\Exception;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class ErrorObject
+class InvalidResponseException extends JsonRpcClientException
 {
-    /** @var int */
-    public $code;
-
-    /** @var string */
-    public $message;
-
-    /** @var mixed */
-    public $data;
+    public function __construct(string $response)
+    {
+        parent::__construct(sprintf('Invalid response from server received: %s.', $response));
+    }
 }

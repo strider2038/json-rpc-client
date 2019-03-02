@@ -46,17 +46,15 @@ class CallerTest extends TestCase
         $request = \Phake::mock(RequestObjectInterface::class);
         $serializedRequest = $this->givenSerializedRequest();
         $serializedResponse = $this->givenSerializedResponse();
-        $response = $this->givenDeserializedResponse();
-        $expectedResult = $this->givenResultInResponse($response);
+        $expectedResponse = $this->givenDeserializedResponse();
 
-        $result = $caller->call($request);
+        $response = $caller->call($request);
 
         $this->assertRequestWasSerialized($request);
         $this->assertRequestWasSentByTransport($serializedRequest);
         $this->assertResponseWasDeserialized($serializedResponse);
-        $this->assertResponseWasValidated($response);
-        $this->assertResultExtractedFromResponse($response);
-        $this->assertSame($expectedResult, $result);
+        $this->assertResponseWasValidated($expectedResponse);
+        $this->assertSame($expectedResponse, $response);
     }
 
     private function assertRequestWasSerialized(RequestObjectInterface $request): void
@@ -119,22 +117,5 @@ class CallerTest extends TestCase
             ->thenReturn($response);
 
         return $response;
-    }
-
-    private function assertResultExtractedFromResponse(ResponseObjectInterface $response): void
-    {
-        \Phake::verify($response)
-            ->getResult();
-    }
-
-    private function givenResultInResponse(ResponseObjectInterface $response): string
-    {
-        $expectedResult = 'result';
-
-        \Phake::when($response)
-            ->getResult()
-            ->thenReturn($expectedResult);
-
-        return $expectedResult;
     }
 }
