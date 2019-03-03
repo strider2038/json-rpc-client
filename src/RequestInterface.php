@@ -22,21 +22,21 @@ interface RequestInterface
      * or server response (for low level client) is returned.
      *
      * @param string $method
-     * @param array|object $params
+     * @param array|object|null $params
      * @return array|object
      *
      * @throws JsonRpcClientException
      */
-    public function call(string $method, $params);
+    public function call(string $method, $params = null);
 
     /**
      * Calls remote procedure with given parameters. No result is expected.
      *
      * @param string $method
-     * @param array|object $params
+     * @param array|object|null $params
      * @return void
      *
      * @throws JsonRpcClientException
      */
-    public function notify(string $method, $params);
+    public function notify(string $method, $params = null);
 }

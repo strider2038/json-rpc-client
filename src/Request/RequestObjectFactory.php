@@ -27,11 +27,11 @@ class RequestObjectFactory
 
     /**
      * @param string $method
-     * @param $params
+     * @param array|object|null $params
      * @return RequestObject
      * @throws InvalidRequestParamsException
      */
-    public function createRequest(string $method, $params): RequestObject
+    public function createRequest(string $method, $params = null): RequestObject
     {
         $this->validateParams($params);
         $object = new RequestObject($method, $params);
@@ -42,11 +42,11 @@ class RequestObjectFactory
 
     /**
      * @param string $method
-     * @param $params
+     * @param array|object|null $params
      * @return NotificationObject
      * @throws InvalidRequestParamsException
      */
-    public function createNotification(string $method, $params): NotificationObject
+    public function createNotification(string $method, $params = null): NotificationObject
     {
         $this->validateParams($params);
 
@@ -55,7 +55,7 @@ class RequestObjectFactory
 
     private function validateParams($params): void
     {
-        if (!is_object($params) && !is_array($params)) {
+        if ($params !== null && !is_object($params) && !is_array($params)) {
             throw new InvalidRequestParamsException($params);
         }
     }

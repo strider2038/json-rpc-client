@@ -42,11 +42,21 @@ class JsonObjectSerializer implements MessageSerializerInterface
 
     public function deserialize(string $response)
     {
-        $decodedResponse = json_decode($response, false, $this->depth, $this->decodeOptions);
+        if (trim($response) === '') {
+            $result = null;
+        } else {
+            $decodedResponse = json_decode($response, false, $this->depth, $this->decodeOptions);
+            $result = $this->deserializeResponse($decodedResponse, $response);
+        }
+
+        return $result;
+    }
+
+    private function deserializeResponse($decodedResponse, string $response)
+    {
+        $result = [];
 
         if (is_array($decodedResponse)) {
-            $result = [];
-
             foreach ($decodedResponse as $decodedObject) {
                 $result[] = $this->deserializeResponseObject($decodedObject, $response);
             }

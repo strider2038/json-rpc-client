@@ -42,11 +42,11 @@ class LowLevelClient implements ClientInterface
      * Calls remote procedure with given parameters. Server response is returned.
      *
      * @param string $method
-     * @param $params
+     * @param array|object|null $params
      * @return ResponseObjectInterface
      * @throws JsonRpcClientException
      */
-    public function call(string $method, $params)
+    public function call(string $method, $params = null)
     {
         $requestObject = $this->requestObjectFactory->createRequest($method, $params);
 
@@ -55,10 +55,10 @@ class LowLevelClient implements ClientInterface
 
     /**
      * @param string $method
-     * @param $params
+     * @param array|object|null $params
      * @throws JsonRpcClientException
      */
-    public function notify(string $method, $params): void
+    public function notify(string $method, $params = null): void
     {
         $notificationObject = $this->requestObjectFactory->createNotification($method, $params);
 

@@ -34,14 +34,14 @@ class LowLevelBatchRequester implements BatchRequestInterface
         $this->caller = $caller;
     }
 
-    public function call(string $method, $params): BatchRequestInterface
+    public function call(string $method, $params = null): BatchRequestInterface
     {
         $this->queue[] = $this->requestObjectFactory->createRequest($method, $params);
 
         return $this;
     }
 
-    public function notify(string $method, $params): BatchRequestInterface
+    public function notify(string $method, $params = null): BatchRequestInterface
     {
         $this->queue[] = $this->requestObjectFactory->createNotification($method, $params);
 

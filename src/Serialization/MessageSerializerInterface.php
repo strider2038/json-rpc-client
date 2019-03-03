@@ -26,7 +26,7 @@ interface MessageSerializerInterface
 
     /**
      * @param string $response
-     * @return ResponseObjectInterface|ResponseObjectInterface[]
+     * @return ResponseObjectInterface|ResponseObjectInterface[]|null
      */
     public function deserialize(string $response);
 }

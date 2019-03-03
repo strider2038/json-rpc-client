@@ -47,6 +47,21 @@ class RequestObjectFactoryTest extends TestCase
     }
 
     /** @test */
+    public function createRequest_methodWithoutParams_objectWithGeneratedIdCreated(): void
+    {
+        $factory = $this->createRequestObjectFactory();
+        $id = $this->givenGeneratedId();
+
+        $object = $factory->createRequest(self::METHOD);
+
+        $this->assertIdWasGenerated();
+        $this->assertSame('2.0', $object->jsonrpc);
+        $this->assertSame(self::METHOD, $object->method);
+        $this->assertNull($object->params);
+        $this->assertSame($id, $object->id);
+    }
+
+    /** @test */
     public function createNotification_methodAndParams_objectCreated(): void
     {
         $factory = $this->createRequestObjectFactory();

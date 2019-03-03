@@ -131,6 +131,16 @@ class JsonObjectSerializerTest extends TestCase
     }
 
     /** @test */
+    public function deserialize_emptyStringResponse_nullReturned(): void
+    {
+        $serializer = new JsonObjectSerializer();
+
+        $response = $serializer->deserialize(' ');
+
+        $this->assertNull($response);
+    }
+
+    /** @test */
     public function deserialize_notAnObjectResponse_exceptionThrown(): void
     {
         $serializer = new JsonObjectSerializer();

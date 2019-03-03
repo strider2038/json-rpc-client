@@ -39,11 +39,11 @@ class HighLevelClient implements ClientInterface
 
     /**
      * @param string $method
-     * @param array|object $params
+     * @param array|object|null $params
      * @return array|object
      * @throws JsonRpcClientException
      */
-    public function call(string $method, $params)
+    public function call(string $method, $params = null)
     {
         $requestObject = $this->requestObjectFactory->createRequest($method, $params);
         $responseObject = $this->caller->call($requestObject);
@@ -53,10 +53,10 @@ class HighLevelClient implements ClientInterface
 
     /**
      * @param string $method
-     * @param array|object $params
+     * @param array|object|null $params
      * @throws JsonRpcClientException
      */
-    public function notify(string $method, $params): void
+    public function notify(string $method, $params = null): void
     {
         $notificationObject = $this->requestObjectFactory->createNotification($method, $params);
 

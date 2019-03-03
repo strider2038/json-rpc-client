@@ -22,22 +22,22 @@ interface BatchRequestInterface extends RequestInterface
      * request object. Batch request is executed by method send().
      *
      * @param string $method
-     * @param $params
+     * @param array|object|null $params
      * @return BatchRequestInterface
      * @throws JsonRpcClientException
      */
-    public function call(string $method, $params): BatchRequestInterface;
+    public function call(string $method, $params = null): BatchRequestInterface;
 
     /**
      * Adds remote procedure call to the delayed queue in batch request. Method returns fluent batch
      * request object. Batch request is executed by method send().
      *
      * @param string $method
-     * @param $params
+     * @param array|object|null $params
      * @return BatchRequestInterface
      * @throws JsonRpcClientException
      */
-    public function notify(string $method, $params): BatchRequestInterface;
+    public function notify(string $method, $params = null): BatchRequestInterface;
 
     /**
      * Executes batch request and returns unsorted responses (for low level client)
