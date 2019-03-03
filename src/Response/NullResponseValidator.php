@@ -15,7 +15,7 @@ namespace Strider2038\JsonRpcClient\Response;
  */
 class NullResponseValidator implements ResponseValidatorInterface
 {
-    public function validate(ResponseObjectInterface $response): void
+    public function validate($response): void
     {
     }
 }

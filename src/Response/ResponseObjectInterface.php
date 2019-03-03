@@ -15,6 +15,8 @@ namespace Strider2038\JsonRpcClient\Response;
  */
 interface ResponseObjectInterface
 {
+    public function getJsonRpcVersion(): string;
+
     /**
      * @return string|int|null
      */
@@ -23,4 +25,6 @@ interface ResponseObjectInterface
     public function getResult();
 
     public function hasError(): bool;
+
+    public function getError(): ErrorObject;
 }

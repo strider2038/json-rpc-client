@@ -27,6 +27,11 @@ class ResponseObject implements ResponseObjectInterface
     /** @var string|int|null */
     public $id;
 
+    public function getJsonRpcVersion(): string
+    {
+        return (string) $this->jsonrpc;
+    }
+
     public function getId()
     {
         return $this->id;
@@ -40,5 +45,10 @@ class ResponseObject implements ResponseObjectInterface
     public function hasError(): bool
     {
         return $this->error !== null;
+    }
+
+    public function getError(): ErrorObject
+    {
+        return $this->error;
     }
 }
