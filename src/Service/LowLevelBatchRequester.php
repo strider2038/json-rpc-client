@@ -55,7 +55,9 @@ class LowLevelBatchRequester implements BatchRequestInterface
         if (count($this->queue) > 0) {
             $responses = $this->caller->call($this->queue);
 
-            if (!is_array($responses)) {
+            if ($responses === null) {
+                $responses = [];
+            } elseif (!is_array($responses)) {
                 $responses = [$responses];
             }
         }

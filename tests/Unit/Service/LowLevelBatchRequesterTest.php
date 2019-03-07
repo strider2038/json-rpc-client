@@ -75,7 +75,7 @@ class LowLevelBatchRequesterTest extends TestCase
     }
 
     /** @test */
-    public function send_notificationObjectInQueueAndEmptyResponseReturnedFromCaller_arrayHasNullValue(): void
+    public function send_notificationObjectInQueueAndEmptyResponseReturnedFromCaller_arrayIsEmpty(): void
     {
         $requester = $this->createLowLevelBatchRequester();
         $requestObject = $this->givenCreatedNotificationObject();
@@ -85,8 +85,7 @@ class LowLevelBatchRequesterTest extends TestCase
         $responses = $requester->send();
 
         $this->assertIsArray($responses);
-        $this->assertCount(1, $responses);
-        $this->assertNull($responses[0]);
+        $this->assertCount(0, $responses);
         $this->assertNotificationObjectCreatedWithExpectedMethodAndParams(self::METHOD, self::PARAMS);
         $this->assertRemoteProcedureWasCalledWithRequestObjectInArray($requestObject);
     }
