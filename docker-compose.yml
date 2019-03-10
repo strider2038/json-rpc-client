@@ -1,0 +1,21 @@
+version: '3.0'
+
+volumes:
+  composer_data:
+
+services:
+  json_rpc_client:
+    container_name: json_rpc_client
+    image: strider2038/php-cli-dev
+    environment:
+      TEST_TCP_TRANSPORT_URL: 'tcp://json_rpc_mock_server:4000'
+    volumes:
+      - .:/app
+      - composer_data:/var/run/composer
+    ports:
+      - "9002:9001"
+
+  json_rpc_mock_server:
+    container_name: json_rpc_mock_server
+    image: strider2038/json-rpc-mock-server
+

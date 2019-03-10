@@ -11,11 +11,12 @@ Tiny JSON RPC v2 client for PHP
   * [x] high level client returns results and throws exceptions
   * [x] low level client returns results without validation
 * [x] serializer interface
-* [ ] functional testing
-* [ ] response validator
-* [ ] add tcp transport support
+* [x] functional testing
+* [x] response validator
+* [x] add tcp transport support
 * [ ] add http transport support via guzzle
-* [ ] integration testing with server mock
+* [x] integration testing for tcp transport with server mock
+* [ ] integration testing for http transport with server mock
 * [ ] json array serializer
 * [ ] client builder
 * [ ] middleware interfaces

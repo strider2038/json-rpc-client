@@ -3,11 +3,16 @@
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.0/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          executionOrder="depends,defects"
-         forceCoversAnnotation="true"
+         forceCoversAnnotation="false"
          beStrictAboutCoversAnnotation="true"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
+         cacheResult="false"
          verbose="true">
+
+    <php>
+        <env name="TEST_TCP_TRANSPORT_URL" value="tcp://localhost:4000"/>
+    </php>
 
     <testsuites>
         <testsuite name="integration">
