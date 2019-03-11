@@ -24,11 +24,13 @@
     "phpunit/phpunit": "^8.0",
     "phake/phake": "^3.1",
     "ramsey/uuid": "^3.8",
-    "guzzlehttp/guzzle": "^6.3"
+    "guzzlehttp/guzzle": "^6.3",
+    "psr/log": "^1.1"
   },
   "suggest": {
     "ramsey/uuid": "To generate UUID identifiers for request objects",
-    "guzzlehttp/guzzle": "To use HTTP transport via Guzzle"
+    "guzzlehttp/guzzle": "To use HTTP transport via Guzzle",
+    "psr/log": "To use logging capabilities"
   },
   "autoload": {
     "psr-4": {

@@ -17,13 +17,16 @@ Tiny JSON RPC v2 client for PHP
 * [x] add http transport support via guzzle
 * [x] integration testing for tcp transport with server mock
 * [ ] client factory
-* [ ] json array serializer
 * [ ] logging transport wrapper
+* [ ] travis ci testing
+* [ ] basic how to use description
 
 ## Roadmap for v0.2
 
 * [ ] client builder
 * [ ] integration testing for http transport with server mock
+* [ ] http authentication tests
+* [ ] json array serializer
 * [ ] bridge for symfony serializer
 * [ ] bridge for jms serializer
 * [ ] middleware interfaces
