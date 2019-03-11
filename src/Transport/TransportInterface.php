@@ -10,10 +10,17 @@
 
 namespace Strider2038\JsonRpcClient\Transport;
 
+use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
+
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 interface TransportInterface
 {
+    /**
+     * @param string $request
+     * @return string
+     * @throws RemoteProcedureCallFailedException
+     */
     public function send(string $request): string;
 }

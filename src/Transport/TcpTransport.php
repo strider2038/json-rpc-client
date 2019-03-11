@@ -41,11 +41,6 @@ class TcpTransport implements TransportInterface
         $this->timeoutMs = $timeoutMs;
     }
 
-    /**
-     * @param string $request
-     * @return string
-     * @throws RemoteProcedureCallFailedException
-     */
     public function send(string $request): string
     {
         $client = $this->getSocketClient();
@@ -61,6 +56,10 @@ class TcpTransport implements TransportInterface
         return $response;
     }
 
+    /**
+     * @param string $url
+     * @throws InvalidConfigException
+     */
     private function validateUrl(string $url): void
     {
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
@@ -76,6 +75,10 @@ class TcpTransport implements TransportInterface
         }
     }
 
+    /**
+     * @return resource
+     * @throws ConnectionFailedException
+     */
     private function getSocketClient()
     {
         if ($this->client === null) {
@@ -85,6 +88,10 @@ class TcpTransport implements TransportInterface
         return $this->client;
     }
 
+    /**
+     * @return resource
+     * @throws ConnectionFailedException
+     */
     private function createSocketClient()
     {
         $client = stream_socket_client($this->url, $errno, $errstr, ((float)$this->timeoutMs) / 1000);

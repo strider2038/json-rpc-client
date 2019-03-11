@@ -1,6 +1,6 @@
 {
   "name": "strider2038/json-rpc-client",
-  "description": "Tiny JSON RPC v2 client for PHP",
+  "description": "Flexible JSON RPC v2 client for PHP",
   "keywords": [
     "jsonrpc",
     "jsonrpc2",
@@ -23,10 +23,12 @@
   "require-dev": {
     "phpunit/phpunit": "^8.0",
     "phake/phake": "^3.1",
-    "ramsey/uuid": "^3.8"
+    "ramsey/uuid": "^3.8",
+    "guzzlehttp/guzzle": "^6.3"
   },
   "suggest": {
-    "ramsey/uuid": "Library for generating UUID in request identifiers"
+    "ramsey/uuid": "To generate UUID identifiers for request objects",
+    "guzzlehttp/guzzle": "To use HTTP transport via Guzzle"
   },
   "autoload": {
     "psr-4": {
