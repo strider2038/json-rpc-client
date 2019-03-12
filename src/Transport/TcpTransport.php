@@ -25,7 +25,7 @@ class TcpTransport implements TransportInterface
     /** @var int */
     private $timeoutMs;
 
-    /** @var resource */
+    /** @var resource|null */
     private $client;
 
     /**
@@ -120,6 +120,8 @@ class TcpTransport implements TransportInterface
 
     public function __destruct()
     {
-        fclose($this->client);
+        if (is_resource($this->client)) {
+            fclose($this->client);
+        }
     }
 }

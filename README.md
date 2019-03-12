@@ -17,7 +17,7 @@ Tiny JSON RPC v2 client for PHP
 * [x] add http transport support via guzzle
 * [x] integration testing for tcp transport with server mock
 * [ ] client factory
-* [ ] logging transport wrapper
+* [x] logging transport wrapper
 * [ ] travis ci testing
 * [ ] basic how to use description
 
