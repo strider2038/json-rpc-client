@@ -78,7 +78,7 @@ class JsonObjectSerializer implements MessageSerializerInterface
         $responseObject->result = $decodedObject->result;
         $responseObject->id = $decodedObject->id;
 
-        if ($decodedObject->error !== null) {
+        if (!empty($decodedObject->error)) {
             $decodedError = $decodedObject->error;
 
             $errorObject = new ErrorObject();

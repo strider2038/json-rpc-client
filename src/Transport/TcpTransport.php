@@ -100,7 +100,7 @@ class TcpTransport implements TransportInterface
             throw new ConnectionFailedException($this->url, sprintf('%d: %s', $errno, $errstr));
         }
 
-        if (stream_set_timeout($client, 0, $this->timeoutMs) === false) {
+        if (stream_set_timeout($client, 0, $this->timeoutMs * 1000) === false) {
             throw new ConnectionFailedException($this->url, 'cannot set timeout');
         }
 
