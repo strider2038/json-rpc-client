@@ -70,7 +70,7 @@ class ClientFactory
     private function createTransport(string $connection, array $options): TransportInterface
     {
         $scheme = parse_url($connection, PHP_URL_SCHEME);
-        $timeout = (float) ($options['timeout'] ?? 1000);
+        $timeout = (float) ($options['timeout_ms'] ?? 1000);
 
         if ($scheme === 'tcp') {
             $transport = new TcpTransport($connection, $timeout);
