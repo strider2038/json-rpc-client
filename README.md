@@ -1,25 +1,64 @@
 # JSON RPC v2 client for PHP
 
-Tiny JSON RPC v2 client for PHP
+Flexible JSON RPC v2 client for PHP.
 
-## Roadmap for v0.1
+_Library is in active development_
 
-* [x] base client functions
-  * [x] single request
-  * [x] batch request
-* [x] high level client / low level client
-  * [x] high level client returns results and throws exceptions
-  * [x] low level client returns results without validation
-* [x] serializer interface
-* [x] functional testing
-* [x] response validator
-* [x] add tcp transport support
-* [x] add http transport support via guzzle
-* [x] integration testing for tcp transport with server mock
-* [ ] client factory
-* [x] logging transport wrapper
-* [ ] travis ci testing
-* [ ] basic how to use description
+## Hot to use
+
+### Creating client
+
+Simplest way to create JSON RPC client is to use factory
+
+```php
+use Strider2038\JsonRpcClient\ClientFactory;
+
+$factory = new ClientFactory();
+
+// HTTP client
+$client = $factory->createClient('http://localhost:3000/rpc', ['timeout_ms' => 2000]);
+
+// TCP client
+$client = $factory->createClient('tcp://localhost:3000', ['timeout_ms' => 2000]);
+```
+
+### Calling remote procedures
+
+```php
+// remote procedure call with positional parameters
+$result = $client->call('sum', [1, 2, 4]);
+
+// $result = 7
+
+// remote procedure call with object parameters
+$params = new \stdClass();
+$params->subtrahend = 23;
+$params->minuend = 42;
+
+$result = $client->call('subtract', $params);
+
+// $result can be object
+// $result->subtracted = 19;
+
+// notification without result
+$client->notify('notify', [100]);
+
+// batch call
+$result = $client->batch()
+    ->call('sum', [1, 2, 4])
+    ->call('subtract', $params)
+    ->notify('notify', [100])
+    ->call('multiply', [3, 5])
+    ->send();
+
+// $result is sorted array of RPC results
+// $result = [
+//      7,
+//      $object,
+//      null,
+//      15,
+// ]
+```
 
 ## Roadmap for v0.2
 
