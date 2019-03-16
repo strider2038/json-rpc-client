@@ -8,12 +8,18 @@ build:
         override:
           - php-scrutinizer-run
     tests:
+      environment:
+        docker: true
+        environment:
+          TEST_TCP_TRANSPORT_URL: 'tcp://localhost:4000'
       tests:
         override:
-          - command: ./vendor/bin/phpunit --testsuite unit,functional --coverage-clover clover.xml
+          - docker run --name jsonrpc --rm -d strider2038/json-rpc-mock-server
+          - command: ./vendor/bin/phpunit --coverage-clover clover.xml
             coverage:
               file: clover.xml
               format: 'php-clover'
+          - docker stop jsonrpc
 
 filter:
   excluded_paths:
