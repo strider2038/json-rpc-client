@@ -1,5 +1,10 @@
 # JSON RPC v2 client for PHP
 
+[![Build Status](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/badges/build.png?b=master)](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/?branch=master)
+[![StyleCI](https://github.styleci.io/repos/172254542/shield?branch=master)](https://github.styleci.io/repos/172254542)
+
 Flexible JSON RPC v2 client for PHP.
 
 _Library is in active development_

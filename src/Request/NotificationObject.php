@@ -30,7 +30,7 @@ class NotificationObject implements RequestObjectInterface
         $this->params = $params;
     }
 
-    public function getId()
+    public function getId(): void
     {
     }
 }
