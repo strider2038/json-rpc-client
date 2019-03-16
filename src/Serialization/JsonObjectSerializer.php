@@ -42,7 +42,7 @@ class JsonObjectSerializer implements MessageSerializerInterface
 
     public function deserialize(string $response)
     {
-        if ('' === trim($response)) {
+        if (trim($response) === '') {
             $result = null;
         } else {
             $decodedResponse = json_decode($response, false, $this->depth, $this->decodeOptions);
@@ -78,7 +78,7 @@ class JsonObjectSerializer implements MessageSerializerInterface
         $responseObject->result = $decodedObject->result;
         $responseObject->id = $decodedObject->id;
 
-        if (null !== $decodedObject->error) {
+        if (!empty($decodedObject->error)) {
             $decodedError = $decodedObject->error;
 
             $errorObject = new ErrorObject();
