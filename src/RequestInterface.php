@@ -38,5 +38,5 @@ interface RequestInterface
      *
      * @throws JsonRpcClientException
      */
-    public function notify(string $method, $params = null): void;
+    public function notify(string $method, $params = null);
 }
