@@ -10,7 +10,7 @@ build:
     tests:
       environment:
         docker: true
-        environment:
+        variables:
           TEST_TCP_TRANSPORT_URL: 'tcp://localhost:4000'
       tests:
         override:
