@@ -11,38 +11,63 @@
 namespace Strider2038\JsonRpcClient\Tests\Unit\JsonRpcClient;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Strider2038\JsonRpcClient\ClientFactory;
 use Strider2038\JsonRpcClient\ClientInterface;
+use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 use Strider2038\JsonRpcClient\Service\Caller;
 use Strider2038\JsonRpcClient\Service\HighLevelClient;
 use Strider2038\JsonRpcClient\Transport\GuzzleHttpTransport;
 use Strider2038\JsonRpcClient\Transport\TcpTransport;
+use Strider2038\JsonRpcClient\Transport\TransportLoggingDecorator;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class ClientFactoryTest extends TestCase
 {
-    /** @test */
-    public function createClient_tcpConnection_highLevelClientCreatedAndReturned(): void
-    {
+    /**
+     * @test
+     * @dataProvider connectionStringAndExpectedTransportClass
+     */
+    public function createClient_givenConnection_highLevelClientWithExpectedTransportCreatedAndReturned(
+        string $connection,
+        string $transportClass
+    ): void {
         $factory = new ClientFactory();
 
-        $client = $factory->createClient('tcp://localhost:3000');
+        $client = $factory->createClient($connection);
 
         $this->assertInstanceOf(HighLevelClient::class, $client);
-        $this->assertClientHasTransportOfExpectedClass($client, TcpTransport::class);
+        $this->assertClientHasTransportOfExpectedClass($client, $transportClass);
+    }
+
+    public function connectionStringAndExpectedTransportClass(): \Iterator
+    {
+        yield ['tcp://localhost:3000', TcpTransport::class];
+        yield ['http://localhost:3000', GuzzleHttpTransport::class];
+        yield ['https://localhost:3000', GuzzleHttpTransport::class];
     }
 
     /** @test */
-    public function createClient_httpConnection_highLevelClientCreatedAndReturned(): void
+    public function createClient_notSupportedConnection_exceptionThrown(): void
     {
         $factory = new ClientFactory();
 
-        $client = $factory->createClient('http://localhost:3000');
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('Unsupported protocol: "unknown". Supported protocols: "tcp", "http", "https".');
 
-        $this->assertInstanceOf(HighLevelClient::class, $client);
-        $this->assertClientHasTransportOfExpectedClass($client, GuzzleHttpTransport::class);
+        $factory->createClient('unknown://localhost:3000');
+    }
+
+    /** @test */
+    public function createClient_tcpConnectionAndLoggerIsUsed_transportIsDecoratedWithLogger(): void
+    {
+        $factory = new ClientFactory(new NullLogger());
+
+        $client = $factory->createClient('tcp://localhost:3000');
+
+        $this->assertClientHasTransportOfExpectedClass($client, TransportLoggingDecorator::class);
     }
 
     private function assertClientHasTransportOfExpectedClass(ClientInterface $client, string $transportClass): void

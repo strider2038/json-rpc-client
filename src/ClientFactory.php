@@ -13,6 +13,7 @@ namespace Strider2038\JsonRpcClient;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 use Strider2038\JsonRpcClient\Request\RandomIntegerIdGenerator;
 use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 use Strider2038\JsonRpcClient\Request\UuidGenerator;
@@ -70,18 +71,25 @@ class ClientFactory
 
     private function createTransport(string $connection, array $options): TransportInterface
     {
-        $scheme = parse_url($connection, PHP_URL_SCHEME);
+        $scheme = strtolower(parse_url($connection, PHP_URL_SCHEME));
         $timeout = (float) ($options['timeout_ms'] ?? 1000);
 
         if ('tcp' === $scheme) {
-            $transport = new TcpTransport($connection, $timeout);
-        } else {
+            $transport = new TcpTransport($connection, (int) $timeout);
+        } elseif ('http' === $scheme || 'https' === $scheme) {
             $guzzle = new Client([
                 'base_uri' => $connection,
                 'timeout'  => $timeout / 1000,
             ]);
 
             $transport = new GuzzleHttpTransport($guzzle);
+        } else {
+            throw new InvalidConfigException(
+                sprintf(
+                    'Unsupported protocol: "%s". Supported protocols: "tcp", "http", "https".',
+                    $scheme
+                )
+            );
         }
 
         if ($this->logger) {

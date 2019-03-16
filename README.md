@@ -9,6 +9,14 @@ Flexible JSON RPC v2 client for PHP.
 
 _Library is in active development_
 
+## Installation
+
+Use composer to install library. It is recommended to fix minor version while library is under development.
+
+```bash
+composer require strider2038/json-rpc-client ^0.1
+```
+
 ## Hot to use
 
 ### Creating client
