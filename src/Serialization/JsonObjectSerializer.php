@@ -74,17 +74,17 @@ class JsonObjectSerializer implements MessageSerializerInterface
         }
 
         $responseObject = new ResponseObject();
-        $responseObject->jsonrpc = $decodedObject->jsonrpc;
-        $responseObject->result = $decodedObject->result;
-        $responseObject->id = $decodedObject->id;
+        $responseObject->jsonrpc = $decodedObject->jsonrpc ?? null;
+        $responseObject->result = $decodedObject->result ?? null;
+        $responseObject->id = $decodedObject->id ?? null;
 
         if (!empty($decodedObject->error)) {
             $decodedError = $decodedObject->error;
 
             $errorObject = new ErrorObject();
-            $errorObject->code = $decodedError->code;
-            $errorObject->message = $decodedError->message;
-            $errorObject->data = $decodedError->data;
+            $errorObject->code = $decodedError->code ?? null;
+            $errorObject->message = $decodedError->message ?? null;
+            $errorObject->data = $decodedError->data ?? null;
 
             $responseObject->error = $errorObject;
         }
