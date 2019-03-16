@@ -32,6 +32,5 @@ class NotificationObject implements RequestObjectInterface
 
     public function getId()
     {
-        return null;
     }
 }

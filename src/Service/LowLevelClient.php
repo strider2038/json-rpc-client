@@ -44,9 +44,9 @@ class LowLevelClient implements ClientInterface
      * @param string            $method
      * @param array|object|null $params
      *
-     * @return ResponseObjectInterface
-     *
      * @throws JsonRpcClientException
+     *
+     * @return ResponseObjectInterface
      */
     public function call(string $method, $params = null)
     {

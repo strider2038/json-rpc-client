@@ -24,9 +24,9 @@ interface BatchRequestInterface extends RequestInterface
      * @param string            $method
      * @param array|object|null $params
      *
-     * @return BatchRequestInterface
-     *
      * @throws JsonRpcClientException
+     *
+     * @return BatchRequestInterface
      */
     public function call(string $method, $params = null): self;
 
@@ -37,9 +37,9 @@ interface BatchRequestInterface extends RequestInterface
      * @param string            $method
      * @param array|object|null $params
      *
-     * @return BatchRequestInterface
-     *
      * @throws JsonRpcClientException
+     *
+     * @return BatchRequestInterface
      */
     public function notify(string $method, $params = null): self;
 
@@ -47,9 +47,9 @@ interface BatchRequestInterface extends RequestInterface
      * Executes batch request and returns unsorted responses (for low level client)
      * or properly ordered results in array (for high level client).
      *
-     * @return array
-     *
      * @throws JsonRpcClientException
+     *
+     * @return array
      */
     public function send(): array;
 }

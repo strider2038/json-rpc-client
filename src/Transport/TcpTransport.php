@@ -85,9 +85,9 @@ class TcpTransport implements TransportInterface
     }
 
     /**
-     * @return resource
-     *
      * @throws ConnectionFailedException
+     *
+     * @return resource
      */
     private function getSocketClient()
     {
@@ -99,9 +99,9 @@ class TcpTransport implements TransportInterface
     }
 
     /**
-     * @return resource
-     *
      * @throws ConnectionFailedException
+     *
+     * @return resource
      */
     private function createSocketClient()
     {
