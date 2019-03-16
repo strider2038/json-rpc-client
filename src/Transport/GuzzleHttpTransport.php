@@ -34,7 +34,7 @@ class GuzzleHttpTransport implements TransportInterface
         $body = $response->getBody();
         $contents = $body->getContents();
 
-        if ($statusCode !== 200) {
+        if (200 !== $statusCode) {
             throw new RemoteProcedureCallFailedException(
                 sprintf('JSON RPC request failed with error %d: %s.', $statusCode, $contents)
             );

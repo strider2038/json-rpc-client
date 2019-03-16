@@ -41,9 +41,11 @@ class LowLevelClient implements ClientInterface
     /**
      * Calls remote procedure with given parameters. Server response is returned.
      *
-     * @param string $method
+     * @param string            $method
      * @param array|object|null $params
+     *
      * @return ResponseObjectInterface
+     *
      * @throws JsonRpcClientException
      */
     public function call(string $method, $params = null)
@@ -54,8 +56,9 @@ class LowLevelClient implements ClientInterface
     }
 
     /**
-     * @param string $method
+     * @param string            $method
      * @param array|object|null $params
+     *
      * @throws JsonRpcClientException
      */
     public function notify(string $method, $params = null): void

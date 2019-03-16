@@ -138,7 +138,7 @@ class HighLevelClientTest extends TestCase
         $serializer = new JsonObjectSerializer();
         $validator = new ExceptionalResponseValidator();
         $caller = new Caller($serializer, $this->transport, $validator);
-        
+
         return new HighLevelClient($requestObjectFactory, $caller);
     }
 

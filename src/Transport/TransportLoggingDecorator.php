@@ -40,7 +40,7 @@ class TransportLoggingDecorator implements TransportInterface
         $this->logger->debug(
             'JSON RPC response received.',
             [
-                'body' => $response,
+                'body'     => $response,
                 'duration' => microtime(true) - $sentAt,
             ]
         );

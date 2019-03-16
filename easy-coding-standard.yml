@@ -1,0 +1,23 @@
+imports:
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/clean-code.yml' }
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/common.yml' }
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/php71.yml' }
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/psr12.yml' }
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/symfony.yml' }
+
+services:
+  PhpCsFixer\Fixer\PhpUnit\PhpUnitTestAnnotationFixer:
+    style: 'annotation'
+  PhpCsFixer\Fixer\Operator\BinaryOperatorSpacesFixer:
+    align_double_arrow: true
+  PhpCsFixer\Fixer\Operator\IncrementStyleFixer:
+    style: 'post'
+
+parameters:
+  skip:
+    PhpCsFixer\Fixer\PhpUnit\PhpUnitMethodCasingFixer: ~
+    PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer: ~
+    PhpCsFixer\Fixer\Strict\DeclareStrictTypesFixer: ~
+    SlevomatCodingStandard\Sniffs\TypeHints\NullableTypeForNullDefaultValueSniff: ~
+    SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff: ~
+    Symplify\CodingStandard\Fixer\Commenting\ParamReturnAndVarTagMalformsFixer: ~

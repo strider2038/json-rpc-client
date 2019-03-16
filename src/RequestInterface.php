@@ -21,8 +21,9 @@ interface RequestInterface
      * Calls remote procedure with given parameters. Procedure result (for high level client)
      * or server response (for low level client) is returned.
      *
-     * @param string $method
+     * @param string            $method
      * @param array|object|null $params
+     *
      * @return array|object
      *
      * @throws JsonRpcClientException
@@ -32,11 +33,10 @@ interface RequestInterface
     /**
      * Calls remote procedure with given parameters. No result is expected.
      *
-     * @param string $method
+     * @param string            $method
      * @param array|object|null $params
-     * @return void
      *
      * @throws JsonRpcClientException
      */
-    public function notify(string $method, $params = null);
+    public function notify(string $method, $params = null): void;
 }

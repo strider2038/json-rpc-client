@@ -27,6 +27,7 @@ use Strider2038\JsonRpcClient\Transport\TransportLoggingDecorator;
 
 /**
  * @experimental API may be changed
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class ClientFactory
@@ -72,12 +73,12 @@ class ClientFactory
         $scheme = parse_url($connection, PHP_URL_SCHEME);
         $timeout = (float) ($options['timeout_ms'] ?? 1000);
 
-        if ($scheme === 'tcp') {
+        if ('tcp' === $scheme) {
             $transport = new TcpTransport($connection, $timeout);
         } else {
             $guzzle = new Client([
                 'base_uri' => $connection,
-                'timeout' => $timeout / 1000,
+                'timeout'  => $timeout / 1000,
             ]);
 
             $transport = new GuzzleHttpTransport($guzzle);

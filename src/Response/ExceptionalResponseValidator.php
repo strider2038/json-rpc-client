@@ -20,7 +20,7 @@ class ExceptionalResponseValidator implements ResponseValidatorInterface
 {
     public function validate($response): void
     {
-        if ($response !== null) {
+        if (null !== $response) {
             $this->validateResponse($response);
         }
     }
@@ -47,7 +47,7 @@ class ExceptionalResponseValidator implements ResponseValidatorInterface
             );
         }
 
-        if ($response->getJsonRpcVersion() !== '2.0') {
+        if ('2.0' !== $response->getJsonRpcVersion()) {
             throw new ResponseException('Invalid JSON RPC version in server request.');
         }
 

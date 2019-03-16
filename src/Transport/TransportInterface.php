@@ -19,7 +19,9 @@ interface TransportInterface
 {
     /**
      * @param string $request
+     *
      * @return string
+     *
      * @throws RemoteProcedureCallFailedException
      */
     public function send(string $request): string;

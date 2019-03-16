@@ -30,7 +30,7 @@ class HighLevelBatchRequester extends LowLevelBatchRequester
         $orderedResults = [];
 
         foreach ($queue as $request) {
-            if ($request->getId() === null) {
+            if (null === $request->getId()) {
                 $orderedResults[] = null;
             } else {
                 $matchingResponse = $this->getMatchingResponseForRequest($responses, $request);
@@ -53,7 +53,7 @@ class HighLevelBatchRequester extends LowLevelBatchRequester
             }
         }
 
-        if ($matchingResponse === null) {
+        if (null === $matchingResponse) {
             throw new NoResponseReceivedException($request);
         }
 

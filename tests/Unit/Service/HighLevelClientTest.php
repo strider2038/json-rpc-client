@@ -85,6 +85,7 @@ class HighLevelClientTest extends TestCase
         \Phake::when($responseObject)
             ->getResult()
             ->thenReturn($expectedResult);
+
         return $expectedResult;
     }
 }

@@ -25,7 +25,8 @@
     "phake/phake": "^3.1",
     "ramsey/uuid": "^3.8",
     "guzzlehttp/guzzle": "^6.3",
-    "psr/log": "^1.1"
+    "psr/log": "^1.1",
+    "symplify/easy-coding-standard": "^5.4"
   },
   "suggest": {
     "ramsey/uuid": "To generate UUID identifiers for request objects",

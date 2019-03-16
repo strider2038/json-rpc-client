@@ -30,7 +30,8 @@ class TcpTransport implements TransportInterface
 
     /**
      * @param string $url
-     * @param int $timeoutMs
+     * @param int    $timeoutMs
+     *
      * @throws InvalidConfigException
      */
     public function __construct(string $url, int $timeoutMs = 1000)
@@ -39,6 +40,13 @@ class TcpTransport implements TransportInterface
 
         $this->url = $url;
         $this->timeoutMs = $timeoutMs;
+    }
+
+    public function __destruct()
+    {
+        if (is_resource($this->client)) {
+            fclose($this->client);
+        }
     }
 
     public function send(string $request): string
@@ -58,17 +66,18 @@ class TcpTransport implements TransportInterface
 
     /**
      * @param string $url
+     *
      * @throws InvalidConfigException
      */
     private function validateUrl(string $url): void
     {
-        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidConfigException(
                 sprintf('Valid URL is expected for TCP/IP transport. Given value is "%s".', $url)
             );
         }
 
-        if (parse_url($url, PHP_URL_SCHEME) !== 'tcp') {
+        if ('tcp' !== parse_url($url, PHP_URL_SCHEME)) {
             throw new InvalidConfigException(
                 sprintf('URL for TCP/IP transport must start with "tcp://" scheme. Given value is "%s".', $url)
             );
@@ -77,11 +86,12 @@ class TcpTransport implements TransportInterface
 
     /**
      * @return resource
+     *
      * @throws ConnectionFailedException
      */
     private function getSocketClient()
     {
-        if ($this->client === null) {
+        if (null === $this->client) {
             $this->client = $this->createSocketClient();
         }
 
@@ -90,17 +100,18 @@ class TcpTransport implements TransportInterface
 
     /**
      * @return resource
+     *
      * @throws ConnectionFailedException
      */
     private function createSocketClient()
     {
-        $client = stream_socket_client($this->url, $errno, $errstr, ((float)$this->timeoutMs) / 1000);
+        $client = stream_socket_client($this->url, $errno, $errstr, ((float) $this->timeoutMs) / 1000);
 
         if (!is_resource($client)) {
             throw new ConnectionFailedException($this->url, sprintf('%d: %s', $errno, $errstr));
         }
 
-        if (stream_set_timeout($client, 0, $this->timeoutMs) === false) {
+        if (false === stream_set_timeout($client, 0, $this->timeoutMs)) {
             throw new ConnectionFailedException($this->url, 'cannot set timeout');
         }
 
@@ -115,13 +126,6 @@ class TcpTransport implements TransportInterface
             $errorMessage = sprintf('JSON RPC request to %s failed by timeout %d ms.', $this->url, $this->timeoutMs);
 
             throw new RemoteProcedureCallFailedException($errorMessage);
-        }
-    }
-
-    public function __destruct()
-    {
-        if (is_resource($this->client)) {
-            fclose($this->client);
         }
     }
 }

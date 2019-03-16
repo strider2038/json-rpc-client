@@ -2,7 +2,7 @@
 
 namespace Strider2038\JsonRpcClient\Tests\Functional\Service;
 
-use Strider2038\JsonRpcClient\Exception\ErrorResponseException;
+use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 use Strider2038\JsonRpcClient\Request\SequentialIntegerIdGenerator;
 use Strider2038\JsonRpcClient\Response\NullResponseValidator;
@@ -10,7 +10,6 @@ use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Service\Caller;
 use Strider2038\JsonRpcClient\Service\LowLevelClient;
-use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
 
 class LowLevelClientTest extends TestCase

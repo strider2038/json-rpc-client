@@ -20,12 +20,14 @@ interface MessageSerializerInterface
 {
     /**
      * @param RequestObjectInterface|RequestObjectInterface[] $request
+     *
      * @return string
      */
     public function serialize($request): string;
 
     /**
      * @param string $response
+     *
      * @return ResponseObjectInterface|ResponseObjectInterface[]|null
      */
     public function deserialize(string $response);

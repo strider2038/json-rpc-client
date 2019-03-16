@@ -44,7 +44,7 @@ class ResponseObject implements ResponseObjectInterface
 
     public function hasError(): bool
     {
-        return $this->error !== null;
+        return null !== $this->error;
     }
 
     public function getError(): ErrorObject

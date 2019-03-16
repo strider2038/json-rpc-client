@@ -19,6 +19,7 @@ interface ResponseValidatorInterface
 {
     /**
      * @param $response
+     *
      * @throws ResponseException
      */
     public function validate($response): void;
