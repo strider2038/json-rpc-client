@@ -14,7 +14,7 @@ build:
           TEST_TCP_TRANSPORT_URL: 'tcp://localhost:4000'
       tests:
         override:
-          - docker run --name jsonrpc --rm -d strider2038/json-rpc-mock-server
+          - docker run --name jsonrpc --rm -d -p "4000:4000" strider2038/json-rpc-mock-server
           - command: ./vendor/bin/phpunit --coverage-clover clover.xml
             coverage:
               file: clover.xml
