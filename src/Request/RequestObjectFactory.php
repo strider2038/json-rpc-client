@@ -26,12 +26,9 @@ class RequestObjectFactory
     }
 
     /**
-     * @param string            $method
      * @param array|object|null $params
      *
      * @throws InvalidRequestParamsException
-     *
-     * @return RequestObject
      */
     public function createRequest(string $method, $params = null): RequestObject
     {
@@ -43,12 +40,9 @@ class RequestObjectFactory
     }
 
     /**
-     * @param string            $method
      * @param array|object|null $params
      *
      * @throws InvalidRequestParamsException
-     *
-     * @return NotificationObject
      */
     public function createNotification(string $method, $params = null): NotificationObject
     {

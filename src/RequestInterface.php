@@ -21,7 +21,6 @@ interface RequestInterface
      * Calls remote procedure with given parameters. Procedure result (for high level client)
      * or server response (for low level client) is returned.
      *
-     * @param string            $method
      * @param array|object|null $params
      *
      * @throws JsonRpcClientException
@@ -33,7 +32,6 @@ interface RequestInterface
     /**
      * Calls remote procedure with given parameters. No result is expected.
      *
-     * @param string            $method
      * @param array|object|null $params
      *
      * @throws JsonRpcClientException

@@ -29,9 +29,6 @@ class TcpTransport implements TransportInterface
     private $client;
 
     /**
-     * @param string $url
-     * @param int    $timeoutMs
-     *
      * @throws InvalidConfigException
      */
     public function __construct(string $url, int $timeoutMs = 1000)
@@ -65,8 +62,6 @@ class TcpTransport implements TransportInterface
     }
 
     /**
-     * @param string $url
-     *
      * @throws InvalidConfigException
      */
     private function validateUrl(string $url): void

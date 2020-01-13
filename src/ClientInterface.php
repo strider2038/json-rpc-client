@@ -17,8 +17,6 @@ interface ClientInterface extends RequestInterface
 {
     /**
      * Creates and returns fluent batch request object. For sending batch request use send() method.
-     *
-     * @return BatchRequestInterface
      */
     public function batch(): BatchRequestInterface;
 }

@@ -21,7 +21,6 @@ interface BatchRequestInterface extends RequestInterface
      * Adds remote procedure call to the delayed queue in batch request. Method returns fluent batch
      * request object. Batch request is executed by method send().
      *
-     * @param string            $method
      * @param array|object|null $params
      *
      * @throws JsonRpcClientException
@@ -34,7 +33,6 @@ interface BatchRequestInterface extends RequestInterface
      * Adds remote procedure call to the delayed queue in batch request. Method returns fluent batch
      * request object. Batch request is executed by method send().
      *
-     * @param string            $method
      * @param array|object|null $params
      *
      * @throws JsonRpcClientException
@@ -48,8 +46,6 @@ interface BatchRequestInterface extends RequestInterface
      * or properly ordered results in array (for high level client).
      *
      * @throws JsonRpcClientException
-     *
-     * @return array
      */
     public function send(): array;
 }

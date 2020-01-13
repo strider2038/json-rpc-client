@@ -38,7 +38,6 @@ class HighLevelClient implements ClientInterface
     }
 
     /**
-     * @param string            $method
      * @param array|object|null $params
      *
      * @throws JsonRpcClientException
@@ -54,7 +53,6 @@ class HighLevelClient implements ClientInterface
     }
 
     /**
-     * @param string            $method
      * @param array|object|null $params
      *
      * @throws JsonRpcClientException

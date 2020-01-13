@@ -18,11 +18,7 @@ use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
 interface TransportInterface
 {
     /**
-     * @param string $request
-     *
      * @throws RemoteProcedureCallFailedException
-     *
-     * @return string
      */
     public function send(string $request): string;
 }
