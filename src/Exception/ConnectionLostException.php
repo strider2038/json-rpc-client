@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Response;
-
-use Strider2038\JsonRpcClient\Exception\ResponseException;
+namespace Strider2038\JsonRpcClient\Exception;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-interface ResponseValidatorInterface
+class ConnectionLostException extends JsonRpcClientException
 {
-    /**
-     * @throws ResponseException
-     */
-    public function validate($response): void;
+    public function __construct(string $url, string $reason)
+    {
+        parent::__construct(
+            sprintf('Connection "%s" was lost: %s.', $url, $reason)
+        );
+    }
 }

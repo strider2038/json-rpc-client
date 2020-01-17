@@ -42,14 +42,19 @@ class HighLevelClient implements ClientInterface
      *
      * @throws JsonRpcClientException
      *
-     * @return array|object
+     * @return array|object|null
      */
     public function call(string $method, $params = null)
     {
+        $result = null;
         $requestObject = $this->requestObjectFactory->createRequest($method, $params);
         $responseObject = $this->caller->call($requestObject);
 
-        return $responseObject->getResult();
+        if (null !== $responseObject) {
+            $result = $responseObject->getResult();
+        }
+
+        return $result;
     }
 
     /**

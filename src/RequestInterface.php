@@ -25,7 +25,7 @@ interface RequestInterface
      *
      * @throws JsonRpcClientException
      *
-     * @return array|object
+     * @return array|object|null
      */
     public function call(string $method, $params = null);
 

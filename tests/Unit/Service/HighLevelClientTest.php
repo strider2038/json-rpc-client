@@ -11,6 +11,7 @@
 namespace Strider2038\JsonRpcClient\Tests\Unit\Service;
 
 use PHPUnit\Framework\TestCase;
+use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 use Strider2038\JsonRpcClient\Service\HighLevelBatchRequester;
 use Strider2038\JsonRpcClient\Service\HighLevelClient;
 use Strider2038\JsonRpcClient\Tests\TestCase\ClientTestCaseTrait;
@@ -57,6 +58,20 @@ class HighLevelClientTest extends TestCase
     }
 
     /** @test */
+    public function call_nullResponse_null(): void
+    {
+        $client = $this->createClient();
+        $requestObject = $this->givenCreatedRequestObject();
+        $this->givenCallerReturnsNull();
+
+        $result = $client->call(self::METHOD, self::PARAMS);
+
+        $this->assertRequestObjectCreatedWithExpectedMethodAndParams(self::METHOD, self::PARAMS);
+        $this->assertRemoteProcedureWasCalledWithRequestObject($requestObject);
+        $this->assertNull($result);
+    }
+
+    /** @test */
     public function notify_methodAndParams_notificationCreatedAndSendToCaller(): void
     {
         $client = $this->createClient();
@@ -73,13 +88,13 @@ class HighLevelClientTest extends TestCase
         return new HighLevelClient($this->requestObjectFactory, $this->caller);
     }
 
-    private function assertResultWasExtractedFromResponse(\Strider2038\JsonRpcClient\Response\ResponseObjectInterface $responseObject): void
+    private function assertResultWasExtractedFromResponse(ResponseObjectInterface $responseObject): void
     {
         \Phake::verify($responseObject)
             ->getResult();
     }
 
-    private function givenResultInResponse(\Strider2038\JsonRpcClient\Response\ResponseObjectInterface $responseObject): string
+    private function givenResultInResponse(ResponseObjectInterface $responseObject): string
     {
         $expectedResult = 'result';
         \Phake::when($responseObject)
