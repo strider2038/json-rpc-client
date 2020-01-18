@@ -124,7 +124,7 @@ class JsonObjectSerializerTest extends TestCase
         $response = $serializer->deserialize('{}');
 
         $this->assertInstanceOf(ResponseObject::class, $response);
-        $this->assertNull($response->jsonrpc);
+        $this->assertSame('', $response->jsonrpc);
         $this->assertNull($response->result);
         $this->assertNull($response->id);
         $this->assertNull($response->error);

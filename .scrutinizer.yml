@@ -18,9 +18,7 @@ build:
             - 4000
       tests:
         override:
-          - ./vendor/bin/ecs check src tests
-          - ./vendor/bin/phpstan analyse --level 5 src
-          - ./vendor/bin/phpstan analyse --level 1 tests
+          - composer check
           - command: ./vendor/bin/phpunit --coverage-clover clover.xml
             coverage:
               file: clover.xml

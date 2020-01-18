@@ -57,9 +57,22 @@ class SocketClient
         }
     }
 
-    public function getUrl(): string
+    /**
+     * Sends request under socket client and returns response.
+     *
+     * @throws ConnectionFailedException          when connection to server cannot be established
+     * @throws ConnectionLostException            if connection to server was lost and request cannot be sent
+     * @throws RemoteProcedureCallFailedException if request to server was sent and response cannot be received.
+     *                                            Be aware that request may be successfully processed by server,
+     *                                            so resending the request may lead to inconsistent state
+     *                                            of the server data.
+     */
+    public function send(string $request): string
     {
-        return $this->url;
+        $connection = $this->getConnection();
+        $this->sendRequest($connection, $request);
+
+        return $this->receiveResponse($connection);
     }
 
     /**
@@ -70,24 +83,6 @@ class SocketClient
     public function connect(): void
     {
         $this->connection = $this->createConnection();
-    }
-
-    /**
-     * Sends request under socket client and returns response.
-     *
-     * @throws ConnectionFailedException
-     * @throws ConnectionLostException
-     * @throws RemoteProcedureCallFailedException
-     */
-    public function send(string $request): string
-    {
-        $connection = $this->getConnection();
-
-        $this->sendData($connection, $request);
-        $response = fgets($connection);
-        $this->checkForTimeout($connection);
-
-        return $response;
     }
 
     /**
@@ -116,17 +111,62 @@ class SocketClient
      */
     private function createConnection()
     {
-        $client = stream_socket_client($this->url, $errno, $errstr, $this->connectionTimeoutS);
+        $start = microtime(true);
 
-        if (!is_resource($client)) {
+        while (true) {
+            $connection = @stream_socket_client($this->url, $errno, $errstr, $this->connectionTimeoutS);
+            if (is_resource($connection)) {
+                break;
+            }
+
+            if (microtime(true) - $start >= $this->connectionTimeoutS) {
+                break;
+            }
+
+            usleep(100);
+        }
+
+        if (!is_resource($connection)) {
             throw new ConnectionFailedException($this->url, sprintf('%d: %s', $errno, $errstr));
         }
 
-        if (false === stream_set_timeout($client, 0, $this->requestTimeoutUs)) {
-            throw new ConnectionFailedException($this->url, 'cannot set timeout');
+        if (false === stream_set_timeout($connection, 0, $this->requestTimeoutUs)) {
+            throw new ConnectionFailedException($this->url, 'failed to set request timeout');
         }
 
-        return $client;
+        return $connection;
+    }
+
+    /**
+     * @param resource $connection
+     *
+     * @throws ConnectionLostException
+     */
+    private function sendRequest($connection, string $request): void
+    {
+        if (false === fwrite($connection, $request."\n")) {
+            throw new ConnectionLostException($this->url, 'failed to write data into stream');
+        }
+
+        fflush($connection);
+    }
+
+    /**
+     * @param resource $connection
+     *
+     * @throws RemoteProcedureCallFailedException
+     */
+    private function receiveResponse($connection): string
+    {
+        $response = fgets($connection);
+
+        if (false === $response) {
+            $this->checkForTimeout($connection);
+
+            throw new RemoteProcedureCallFailedException(sprintf('Failed to get response from %s.', $this->url));
+        }
+
+        return $response;
     }
 
     /**
@@ -143,19 +183,5 @@ class SocketClient
 
             throw new RemoteProcedureCallFailedException($error);
         }
-    }
-
-    /**
-     * @param resource $connection
-     *
-     * @throws ConnectionLostException
-     */
-    private function sendData($connection, string $request): void
-    {
-        if (false === fwrite($connection, $request."\n")) {
-            throw new ConnectionLostException($this->url, 'failed to write data into stream');
-        }
-
-        fflush($connection);
     }
 }
