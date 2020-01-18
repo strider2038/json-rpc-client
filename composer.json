@@ -26,7 +26,8 @@
     "ramsey/uuid": "^3.8",
     "guzzlehttp/guzzle": "^6.3",
     "psr/log": "^1.1",
-    "symplify/easy-coding-standard": "^7.0"
+    "symplify/easy-coding-standard": "^7.0",
+    "phpstan/phpstan": "^0.12.5"
   },
   "suggest": {
     "ramsey/uuid": "To generate UUID identifiers for request objects",
@@ -42,5 +43,15 @@
     "psr-4": {
       "Strider2038\\JsonRpcClient\\Tests\\": "tests/"
     }
+  },
+  "scripts": {
+    "check": [
+      "ecs check src tests",
+      "phpstan analyze --level 5 src",
+      "phpstan analyze --level 1 tests"
+    ],
+    "fix": [
+      "ecs check --fix src tests"
+    ]
   }
 }

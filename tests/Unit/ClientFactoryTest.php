@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Tests\Unit\JsonRpcClient;
+namespace Strider2038\JsonRpcClient\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -18,7 +18,7 @@ use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 use Strider2038\JsonRpcClient\Service\Caller;
 use Strider2038\JsonRpcClient\Service\HighLevelClient;
 use Strider2038\JsonRpcClient\Transport\GuzzleHttpTransport;
-use Strider2038\JsonRpcClient\Transport\TcpTransport;
+use Strider2038\JsonRpcClient\Transport\SocketTransport;
 use Strider2038\JsonRpcClient\Transport\TransportLoggingDecorator;
 
 /**
@@ -44,7 +44,7 @@ class ClientFactoryTest extends TestCase
 
     public function connectionStringAndExpectedTransportClass(): \Iterator
     {
-        yield ['tcp://localhost:3000', TcpTransport::class];
+        yield ['tcp://localhost:3000', SocketTransport::class];
         yield ['http://localhost:3000', GuzzleHttpTransport::class];
         yield ['https://localhost:3000', GuzzleHttpTransport::class];
     }

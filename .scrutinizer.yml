@@ -18,6 +18,7 @@ build:
             - 4000
       tests:
         override:
+          - composer check
           - command: ./vendor/bin/phpunit --coverage-clover clover.xml
             coverage:
               file: clover.xml

@@ -32,10 +32,16 @@ use Strider2038\JsonRpcClient\ClientFactory;
 $factory = new ClientFactory();
 
 // HTTP client
-$client = $factory->createClient('http://localhost:3000/rpc', ['timeout_ms' => 2000]);
+$client = $factory->createClient('http://localhost:3000/rpc', [
+    'connection_timeout_us' => 2000000,
+    'request_timeout_us'    => 2000000,
+]);
 
 // TCP client
-$client = $factory->createClient('tcp://localhost:3000', ['timeout_ms' => 2000]);
+$client = $factory->createClient('tcp://localhost:3000', [
+    'connection_timeout_us' => 2000000,
+    'request_timeout_us'    => 2000000,
+]);
 ```
 
 ### Calling remote procedures
@@ -76,7 +82,7 @@ $result = $client->batch()
 // ]
 ```
 
-## Roadmap for v0.2
+## Roadmap for next versions
 
 * [ ] client builder
 * [ ] integration testing for http transport with server mock
