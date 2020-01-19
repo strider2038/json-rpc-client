@@ -17,7 +17,7 @@ _Library is in active development_
 Use composer to install library. It is recommended to fix minor version while library is under development.
 
 ```bash
-composer require strider2038/json-rpc-client ^0.1
+composer require strider2038/json-rpc-client ^0.3.0
 ```
 
 ## Hot to use
@@ -33,14 +33,17 @@ $factory = new ClientFactory();
 
 // HTTP client
 $client = $factory->createClient('http://localhost:3000/rpc', [
-    'connection_timeout_us' => 2000000,
-    'request_timeout_us'    => 2000000,
+    'request_timeout_us' => 1000000,
 ]);
 
 // TCP client
 $client = $factory->createClient('tcp://localhost:3000', [
-    'connection_timeout_us' => 2000000,
-    'request_timeout_us'    => 2000000,
+    'request_timeout_us' => 1000000,
+    'connection'         => [
+        'attempt_timeout_us' => 100000,
+        'timeout_multiplier' => 2.0,
+        'max_attempts'       => 5,
+    ],
 ]);
 ```
 

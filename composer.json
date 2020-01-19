@@ -45,13 +45,16 @@
     }
   },
   "scripts": {
+    "fix": [
+      "ecs check --fix src tests"
+    ],
     "check": [
       "ecs check src tests",
       "phpstan analyze --level 5 src",
       "phpstan analyze --level 1 tests"
     ],
-    "fix": [
-      "ecs check --fix src tests"
+    "test": [
+      "phpunit"
     ]
   }
 }

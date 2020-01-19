@@ -11,6 +11,7 @@
 namespace Strider2038\JsonRpcClient\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
+use Strider2038\JsonRpcClient\Configuration\ConnectionOptions;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Exception\ErrorResponseException;
 use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
@@ -21,6 +22,7 @@ use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Service\Caller;
 use Strider2038\JsonRpcClient\Service\HighLevelClient;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketClient;
+use Strider2038\JsonRpcClient\Transport\Socket\SocketConnector;
 use Strider2038\JsonRpcClient\Transport\SocketTransport;
 
 /**
@@ -104,9 +106,11 @@ class HighLevelTcpClientTest extends TestCase
         $requestObjectFactory = new RequestObjectFactory($idGenerator);
         $serializer = new JsonObjectSerializer();
         $validator = new ExceptionalResponseValidator();
+        $connector = new SocketConnector();
         $client = new SocketClient(
+            $connector,
             $transportUrl,
-            GeneralOptions::DEFAULT_CONNECTION_TIMEOUT,
+            new ConnectionOptions(),
             GeneralOptions::DEFAULT_REQUEST_TIMEOUT
         );
         $transport = new SocketTransport($client);
