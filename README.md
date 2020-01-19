@@ -87,7 +87,7 @@ $result = $client->batch()
 
 ## Roadmap for next versions
 
-* [ ] client builder
+* [x] client builder
 * [ ] integration testing for http transport with server mock
 * [ ] http authentication tests
 * [ ] json array serializer
