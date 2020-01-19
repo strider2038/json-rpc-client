@@ -11,6 +11,7 @@
 namespace Strider2038\JsonRpcClient\Tests\Unit\Configuration;
 
 use PHPUnit\Framework\TestCase;
+use Strider2038\JsonRpcClient\Configuration\ConnectionOptions;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 
@@ -24,7 +25,6 @@ class GeneralOptionsTest extends TestCase
     {
         $options = new GeneralOptions();
 
-        $this->assertSame(GeneralOptions::DEFAULT_CONNECTION_TIMEOUT, $options->getConnectionTimeoutUs());
         $this->assertSame(GeneralOptions::DEFAULT_REQUEST_TIMEOUT, $options->getRequestTimeoutUs());
     }
 
@@ -32,7 +32,7 @@ class GeneralOptionsTest extends TestCase
     public function construct_invalidParameters_invalidConfigException(): void
     {
         $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('Timeout must be greater than 0');
+        $this->expectExceptionMessage('Request timeout must be greater than 0.');
 
         new GeneralOptions(0);
     }
@@ -42,19 +42,27 @@ class GeneralOptionsTest extends TestCase
     {
         $options = GeneralOptions::createFromArray([]);
 
-        $this->assertSame(GeneralOptions::DEFAULT_CONNECTION_TIMEOUT, $options->getConnectionTimeoutUs());
         $this->assertSame(GeneralOptions::DEFAULT_REQUEST_TIMEOUT, $options->getRequestTimeoutUs());
+        $this->assertSame(ConnectionOptions::DEFAULT_ATTEMPT_TIMEOUT, $options->getConnectionOptions()->getAttemptTimeoutUs());
+        $this->assertSame(ConnectionOptions::DEFAULT_TIMEOUT_MULTIPLIER, $options->getConnectionOptions()->getTimeoutMultiplier());
+        $this->assertSame(ConnectionOptions::DEFAULT_MAX_ATTEMPTS, $options->getConnectionOptions()->getMaxAttempts());
     }
 
     /** @test */
     public function createFromArray_optionsInArray_optionsWithValuesCreated(): void
     {
         $options = GeneralOptions::createFromArray([
-            'connection_timeout_us' => 100,
-            'request_timeout_us'    => 200,
+            'request_timeout_us' => 200,
+            'connection'         => [
+                'attempt_timeout_us' => 1,
+                'timeout_multiplier' => 1.5,
+                'max_attempts'       => 3,
+            ],
         ]);
 
-        $this->assertSame(100, $options->getConnectionTimeoutUs());
         $this->assertSame(200, $options->getRequestTimeoutUs());
+        $this->assertSame(1, $options->getConnectionOptions()->getAttemptTimeoutUs());
+        $this->assertSame(1.5, $options->getConnectionOptions()->getTimeoutMultiplier());
+        $this->assertSame(3, $options->getConnectionOptions()->getMaxAttempts());
     }
 }

@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketClient;
+use Strider2038\JsonRpcClient\Transport\Socket\SocketConnector;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
@@ -74,7 +75,8 @@ class TransportFactory
      */
     private function createTcpTransport(string $connection, GeneralOptions $options): SocketTransport
     {
-        $client = new SocketClient($connection, $options->getConnectionTimeoutUs(), $options->getRequestTimeoutUs());
+        $connector = new SocketConnector();
+        $client = new SocketClient($connector, $connection, $options->getConnectionOptions(), $options->getRequestTimeoutUs());
 
         return new SocketTransport($client);
     }

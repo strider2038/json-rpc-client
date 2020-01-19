@@ -10,6 +10,7 @@
 
 namespace Strider2038\JsonRpcClient\Transport\Socket;
 
+use Strider2038\JsonRpcClient\Configuration\ConnectionOptions;
 use Strider2038\JsonRpcClient\Exception\ConnectionFailedException;
 use Strider2038\JsonRpcClient\Exception\ConnectionLostException;
 use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
@@ -20,6 +21,16 @@ use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
 class SocketClient
 {
     /**
+     * @var SocketConnector
+     */
+    private $connector;
+
+    /**
+     * @var SocketConnection|null
+     */
+    private $connection;
+
+    /**
      * Connection in URL format.
      *
      * @var string
@@ -27,11 +38,9 @@ class SocketClient
     private $url;
 
     /**
-     * Connection timeout in seconds.
-     *
-     * @var float
+     * @var ConnectionOptions
      */
-    private $connectionTimeoutS;
+    private $options;
 
     /**
      * Request timeout in microseconds.
@@ -40,21 +49,16 @@ class SocketClient
      */
     private $requestTimeoutUs;
 
-    /** @var resource|null */
-    private $connection;
-
-    public function __construct(string $url, int $connectionTimeoutUs, int $requestTimeoutUs)
-    {
+    public function __construct(
+        SocketConnector $connector,
+        string $url,
+        ConnectionOptions $options,
+        int $requestTimeoutUs
+    ) {
+        $this->connector = $connector;
         $this->url = $url;
-        $this->connectionTimeoutS = ((float) $connectionTimeoutUs) / 1000000;
+        $this->options = $options;
         $this->requestTimeoutUs = $requestTimeoutUs;
-    }
-
-    public function __destruct()
-    {
-        if (is_resource($this->connection)) {
-            fclose($this->connection);
-        }
     }
 
     /**
@@ -70,35 +74,34 @@ class SocketClient
     public function send(string $request): string
     {
         $connection = $this->getConnection();
-        $this->sendRequest($connection, $request);
+        if ($connection->isClosed()) {
+            throw new ConnectionLostException($this->url, 'closed by server');
+        }
 
-        return $this->receiveResponse($connection);
+        $connection->sendRequest($request);
+
+        return $connection->receiveResponse();
     }
 
     /**
-     * Recreates connection. Can be used to reconnect.
+     * Forces new connection. Can be used to reconnect.
      *
      * @throws ConnectionFailedException
      */
     public function connect(): void
     {
+        unset($this->connection);
+
         $this->connection = $this->createConnection();
     }
 
     /**
      * @throws ConnectionFailedException
-     * @throws ConnectionLostException
-     *
-     * @return resource
      */
-    private function getConnection()
+    private function getConnection(): SocketConnection
     {
         if (null === $this->connection) {
             $this->connection = $this->createConnection();
-        }
-
-        if (feof($this->connection)) {
-            throw new ConnectionLostException($this->url, 'eof received');
         }
 
         return $this->connection;
@@ -106,82 +109,38 @@ class SocketClient
 
     /**
      * @throws ConnectionFailedException
-     *
-     * @return resource
      */
-    private function createConnection()
+    private function createConnection(): SocketConnection
     {
-        $start = microtime(true);
+        $connection = null;
+
+        $maxAttempts = $this->options->getMaxAttempts();
+        $timeout = $this->options->getAttemptTimeoutUs();
+        $multiplier = $this->options->getTimeoutMultiplier();
+
+        $attempt = 0;
 
         while (true) {
-            $connection = @stream_socket_client($this->url, $errno, $errstr, $this->connectionTimeoutS);
-            if (is_resource($connection)) {
-                break;
-            }
+            try {
+                $connection = $this->connector->open($this->url, $timeout, $this->requestTimeoutUs);
 
-            if (microtime(true) - $start >= $this->connectionTimeoutS) {
                 break;
-            }
+            } catch (ConnectionFailedException $exception) {
+                $attempt++;
 
-            usleep(100);
+                if ($attempt >= $maxAttempts) {
+                    break;
+                }
+
+                $this->connector->wait($timeout);
+                $timeout = (int) ($timeout * $multiplier);
+            }
         }
 
-        if (!is_resource($connection)) {
-            throw new ConnectionFailedException($this->url, sprintf('%d: %s', $errno, $errstr));
-        }
-
-        if (false === stream_set_timeout($connection, 0, $this->requestTimeoutUs)) {
-            throw new ConnectionFailedException($this->url, 'failed to set request timeout');
+        if (null === $connection) {
+            throw new ConnectionFailedException($this->url, 'failed by timeout');
         }
 
         return $connection;
-    }
-
-    /**
-     * @param resource $connection
-     *
-     * @throws ConnectionLostException
-     */
-    private function sendRequest($connection, string $request): void
-    {
-        if (false === fwrite($connection, $request."\n")) {
-            throw new ConnectionLostException($this->url, 'failed to write data into stream');
-        }
-
-        fflush($connection);
-    }
-
-    /**
-     * @param resource $connection
-     *
-     * @throws RemoteProcedureCallFailedException
-     */
-    private function receiveResponse($connection): string
-    {
-        $response = fgets($connection);
-
-        if (false === $response) {
-            $this->checkForTimeout($connection);
-
-            throw new RemoteProcedureCallFailedException(sprintf('Failed to get response from %s.', $this->url));
-        }
-
-        return $response;
-    }
-
-    /**
-     * @param resource $stream
-     *
-     * @throws RemoteProcedureCallFailedException
-     */
-    private function checkForTimeout($stream): void
-    {
-        $info = stream_get_meta_data($stream);
-
-        if ($info['timed_out']) {
-            $error = sprintf('Request to %s failed by timeout %d us.', $this->url, $this->requestTimeoutUs);
-
-            throw new RemoteProcedureCallFailedException($error);
-        }
     }
 }

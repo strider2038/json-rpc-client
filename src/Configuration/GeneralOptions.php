@@ -17,15 +17,7 @@ use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
  */
 class GeneralOptions
 {
-    public const DEFAULT_CONNECTION_TIMEOUT = 1000000;
     public const DEFAULT_REQUEST_TIMEOUT = 1000000;
-
-    /**
-     * Connection timeout in microseconds.
-     *
-     * @var int
-     */
-    private $connectionTimeoutUs;
 
     /**
      * Request timeout in microseconds.
@@ -35,28 +27,35 @@ class GeneralOptions
     private $requestTimeoutUs;
 
     /**
+     * Connection timeout in microseconds.
+     *
+     * @var ConnectionOptions
+     */
+    private $connectionOptions;
+
+    /**
      * @throws InvalidConfigException
      */
     public function __construct(
-        int $connectionTimeoutUs = self::DEFAULT_CONNECTION_TIMEOUT,
-        int $requestTimeoutUs = self::DEFAULT_REQUEST_TIMEOUT
+        int $requestTimeoutUs = self::DEFAULT_REQUEST_TIMEOUT,
+        ConnectionOptions $connectionOptions = null
     ) {
-        if ($connectionTimeoutUs <= 0 || $requestTimeoutUs <= 0) {
-            throw new InvalidConfigException('Timeout must be greater than 0.');
+        if ($requestTimeoutUs <= 0) {
+            throw new InvalidConfigException('Request timeout must be greater than 0.');
         }
 
-        $this->connectionTimeoutUs = $connectionTimeoutUs;
         $this->requestTimeoutUs = $requestTimeoutUs;
-    }
-
-    public function getConnectionTimeoutUs(): int
-    {
-        return $this->connectionTimeoutUs;
+        $this->connectionOptions = $connectionOptions ?? new ConnectionOptions();
     }
 
     public function getRequestTimeoutUs(): int
     {
         return $this->requestTimeoutUs;
+    }
+
+    public function getConnectionOptions(): ConnectionOptions
+    {
+        return $this->connectionOptions;
     }
 
     /**
@@ -65,8 +64,8 @@ class GeneralOptions
     public static function createFromArray(array $options): self
     {
         return new self(
-            $options['connection_timeout_us'] ?? self::DEFAULT_CONNECTION_TIMEOUT,
-            $options['request_timeout_us'] ?? self::DEFAULT_REQUEST_TIMEOUT
+            $options['request_timeout_us'] ?? self::DEFAULT_REQUEST_TIMEOUT,
+            ConnectionOptions::createFromArray($options['connection'] ?? [])
         );
     }
 }

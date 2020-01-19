@@ -19,8 +19,7 @@ $connection = getenv('TEST_TCP_TRANSPORT_URL');
 
 $clientFactory = new ClientFactory();
 $client = $clientFactory->createClient($connection, [
-    'connection_timeout_us' => 1000000,
-    'request_timeout_us'    => 1000000,
+    'request_timeout_us' => 1000000,
 ]);
 
 while (true) {
