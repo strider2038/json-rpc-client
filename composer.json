@@ -48,10 +48,12 @@
     "fix": [
       "ecs check --fix src tests"
     ],
-    "test": [
+    "check": [
       "ecs check src tests",
       "phpstan analyze --level 5 src",
-      "phpstan analyze --level 1 tests",
+      "phpstan analyze --level 1 tests"
+    ],
+    "test": [
       "phpunit"
     ]
   }
