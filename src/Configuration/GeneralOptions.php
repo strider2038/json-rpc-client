@@ -34,11 +34,17 @@ class GeneralOptions
     private $connectionOptions;
 
     /**
+     * @var array
+     */
+    private $transportConfiguration;
+
+    /**
      * @throws InvalidConfigException
      */
     public function __construct(
         int $requestTimeoutUs = self::DEFAULT_REQUEST_TIMEOUT,
-        ConnectionOptions $connectionOptions = null
+        ConnectionOptions $connectionOptions = null,
+        array $transportConfiguration = []
     ) {
         if ($requestTimeoutUs <= 0) {
             throw new InvalidConfigException('Request timeout must be greater than 0.');
@@ -46,6 +52,7 @@ class GeneralOptions
 
         $this->requestTimeoutUs = $requestTimeoutUs;
         $this->connectionOptions = $connectionOptions ?? new ConnectionOptions();
+        $this->transportConfiguration = $transportConfiguration;
     }
 
     public function getRequestTimeoutUs(): int
@@ -58,6 +65,11 @@ class GeneralOptions
         return $this->connectionOptions;
     }
 
+    public function getTransportConfiguration(): array
+    {
+        return $this->transportConfiguration;
+    }
+
     /**
      * @throws InvalidConfigException
      */
@@ -65,7 +77,8 @@ class GeneralOptions
     {
         return new self(
             $options['request_timeout_us'] ?? self::DEFAULT_REQUEST_TIMEOUT,
-            ConnectionOptions::createFromArray($options['connection'] ?? [])
+            ConnectionOptions::createFromArray($options['connection'] ?? []),
+            $options['transport_configuration'] ?? []
         );
     }
 }

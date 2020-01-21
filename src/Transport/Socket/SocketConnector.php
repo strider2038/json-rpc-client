@@ -13,6 +13,8 @@ namespace Strider2038\JsonRpcClient\Transport\Socket;
 use Strider2038\JsonRpcClient\Exception\ConnectionFailedException;
 
 /**
+ * @internal
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class SocketConnector

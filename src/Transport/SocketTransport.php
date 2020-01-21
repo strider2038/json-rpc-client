@@ -17,6 +17,8 @@ use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketClient;
 
 /**
+ * @internal
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class SocketTransport implements TransportInterface

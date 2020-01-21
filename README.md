@@ -17,7 +17,7 @@ _Library is in active development_
 Use composer to install library. It is recommended to fix minor version while library is under development.
 
 ```bash
-composer require strider2038/json-rpc-client ^0.3.0
+composer require strider2038/json-rpc-client ^0.3
 ```
 
 ## Hot to use
@@ -31,9 +31,14 @@ use Strider2038\JsonRpcClient\ClientFactory;
 
 $factory = new ClientFactory();
 
-// HTTP client
+// HTTP client with Authorization header
 $client = $factory->createClient('http://localhost:3000/rpc', [
-    'request_timeout_us' => 1000000,
+    'request_timeout_us'      => 1000000,
+    'transport_configuration' => [
+        'headers' => [
+            'Authorization' => 'Bearer secret_token',
+        ],
+    ]
 ]);
 
 // TCP client
@@ -88,8 +93,8 @@ $result = $client->batch()
 ## Roadmap for next versions
 
 * [x] client builder
-* [ ] integration testing for http transport with server mock
-* [ ] http authentication tests
+* [x] integration testing for http transport with server mock
+* [x] http authentication tests
 * [ ] json array serializer
 * [ ] bridge for symfony serializer
 * [ ] bridge for jms serializer

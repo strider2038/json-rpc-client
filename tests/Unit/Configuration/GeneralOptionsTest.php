@@ -20,12 +20,17 @@ use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
  */
 class GeneralOptionsTest extends TestCase
 {
+    const TRANSPORT_CONFIGURATION = [
+        'option' => 'value',
+    ];
+
     /** @test */
     public function construct_noParameters_defaultValues(): void
     {
         $options = new GeneralOptions();
 
         $this->assertSame(GeneralOptions::DEFAULT_REQUEST_TIMEOUT, $options->getRequestTimeoutUs());
+        $this->assertSame([], $options->getTransportConfiguration());
     }
 
     /** @test */
@@ -46,6 +51,7 @@ class GeneralOptionsTest extends TestCase
         $this->assertSame(ConnectionOptions::DEFAULT_ATTEMPT_TIMEOUT, $options->getConnectionOptions()->getAttemptTimeoutUs());
         $this->assertSame(ConnectionOptions::DEFAULT_TIMEOUT_MULTIPLIER, $options->getConnectionOptions()->getTimeoutMultiplier());
         $this->assertSame(ConnectionOptions::DEFAULT_MAX_ATTEMPTS, $options->getConnectionOptions()->getMaxAttempts());
+        $this->assertSame([], $options->getTransportConfiguration());
     }
 
     /** @test */
@@ -58,11 +64,13 @@ class GeneralOptionsTest extends TestCase
                 'timeout_multiplier' => 1.5,
                 'max_attempts'       => 3,
             ],
+            'transport_configuration' => self::TRANSPORT_CONFIGURATION,
         ]);
 
         $this->assertSame(200, $options->getRequestTimeoutUs());
         $this->assertSame(1, $options->getConnectionOptions()->getAttemptTimeoutUs());
         $this->assertSame(1.5, $options->getConnectionOptions()->getTimeoutMultiplier());
         $this->assertSame(3, $options->getConnectionOptions()->getMaxAttempts());
+        $this->assertSame(self::TRANSPORT_CONFIGURATION, $options->getTransportConfiguration());
     }
 }

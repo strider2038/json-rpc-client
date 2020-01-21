@@ -25,6 +25,8 @@ use Strider2038\JsonRpcClient\Service\LowLevelClient;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
 
 /**
+ * @experimental API may be changed
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class ClientBuilder

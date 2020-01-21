@@ -8,14 +8,24 @@ services:
     container_name: json_rpc_client
     image: strider2038/php-cli-dev
     environment:
-      TEST_TCP_TRANSPORT_URL: 'tcp://json_rpc_mock_server:4000'
+      TEST_TCP_TRANSPORT_URL: 'tcp://json_rpc_tcp_server:4000'
+      TEST_HTTP_TRANSPORT_URL: 'http://json_rpc_http_server:4000/rpc'
+      TEST_HTTP_BEARER_TOKEN: 'test_token'
     volumes:
       - .:/app
       - composer_data:/var/run/composer
     ports:
       - "9002:9001"
 
-  json_rpc_mock_server:
-    container_name: json_rpc_mock_server
+  json_rpc_tcp_server:
+    container_name: json_rpc_tcp_server
     image: strider2038/json-rpc-mock-server
+    environment:
+      JSON_RPC_PROTOCOL: 'tcp'
 
+  json_rpc_http_server:
+    container_name: json_rpc_http_server
+    image: strider2038/json-rpc-mock-server
+    environment:
+      JSON_RPC_PROTOCOL: 'http'
+      JSON_RPC_BEARER_TOKEN: 'test_token'

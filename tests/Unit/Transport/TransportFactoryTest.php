@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
-use Strider2038\JsonRpcClient\Transport\GuzzleHttpTransport;
 use Strider2038\JsonRpcClient\Transport\SocketTransport;
 use Strider2038\JsonRpcClient\Transport\TransportFactory;
 use Strider2038\JsonRpcClient\Transport\TransportLoggingDecorator;
@@ -24,17 +23,6 @@ use Strider2038\JsonRpcClient\Transport\TransportLoggingDecorator;
  */
 class TransportFactoryTest extends TestCase
 {
-    /** @test */
-    public function construct_emptyUrlConnection_exceptionThrown(): void
-    {
-        $factory = new TransportFactory();
-
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('Valid URL is expected for TCP/IP transport.');
-
-        $factory->createTransport('', new GeneralOptions());
-    }
-
     /**
      * @test
      * @dataProvider connectionStringAndExpectedTransportClass
@@ -53,8 +41,8 @@ class TransportFactoryTest extends TestCase
     public function connectionStringAndExpectedTransportClass(): \Iterator
     {
         yield ['tcp://localhost:3000', SocketTransport::class];
-        yield ['http://localhost:3000', GuzzleHttpTransport::class];
-        yield ['https://localhost:3000', GuzzleHttpTransport::class];
+        yield ['http://localhost:3000', \Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport::class];
+        yield ['https://localhost:3000', \Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport::class];
     }
 
     /** @test */

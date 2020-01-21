@@ -17,6 +17,8 @@ use Strider2038\JsonRpcClient\Serialization\MessageSerializerInterface;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
 
 /**
+ * @internal
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class Caller

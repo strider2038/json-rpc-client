@@ -14,6 +14,7 @@ use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
+use Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketClient;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketConnector;
 
@@ -35,7 +36,6 @@ class TransportFactory
      */
     public function createTransport(string $connection, GeneralOptions $options): TransportInterface
     {
-        $this->validateUrl($connection);
         $protocol = strtolower(parse_url($connection, PHP_URL_SCHEME));
 
         if ('tcp' === $protocol) {
@@ -61,18 +61,6 @@ class TransportFactory
     /**
      * @throws InvalidConfigException
      */
-    private function validateUrl(string $url): void
-    {
-        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new InvalidConfigException(
-                sprintf('Valid URL is expected for TCP/IP transport. Given value is "%s".', $url)
-            );
-        }
-    }
-
-    /**
-     * @throws InvalidConfigException
-     */
     private function createTcpTransport(string $connection, GeneralOptions $options): SocketTransport
     {
         $connector = new SocketConnector();
@@ -81,13 +69,18 @@ class TransportFactory
         return new SocketTransport($client);
     }
 
-    private function createHttpTransport(string $connection, GeneralOptions $options): GuzzleHttpTransport
+    private function createHttpTransport(string $connection, GeneralOptions $options): GuzzleTransport
     {
-        $guzzle = new Client([
-            'base_uri' => $connection,
-            'timeout'  => (float) $options->getRequestTimeoutUs() / 1000000,
-        ]);
+        $config = array_merge(
+            $options->getTransportConfiguration(),
+            [
+                'base_uri' => $connection,
+                'timeout'  => (float) $options->getRequestTimeoutUs() / 1000000,
+            ]
+        );
 
-        return new GuzzleHttpTransport($guzzle);
+        $guzzle = new Client($config);
+
+        return new GuzzleTransport($guzzle);
     }
 }

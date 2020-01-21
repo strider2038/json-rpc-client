@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of JSON RPC Client.
+ * This file is part of json-rpc-client.
  *
  * (c) Igor Lazarev <strider2038@yandex.ru>
  *
@@ -19,7 +19,7 @@ use Strider2038\JsonRpcClient\Service\HighLevelClient;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class HighLevelTcpClientTest extends TestCase
+class HighLevelHttpClientTest extends TestCase
 {
     /** @test */
     public function singleRequest_positionalParameters_resultReturned(): void
@@ -92,9 +92,17 @@ class HighLevelTcpClientTest extends TestCase
 
     private function createHighLevelClient(): HighLevelClient
     {
-        $transportUrl = getenv('TEST_TCP_TRANSPORT_URL');
+        $transportUrl = getenv('TEST_HTTP_TRANSPORT_URL');
+        $bearerToken = getenv('TEST_HTTP_BEARER_TOKEN');
+
         $clientFactory = new ClientFactory();
-        $client = $clientFactory->createClient($transportUrl);
+        $client = $clientFactory->createClient($transportUrl, [
+            'transport_configuration' => [
+                'headers' => [
+                    'Authorization' => 'Bearer '.$bearerToken,
+                ],
+            ],
+        ]);
         assert($client instanceof HighLevelClient);
 
         return $client;
