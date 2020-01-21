@@ -14,6 +14,8 @@ use Strider2038\JsonRpcClient\Exception\ConnectionLostException;
 use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
 
 /**
+ * @internal
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class SocketConnection

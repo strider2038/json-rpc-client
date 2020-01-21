@@ -8,19 +8,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Tests\Unit\Transport;
+namespace Strider2038\JsonRpcClient\Tests\Unit\Transport\Http;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\RequestException;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
-use Strider2038\JsonRpcClient\Transport\GuzzleHttpTransport;
+use Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class GuzzleHttpTransportTest extends TestCase
+class GuzzleTransportTest extends TestCase
 {
     private const REQUEST_DATA = 'requestData';
     private const RESPONSE_DATA = 'responseData';
@@ -36,7 +38,7 @@ class GuzzleHttpTransportTest extends TestCase
     /** @test */
     public function send_requestWithSuccessfulResponse_requestSentAndResponseDataReturned(): void
     {
-        $transport = new GuzzleHttpTransport($this->client);
+        $transport = new GuzzleTransport($this->client);
         $stream = $this->givenStreamWithContents(self::RESPONSE_DATA);
         $response = $this->givenSuccessfulResponse($stream);
         $this->givenResponseReturnedFromServer($response);
@@ -53,7 +55,7 @@ class GuzzleHttpTransportTest extends TestCase
     /** @test */
     public function send_requestWithFailedResponse_exceptionThrown(): void
     {
-        $transport = new GuzzleHttpTransport($this->client);
+        $transport = new GuzzleTransport($this->client);
         $stream = $this->givenStreamWithContents(self::RESPONSE_DATA);
         $response = $this->givenFailedResponse($stream);
         $this->givenResponseReturnedFromServer($response);
@@ -64,10 +66,27 @@ class GuzzleHttpTransportTest extends TestCase
         $transport->send(self::REQUEST_DATA);
     }
 
+    /** @test */
+    public function send_exceptionDuringRequest_exceptionThrown(): void
+    {
+        $transport = new GuzzleTransport($this->client);
+        $this->givenClientThrowsException(new RequestException('error', \Phake::mock(RequestInterface::class)));
+
+        $this->expectException(RemoteProcedureCallFailedException::class);
+        $this->expectExceptionMessage('JSON RPC request failed with error: error.');
+
+        $transport->send(self::REQUEST_DATA);
+    }
+
     private function assertRequestWasSent(): void
     {
         \Phake::verify($this->client)
-            ->request('POST', '', ['body' => self::REQUEST_DATA]);
+            ->request('POST', '', [
+                'body'    => self::REQUEST_DATA,
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
     }
 
     private function assertResponseBodyWasExtracted(ResponseInterface $response): void
@@ -93,6 +112,13 @@ class GuzzleHttpTransportTest extends TestCase
         \Phake::when($this->client)
             ->request(\Phake::anyParameters())
             ->thenReturn($response);
+    }
+
+    private function givenClientThrowsException(\Throwable $exception): void
+    {
+        \Phake::when($this->client)
+            ->request(\Phake::anyParameters())
+            ->thenThrow($exception);
     }
 
     private function givenStreamWithContents(string $expectedResponseData): StreamInterface

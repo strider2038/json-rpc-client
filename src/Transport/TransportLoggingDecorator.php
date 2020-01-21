@@ -13,6 +13,8 @@ namespace Strider2038\JsonRpcClient\Transport;
 use Psr\Log\LoggerInterface;
 
 /**
+ * @internal
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class TransportLoggingDecorator implements TransportInterface

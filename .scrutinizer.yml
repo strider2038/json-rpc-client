@@ -11,11 +11,24 @@ build:
       environment:
         variables:
           TEST_TCP_TRANSPORT_URL: 'tcp://localhost:4000'
+          TEST_HTTP_TRANSPORT_URL: 'http://localhost:4001/rpc'
+          TEST_HTTP_BEARER_TOKEN: 'test_token'
       services:
-        jsonrpc:
+        jsonrpc_tcp:
           image: strider2038/json-rpc-mock-server
+          env:
+            JSON_RPC_PROTOCOL: 'tcp'
+            JSON_RPC_PORT: '4000'
           ports:
             - 4000
+        jsonrpc_http:
+          image: strider2038/json-rpc-mock-server
+          env:
+            JSON_RPC_PROTOCOL: 'http'
+            JSON_RPC_PORT: '4001'
+            JSON_RPC_BEARER_TOKEN: 'test_token'
+          ports:
+            - 4001
       tests:
         override:
           - composer check
