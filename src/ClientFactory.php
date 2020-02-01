@@ -12,6 +12,7 @@ namespace Strider2038\JsonRpcClient;
 
 use Psr\Log\LoggerInterface;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
+use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
 use Strider2038\JsonRpcClient\Transport\TransportFactory;
 
 /**
@@ -31,8 +32,13 @@ class ClientFactory
 
     public function createClient(string $connection, array $options = []): ClientInterface
     {
-        $transport = $this->transportFactory->createTransport($connection, GeneralOptions::createFromArray($options));
+        $generalOptions = GeneralOptions::createFromArray($options);
+        $transport = $this->transportFactory->createTransport($connection, $generalOptions);
         $clientBuilder = new ClientBuilder($transport);
+
+        if ('array' === $generalOptions->getSerializer()) {
+            $clientBuilder->setSerializer(new JsonArraySerializer());
+        }
 
         return $clientBuilder->getClient();
     }

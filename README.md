@@ -95,7 +95,7 @@ $result = $client->batch()
 * [x] client builder
 * [x] integration testing for http transport with server mock
 * [x] http authentication tests
-* [ ] json array serializer
+* [x] json array serializer
 * [ ] bridge for symfony serializer
 * [ ] bridge for jms serializer
 * [ ] middleware interfaces

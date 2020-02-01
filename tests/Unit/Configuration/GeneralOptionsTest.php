@@ -20,7 +20,7 @@ use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
  */
 class GeneralOptionsTest extends TestCase
 {
-    const TRANSPORT_CONFIGURATION = [
+    private const TRANSPORT_CONFIGURATION = [
         'option' => 'value',
     ];
 
@@ -34,12 +34,21 @@ class GeneralOptionsTest extends TestCase
     }
 
     /** @test */
-    public function construct_invalidParameters_invalidConfigException(): void
+    public function construct_invalidTimeout_invalidConfigException(): void
     {
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('Request timeout must be greater than 0.');
 
         new GeneralOptions(0);
+    }
+
+    /** @test */
+    public function construct_invalidSerializer_invalidConfigException(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('Serializer option must be equal to one of: "object" or "array".');
+
+        new GeneralOptions(1, null, [], 'invalid');
     }
 
     /** @test */
@@ -52,6 +61,7 @@ class GeneralOptionsTest extends TestCase
         $this->assertSame(ConnectionOptions::DEFAULT_TIMEOUT_MULTIPLIER, $options->getConnectionOptions()->getTimeoutMultiplier());
         $this->assertSame(ConnectionOptions::DEFAULT_MAX_ATTEMPTS, $options->getConnectionOptions()->getMaxAttempts());
         $this->assertSame([], $options->getTransportConfiguration());
+        $this->assertSame('object', $options->getSerializer());
     }
 
     /** @test */
@@ -65,6 +75,7 @@ class GeneralOptionsTest extends TestCase
                 'max_attempts'       => 3,
             ],
             'transport_configuration' => self::TRANSPORT_CONFIGURATION,
+            'serializer'              => 'array',
         ]);
 
         $this->assertSame(200, $options->getRequestTimeoutUs());
@@ -72,5 +83,6 @@ class GeneralOptionsTest extends TestCase
         $this->assertSame(1.5, $options->getConnectionOptions()->getTimeoutMultiplier());
         $this->assertSame(3, $options->getConnectionOptions()->getMaxAttempts());
         $this->assertSame(self::TRANSPORT_CONFIGURATION, $options->getTransportConfiguration());
+        $this->assertSame('array', $options->getSerializer());
     }
 }
