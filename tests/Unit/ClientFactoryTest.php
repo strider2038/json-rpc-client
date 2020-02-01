@@ -15,6 +15,8 @@ use Psr\Log\NullLogger;
 use Strider2038\JsonRpcClient\ClientFactory;
 use Strider2038\JsonRpcClient\ClientInterface;
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
+use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
+use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Service\Caller;
 use Strider2038\JsonRpcClient\Service\HighLevelClient;
 use Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport;
@@ -40,6 +42,7 @@ class ClientFactoryTest extends TestCase
 
         $this->assertInstanceOf(HighLevelClient::class, $client);
         $this->assertClientHasTransportOfExpectedClass($client, $transportClass);
+        $this->assertClientHasSerializerOfExpectedClass($client, JsonObjectSerializer::class);
     }
 
     public function connectionStringAndExpectedTransportClass(): \Iterator
@@ -70,6 +73,16 @@ class ClientFactoryTest extends TestCase
         $this->assertClientHasTransportOfExpectedClass($client, TransportLoggingDecorator::class);
     }
 
+    /** @test */
+    public function createClient_arraySerializerOption_jsonArraySerializerIsUsed(): void
+    {
+        $factory = new ClientFactory();
+
+        $client = $factory->createClient('tcp://localhost:3000', ['serializer' => 'array']);
+
+        $this->assertClientHasSerializerOfExpectedClass($client, JsonArraySerializer::class);
+    }
+
     private function assertClientHasTransportOfExpectedClass(ClientInterface $client, string $transportClass): void
     {
         $clientReflectionClass = new \ReflectionClass(HighLevelClient::class);
@@ -83,5 +96,20 @@ class ClientFactoryTest extends TestCase
         $transport = $transportProperty->getValue($caller);
 
         $this->assertInstanceOf($transportClass, $transport);
+    }
+
+    private function assertClientHasSerializerOfExpectedClass(ClientInterface $client, string $serializerClass): void
+    {
+        $clientReflectionClass = new \ReflectionClass(HighLevelClient::class);
+        $callerProperty = $clientReflectionClass->getProperty('caller');
+        $callerProperty->setAccessible(true);
+        $caller = $callerProperty->getValue($client);
+
+        $callerReflectionClass = new \ReflectionClass(Caller::class);
+        $serializerProperty = $callerReflectionClass->getProperty('serializer');
+        $serializerProperty->setAccessible(true);
+        $serializer = $serializerProperty->getValue($caller);
+
+        $this->assertInstanceOf($serializerClass, $serializer);
     }
 }

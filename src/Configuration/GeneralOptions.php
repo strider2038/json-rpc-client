@@ -18,6 +18,7 @@ use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 class GeneralOptions
 {
     public const DEFAULT_REQUEST_TIMEOUT = 1000000;
+    public const DEFAULT_SERIALIZER = 'object';
 
     /**
      * Request timeout in microseconds.
@@ -39,20 +40,30 @@ class GeneralOptions
     private $transportConfiguration;
 
     /**
+     * @var string
+     */
+    private $serializer;
+
+    /**
      * @throws InvalidConfigException
      */
     public function __construct(
         int $requestTimeoutUs = self::DEFAULT_REQUEST_TIMEOUT,
         ConnectionOptions $connectionOptions = null,
-        array $transportConfiguration = []
+        array $transportConfiguration = [],
+        string $serializer = 'object'
     ) {
         if ($requestTimeoutUs <= 0) {
             throw new InvalidConfigException('Request timeout must be greater than 0.');
+        }
+        if (!in_array($serializer, [self::DEFAULT_SERIALIZER, 'array'], true)) {
+            throw new InvalidConfigException('Serializer option must be equal to one of: "object" or "array".');
         }
 
         $this->requestTimeoutUs = $requestTimeoutUs;
         $this->connectionOptions = $connectionOptions ?? new ConnectionOptions();
         $this->transportConfiguration = $transportConfiguration;
+        $this->serializer = $serializer;
     }
 
     public function getRequestTimeoutUs(): int
@@ -70,6 +81,11 @@ class GeneralOptions
         return $this->transportConfiguration;
     }
 
+    public function getSerializer(): string
+    {
+        return $this->serializer;
+    }
+
     /**
      * @throws InvalidConfigException
      */
@@ -78,7 +94,8 @@ class GeneralOptions
         return new self(
             $options['request_timeout_us'] ?? self::DEFAULT_REQUEST_TIMEOUT,
             ConnectionOptions::createFromArray($options['connection'] ?? []),
-            $options['transport_configuration'] ?? []
+            $options['transport_configuration'] ?? [],
+            $options['serializer'] ?? self::DEFAULT_SERIALIZER
         );
     }
 }
