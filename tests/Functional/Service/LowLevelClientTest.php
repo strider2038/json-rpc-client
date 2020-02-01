@@ -7,6 +7,7 @@ use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 use Strider2038\JsonRpcClient\Request\SequentialIntegerIdGenerator;
 use Strider2038\JsonRpcClient\Response\NullResponseValidator;
 use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
+use Strider2038\JsonRpcClient\Serialization\ContextGenerator;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Service\Caller;
 use Strider2038\JsonRpcClient\Service\LowLevelClient;
@@ -133,8 +134,9 @@ class LowLevelClientTest extends TestCase
         $idGenerator = new SequentialIntegerIdGenerator();
         $requestObjectFactory = new RequestObjectFactory($idGenerator);
         $serializer = new JsonObjectSerializer();
+        $contextGenerator = new ContextGenerator();
         $validator = new NullResponseValidator();
-        $caller = new Caller($serializer, $this->transport, $validator);
+        $caller = new Caller($serializer, $contextGenerator, $this->transport, $validator);
 
         return new LowLevelClient($requestObjectFactory, $caller);
     }

@@ -79,7 +79,7 @@ class JsonArraySerializerTest extends TestCase
         }
         ';
 
-        $response = $serializer->deserialize($serializedResponse);
+        $response = $serializer->deserialize($serializedResponse, []);
 
         $this->assertInstanceOf(ResponseObject::class, $response);
         $this->assertSame('2.0', $response->jsonrpc);
@@ -104,7 +104,7 @@ class JsonArraySerializerTest extends TestCase
         }
         ';
 
-        $response = $serializer->deserialize($serializedResponse);
+        $response = $serializer->deserialize($serializedResponse, []);
 
         $this->assertInstanceOf(ResponseObject::class, $response);
         $this->assertSame('2.0', $response->jsonrpc);
@@ -121,7 +121,7 @@ class JsonArraySerializerTest extends TestCase
     {
         $serializer = new JsonArraySerializer();
 
-        $response = $serializer->deserialize('{}');
+        $response = $serializer->deserialize('{}', []);
 
         $this->assertInstanceOf(ResponseObject::class, $response);
         $this->assertSame('', $response->jsonrpc);
@@ -135,7 +135,7 @@ class JsonArraySerializerTest extends TestCase
     {
         $serializer = new JsonArraySerializer();
 
-        $response = $serializer->deserialize(' ');
+        $response = $serializer->deserialize(' ', []);
 
         $this->assertNull($response);
     }
@@ -147,7 +147,7 @@ class JsonArraySerializerTest extends TestCase
 
         $this->expectException(InvalidResponseException::class);
 
-        $serializer->deserialize('invalid');
+        $serializer->deserialize('invalid', []);
     }
 
     /** @test */
@@ -164,7 +164,7 @@ class JsonArraySerializerTest extends TestCase
         ]
         ';
 
-        $responses = $serializer->deserialize($serializedResponse);
+        $responses = $serializer->deserialize($serializedResponse, []);
 
         $this->assertIsArray($responses);
         $response = $responses[0];
@@ -189,7 +189,7 @@ class JsonArraySerializerTest extends TestCase
         }
         ';
 
-        $response = $serializer->deserialize($serializedResponse);
+        $response = $serializer->deserialize($serializedResponse, []);
 
         $this->assertInstanceOf(ResponseObject::class, $response);
         $this->assertSame('2.0', $response->jsonrpc);

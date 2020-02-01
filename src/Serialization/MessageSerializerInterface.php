@@ -26,5 +26,5 @@ interface MessageSerializerInterface
     /**
      * @return ResponseObjectInterface|ResponseObjectInterface[]|null
      */
-    public function deserialize(string $response);
+    public function deserialize(string $response, array $context);
 }

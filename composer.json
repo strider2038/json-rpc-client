@@ -28,12 +28,17 @@
     "psr/log": "^1.1",
     "symplify/easy-coding-standard": "^7.0",
     "phpstan/phpstan": "^0.12.5",
-    "symfony/serializer": "^4.3"
+    "symfony/serializer": "^4.3",
+    "symfony/property-access": "^4.3",
+    "symfony/property-info": "^4.3"
   },
   "suggest": {
     "ramsey/uuid": "To generate UUID identifiers for request objects",
     "guzzlehttp/guzzle": "To use HTTP transport via Guzzle",
-    "psr/log": "To use logging capabilities"
+    "psr/log": "To use logging capabilities",
+    "symfony/serializer": "To use request and response serialization via Symfony serializer component",
+    "symfony/property-access": "Required for Symfony serializer",
+    "symfony/property-info": "Required for Symfony serializer"
   },
   "autoload": {
     "psr-4": {

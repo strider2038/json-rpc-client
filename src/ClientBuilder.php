@@ -17,6 +17,7 @@ use Strider2038\JsonRpcClient\Request\SequentialIntegerIdGenerator;
 use Strider2038\JsonRpcClient\Request\UuidGenerator;
 use Strider2038\JsonRpcClient\Response\ExceptionalResponseValidator;
 use Strider2038\JsonRpcClient\Response\NullResponseValidator;
+use Strider2038\JsonRpcClient\Serialization\ContextGenerator;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Serialization\MessageSerializerInterface;
 use Strider2038\JsonRpcClient\Service\Caller;
@@ -90,12 +91,13 @@ class ClientBuilder
     public function getClient(): ClientInterface
     {
         $requestObjectFactory = $this->createRequestObjectFactory();
+        $contextGenerator = new ContextGenerator();
 
         if ($this->enableResponseProcessing) {
-            $caller = new Caller($this->serializer, $this->transport, new ExceptionalResponseValidator());
+            $caller = new Caller($this->serializer, $contextGenerator, $this->transport, new ExceptionalResponseValidator());
             $client = new HighLevelClient($requestObjectFactory, $caller);
         } else {
-            $caller = new Caller($this->serializer, $this->transport, new NullResponseValidator());
+            $caller = new Caller($this->serializer, $contextGenerator, $this->transport, new NullResponseValidator());
             $client = new LowLevelClient($requestObjectFactory, $caller);
         }
 

@@ -40,7 +40,7 @@ class JsonObjectSerializer implements MessageSerializerInterface
         return json_encode($request, $this->encodeOptions, $this->depth);
     }
 
-    public function deserialize(string $response)
+    public function deserialize(string $response, array $context)
     {
         if ('' === trim($response)) {
             $result = null;

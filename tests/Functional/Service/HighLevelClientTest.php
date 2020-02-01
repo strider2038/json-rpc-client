@@ -15,6 +15,7 @@ use Strider2038\JsonRpcClient\Exception\ErrorResponseException;
 use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 use Strider2038\JsonRpcClient\Request\SequentialIntegerIdGenerator;
 use Strider2038\JsonRpcClient\Response\ExceptionalResponseValidator;
+use Strider2038\JsonRpcClient\Serialization\ContextGenerator;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Service\Caller;
 use Strider2038\JsonRpcClient\Service\HighLevelClient;
@@ -137,7 +138,8 @@ class HighLevelClientTest extends TestCase
         $requestObjectFactory = new RequestObjectFactory($idGenerator);
         $serializer = new JsonObjectSerializer();
         $validator = new ExceptionalResponseValidator();
-        $caller = new Caller($serializer, $this->transport, $validator);
+        $contextGenerator = new ContextGenerator();
+        $caller = new Caller($serializer, $contextGenerator, $this->transport, $validator);
 
         return new HighLevelClient($requestObjectFactory, $caller);
     }
