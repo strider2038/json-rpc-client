@@ -12,8 +12,10 @@ namespace Strider2038\JsonRpcClient\Tests\Unit\Bridge\Symfony\Serialization;
 
 use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\Bridge\Symfony\Serialization\DelegatingResponseDenormalizer;
+use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
 use Strider2038\JsonRpcClient\Response\ResponseObject;
 use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
+use Symfony\Component\Serializer\Exception\LogicException;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
@@ -24,6 +26,10 @@ class DelegatingResponseDenormalizerTest extends TestCase
 {
     private const SINGLE_RESPONSE_DATA = [
         'jsonrpc' => '2.0',
+        'id'      => 'requestId',
+    ];
+    private const BATCH_RESPONSE_DATA = [
+        self::SINGLE_RESPONSE_DATA,
     ];
     private const FORMAT = 'format';
 
@@ -79,6 +85,66 @@ class DelegatingResponseDenormalizerTest extends TestCase
 
         $this->assertSame($expectedResponse, $response);
         $this->assertRequestDataWasDenormalizedWithContext($context);
+    }
+
+    /** @test */
+    public function denormalize_batchRequest_requestDenormalized(): void
+    {
+        $denormalizer = new DelegatingResponseDenormalizer();
+        $denormalizer->setDenormalizer($this->denormalizer);
+        $request = \Phake::mock(RequestObjectInterface::class);
+        $context = [
+            'json_rpc' => [
+                'requests' => [
+                    'requestId' => $request,
+                ],
+            ],
+        ];
+        $expectedResponse = $this->givenDenormalizedResponse();
+
+        $responses = $denormalizer->denormalize(self::BATCH_RESPONSE_DATA, ResponseObjectInterface::class, self::FORMAT, $context);
+
+        $this->assertIsArray($responses);
+        $this->assertSame($expectedResponse, $responses[0]);
+        $this->assertRequestDataWasDenormalizedWithContext([
+            'json_rpc' => [
+                'request' => $request,
+            ],
+        ]);
+    }
+
+    /** @test */
+    public function denormalize_batchRequestWithoutContextId_exceptionThrown(): void
+    {
+        $denormalizer = new DelegatingResponseDenormalizer();
+        $denormalizer->setDenormalizer($this->denormalizer);
+        $context = [
+            'json_rpc' => [
+                'requests' => [],
+            ],
+        ];
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Response id "requestId" is not matching any request id');
+
+        $denormalizer->denormalize(self::BATCH_RESPONSE_DATA, ResponseObjectInterface::class, self::FORMAT, $context);
+    }
+
+    /** @test */
+    public function denormalize_responseWithoutId_exceptionThrown(): void
+    {
+        $denormalizer = new DelegatingResponseDenormalizer();
+        $denormalizer->setDenormalizer($this->denormalizer);
+        $context = [
+            'json_rpc' => [
+                'requests' => [],
+            ],
+        ];
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Response has no id');
+
+        $denormalizer->denormalize([[]], ResponseObjectInterface::class, self::FORMAT, $context);
     }
 
     private function assertRequestDataWasDenormalizedWithContext(array $context): void

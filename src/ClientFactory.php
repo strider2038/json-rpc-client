@@ -12,6 +12,7 @@ namespace Strider2038\JsonRpcClient;
 
 use Psr\Log\LoggerInterface;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
+use Strider2038\JsonRpcClient\Configuration\SerializationOptions;
 use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
 use Strider2038\JsonRpcClient\Transport\TransportFactory;
 
@@ -36,7 +37,9 @@ class ClientFactory
         $transport = $this->transportFactory->createTransport($connection, $generalOptions);
         $clientBuilder = new ClientBuilder($transport);
 
-        if ('array' === $generalOptions->getSerializer()) {
+        $serializationOptions = $generalOptions->getSerializationOptions();
+
+        if (SerializationOptions::ARRAY_SERIALIZER === $serializationOptions->getSerializer()) {
             $clientBuilder->setSerializer(new JsonArraySerializer());
         }
 

@@ -18,7 +18,6 @@ use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 class GeneralOptions
 {
     public const DEFAULT_REQUEST_TIMEOUT = 1000000;
-    public const DEFAULT_SERIALIZER = 'object';
 
     /**
      * Request timeout in microseconds.
@@ -28,11 +27,18 @@ class GeneralOptions
     private $requestTimeoutUs;
 
     /**
-     * Connection timeout in microseconds.
+     * Connection configuration
      *
      * @var ConnectionOptions
      */
     private $connectionOptions;
+
+    /**
+     * Serialization configuration
+     *
+     * @var SerializationOptions
+     */
+    private $serializationOptions;
 
     /**
      * @var array
@@ -40,30 +46,22 @@ class GeneralOptions
     private $transportConfiguration;
 
     /**
-     * @var string
-     */
-    private $serializer;
-
-    /**
      * @throws InvalidConfigException
      */
     public function __construct(
         int $requestTimeoutUs = self::DEFAULT_REQUEST_TIMEOUT,
         ConnectionOptions $connectionOptions = null,
-        array $transportConfiguration = [],
-        string $serializer = 'object'
+        SerializationOptions $serializationOptions = null,
+        array $transportConfiguration = []
     ) {
         if ($requestTimeoutUs <= 0) {
             throw new InvalidConfigException('Request timeout must be greater than 0.');
-        }
-        if (!in_array($serializer, [self::DEFAULT_SERIALIZER, 'array'], true)) {
-            throw new InvalidConfigException('Serializer option must be equal to one of: "object" or "array".');
         }
 
         $this->requestTimeoutUs = $requestTimeoutUs;
         $this->connectionOptions = $connectionOptions ?? new ConnectionOptions();
         $this->transportConfiguration = $transportConfiguration;
-        $this->serializer = $serializer;
+        $this->serializationOptions = $serializationOptions ?? new SerializationOptions();
     }
 
     public function getRequestTimeoutUs(): int
@@ -81,9 +79,9 @@ class GeneralOptions
         return $this->transportConfiguration;
     }
 
-    public function getSerializer(): string
+    public function getSerializationOptions(): SerializationOptions
     {
-        return $this->serializer;
+        return $this->serializationOptions;
     }
 
     /**
@@ -94,8 +92,8 @@ class GeneralOptions
         return new self(
             $options['request_timeout_us'] ?? self::DEFAULT_REQUEST_TIMEOUT,
             ConnectionOptions::createFromArray($options['connection'] ?? []),
-            $options['transport_configuration'] ?? [],
-            $options['serializer'] ?? self::DEFAULT_SERIALIZER
+            SerializationOptions::createFromArray($options['serialization'] ?? []),
+            $options['transport_configuration'] ?? []
         );
     }
 }

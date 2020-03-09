@@ -78,7 +78,11 @@ class ClientFactoryTest extends TestCase
     {
         $factory = new ClientFactory();
 
-        $client = $factory->createClient('tcp://localhost:3000', ['serializer' => 'array']);
+        $client = $factory->createClient('tcp://localhost:3000', [
+            'serialization' => [
+                'serializer' => 'array',
+            ]
+        ]);
 
         $this->assertClientHasSerializerOfExpectedClass($client, JsonArraySerializer::class);
     }

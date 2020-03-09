@@ -12,6 +12,7 @@ namespace Strider2038\JsonRpcClient\Bridge\Symfony\Serialization;
 
 use Strider2038\JsonRpcClient\Response\ResponseObject;
 use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
+use Symfony\Component\Serializer\Exception\LogicException;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\CacheableSupportsMethodInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
@@ -41,6 +42,46 @@ class DelegatingResponseDenormalizer implements DenormalizerInterface, Denormali
             throw new UnexpectedValueException('Denormalization data is expected to be an array');
         }
 
-        return $this->denormalizer->denormalize($data, ResponseObject::class, $format, $context);
+        $response = null;
+
+        if (array_key_exists('jsonrpc', $data)) {
+            $response = $this->denormalizer->denormalize($data, ResponseObject::class, $format, $context);
+        } else {
+            $response = $this->denormalizeBatchResponses($data, $format, $context);
+        }
+
+        return $response;
+    }
+
+    private function denormalizeBatchResponses($data, $format, array $context): array
+    {
+        $responses = [];
+
+        foreach ($data as $singleResponse) {
+            $singleContext = $this->createResponseContext($singleResponse, $context);
+            $responses[] = $this->denormalizer->denormalize($singleResponse, ResponseObject::class, $format, $singleContext);
+        }
+
+        return $responses;
+    }
+
+    private function createResponseContext(array $response, array $context): array
+    {
+        if (!array_key_exists('id', $response)) {
+            throw new LogicException('Response has no id');
+        }
+
+        $id = $response['id'];
+
+        if (!array_key_exists($id, $context['json_rpc']['requests'])) {
+            throw new LogicException(sprintf('Response id "%s" is not matching any request id', $id));
+        }
+
+        $singleContext = $context;
+        $singleContext['json_rpc'] = [
+            'request' => $context['json_rpc']['requests'][$id],
+        ];
+
+        return $singleContext;
     }
 }
