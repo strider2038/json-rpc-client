@@ -14,17 +14,17 @@ use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\ClientFactory;
 use Strider2038\JsonRpcClient\Exception\ErrorResponseException;
 use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
-use Strider2038\JsonRpcClient\Service\HighLevelClient;
+use Strider2038\JsonRpcClient\Service\ProcessingClient;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class HighLevelHttpClientTest extends TestCase
+class HttpClientTest extends TestCase
 {
     /** @test */
     public function singleRequest_positionalParameters_resultReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createClient();
 
         $result = $client->call('sum', [1, 2, 4]);
 
@@ -34,7 +34,7 @@ class HighLevelHttpClientTest extends TestCase
     /** @test */
     public function singleRequest_namedParameters_resultReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createClient();
         $params = new \stdClass();
         $params->subtrahend = 23;
         $params->minuend = 42;
@@ -47,7 +47,7 @@ class HighLevelHttpClientTest extends TestCase
     /** @test */
     public function nonExistentMethod_positionalParameters_exceptionThrown(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createClient();
 
         $this->expectException(ErrorResponseException::class);
         $this->expectExceptionMessage('Server response has error: code -32601');
@@ -58,7 +58,7 @@ class HighLevelHttpClientTest extends TestCase
     /** @test */
     public function batchRequest_validParameters_orderedResultsReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createClient();
         $subtractionParams = new \stdClass();
         $subtractionParams->subtrahend = 23;
         $subtractionParams->minuend = 42;
@@ -83,14 +83,14 @@ class HighLevelHttpClientTest extends TestCase
     /** @test */
     public function singleRequest_timeout_exceptionThrown(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createClient();
 
         $this->expectException(RemoteProcedureCallFailedException::class);
 
         $client->call('sleep', [1500]);
     }
 
-    private function createHighLevelClient(): HighLevelClient
+    private function createClient(): ProcessingClient
     {
         $transportUrl = getenv('TEST_HTTP_TRANSPORT_URL');
         $bearerToken = getenv('TEST_HTTP_BEARER_TOKEN');
@@ -103,7 +103,7 @@ class HighLevelHttpClientTest extends TestCase
                 ],
             ],
         ]);
-        assert($client instanceof HighLevelClient);
+        assert($client instanceof ProcessingClient);
 
         return $client;
     }

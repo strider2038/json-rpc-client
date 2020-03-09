@@ -17,7 +17,7 @@ use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class HighLevelBatchRequester extends LowLevelBatchRequester
+class ProcessingBatchRequester extends RawBatchRequester
 {
     public function send(): array
     {

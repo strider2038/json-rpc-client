@@ -10,10 +10,10 @@ use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 use Strider2038\JsonRpcClient\Serialization\ContextGenerator;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Service\Caller;
-use Strider2038\JsonRpcClient\Service\LowLevelClient;
+use Strider2038\JsonRpcClient\Service\RawClient;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
 
-class LowLevelClientTest extends TestCase
+class RawClientTest extends TestCase
 {
     /** @var TransportInterface */
     private $transport;
@@ -26,7 +26,7 @@ class LowLevelClientTest extends TestCase
     /** @test */
     public function singleRequest_positionalParameters_resultReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createRawClient();
         $this->givenResponseFromServer('{"jsonrpc": "2.0", "result": 19, "id": 1}');
 
         /** @var ResponseObjectInterface $response */
@@ -41,7 +41,7 @@ class LowLevelClientTest extends TestCase
     /** @test */
     public function singleRequest_namedParameters_resultReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createRawClient();
         $this->givenResponseFromServer('{"jsonrpc": "2.0", "result": 19, "id": 1}');
         $params = new \stdClass();
         $params->subtrahend = 23;
@@ -59,7 +59,7 @@ class LowLevelClientTest extends TestCase
     /** @test */
     public function singleNotification_positionalParameters_nullReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createRawClient();
         $this->givenResponseFromServer('');
 
         $client->notify('notify', [1, 2, 3]);
@@ -70,7 +70,7 @@ class LowLevelClientTest extends TestCase
     /** @test */
     public function nonExistentMethod_positionalParameters_exceptionThrown(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createRawClient();
         $this->givenResponseFromServer(
             '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found"}, "id": "1"}'
         );
@@ -88,7 +88,7 @@ class LowLevelClientTest extends TestCase
     /** @test */
     public function batchRequest_validParameters_orderedResultsReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createRawClient();
         $this->givenResponseFromServer('
         [
             {"jsonrpc": "2.0", "result": 19, "id": 2},
@@ -116,7 +116,7 @@ class LowLevelClientTest extends TestCase
     /** @test */
     public function batchNotification_validParameters_nullResultsReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createRawClient();
         $this->givenResponseFromServer('');
 
         $responses = $client->batch()
@@ -129,7 +129,7 @@ class LowLevelClientTest extends TestCase
         $this->assertCount(0, $responses);
     }
 
-    private function createHighLevelClient(): LowLevelClient
+    private function createRawClient(): RawClient
     {
         $idGenerator = new SequentialIntegerIdGenerator();
         $requestObjectFactory = new RequestObjectFactory($idGenerator);
@@ -138,7 +138,7 @@ class LowLevelClientTest extends TestCase
         $validator = new NullResponseValidator();
         $caller = new Caller($serializer, $contextGenerator, $this->transport, $validator);
 
-        return new LowLevelClient($requestObjectFactory, $caller);
+        return new RawClient($requestObjectFactory, $caller);
     }
 
     private function assertRequestWasSentByTransport(): void

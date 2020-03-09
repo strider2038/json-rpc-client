@@ -21,8 +21,8 @@ use Strider2038\JsonRpcClient\Serialization\ContextGenerator;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Serialization\MessageSerializerInterface;
 use Strider2038\JsonRpcClient\Service\Caller;
-use Strider2038\JsonRpcClient\Service\HighLevelClient;
-use Strider2038\JsonRpcClient\Service\LowLevelClient;
+use Strider2038\JsonRpcClient\Service\ProcessingClient;
+use Strider2038\JsonRpcClient\Service\RawClient;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
 
 /**
@@ -95,10 +95,10 @@ class ClientBuilder
 
         if ($this->enableResponseProcessing) {
             $caller = new Caller($this->serializer, $contextGenerator, $this->transport, new ExceptionalResponseValidator());
-            $client = new HighLevelClient($requestObjectFactory, $caller);
+            $client = new ProcessingClient($requestObjectFactory, $caller);
         } else {
             $caller = new Caller($this->serializer, $contextGenerator, $this->transport, new NullResponseValidator());
-            $client = new LowLevelClient($requestObjectFactory, $caller);
+            $client = new RawClient($requestObjectFactory, $caller);
         }
 
         return $client;

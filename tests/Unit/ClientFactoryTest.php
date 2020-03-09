@@ -18,7 +18,7 @@ use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Service\Caller;
-use Strider2038\JsonRpcClient\Service\HighLevelClient;
+use Strider2038\JsonRpcClient\Service\ProcessingClient;
 use Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport;
 use Strider2038\JsonRpcClient\Transport\SocketTransport;
 use Strider2038\JsonRpcClient\Transport\TransportLoggingDecorator;
@@ -40,7 +40,7 @@ class ClientFactoryTest extends TestCase
 
         $client = $factory->createClient($connection);
 
-        $this->assertInstanceOf(HighLevelClient::class, $client);
+        $this->assertInstanceOf(ProcessingClient::class, $client);
         $this->assertClientHasTransportOfExpectedClass($client, $transportClass);
         $this->assertClientHasSerializerOfExpectedClass($client, JsonObjectSerializer::class);
     }
@@ -89,7 +89,7 @@ class ClientFactoryTest extends TestCase
 
     private function assertClientHasTransportOfExpectedClass(ClientInterface $client, string $transportClass): void
     {
-        $clientReflectionClass = new \ReflectionClass(HighLevelClient::class);
+        $clientReflectionClass = new \ReflectionClass(ProcessingClient::class);
         $callerProperty = $clientReflectionClass->getProperty('caller');
         $callerProperty->setAccessible(true);
         $caller = $callerProperty->getValue($client);
@@ -104,7 +104,7 @@ class ClientFactoryTest extends TestCase
 
     private function assertClientHasSerializerOfExpectedClass(ClientInterface $client, string $serializerClass): void
     {
-        $clientReflectionClass = new \ReflectionClass(HighLevelClient::class);
+        $clientReflectionClass = new \ReflectionClass(ProcessingClient::class);
         $callerProperty = $clientReflectionClass->getProperty('caller');
         $callerProperty->setAccessible(true);
         $caller = $callerProperty->getValue($client);

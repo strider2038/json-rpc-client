@@ -16,9 +16,14 @@ use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
 use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 
 /**
+ * Can be used for high-level operations. Remote procedure results returned as response data. On server
+ * errors it throws exceptions. It is recommended for use as reliable channel between client and server
+ * when errors from server are not expected as normal behaviour. Advantage of this type of client over
+ * raw client is automatic ordering of responses for batch requests.
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class HighLevelClient implements ClientInterface
+class ProcessingClient implements ClientInterface
 {
     /** @var RequestObjectFactory */
     private $requestObjectFactory;
@@ -34,7 +39,7 @@ class HighLevelClient implements ClientInterface
 
     public function batch(): BatchRequestInterface
     {
-        return new HighLevelBatchRequester($this->requestObjectFactory, $this->caller);
+        return new ProcessingBatchRequester($this->requestObjectFactory, $this->caller);
     }
 
     /**

@@ -14,13 +14,13 @@ use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\Exception\NoResponseReceivedException;
 use Strider2038\JsonRpcClient\Request\RequestObject;
 use Strider2038\JsonRpcClient\Response\ResponseObject;
-use Strider2038\JsonRpcClient\Service\HighLevelBatchRequester;
+use Strider2038\JsonRpcClient\Service\ProcessingBatchRequester;
 use Strider2038\JsonRpcClient\Tests\TestCase\ClientTestCaseTrait;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class HighLevelBatchRequesterTest extends TestCase
+class ProcessingBatchRequesterTest extends TestCase
 {
     use ClientTestCaseTrait;
 
@@ -37,7 +37,7 @@ class HighLevelBatchRequesterTest extends TestCase
     {
         $this->givenMultipleRequestsInQueueWithIds(1, 2, 3);
         $this->givenMultipleResponsesWithIds(3, 1, 2);
-        $requester = new HighLevelBatchRequester($this->requestObjectFactory, $this->caller);
+        $requester = new ProcessingBatchRequester($this->requestObjectFactory, $this->caller);
         $requester->call(self::METHOD, self::PARAMS);
         $requester->call(self::METHOD, self::PARAMS);
         $requester->call(self::METHOD, self::PARAMS);
@@ -52,7 +52,7 @@ class HighLevelBatchRequesterTest extends TestCase
     {
         $this->givenMultipleRequestsInQueueWithIds(2, null, 1);
         $this->givenMultipleResponsesWithIds(1, 2, null);
-        $requester = new HighLevelBatchRequester($this->requestObjectFactory, $this->caller);
+        $requester = new ProcessingBatchRequester($this->requestObjectFactory, $this->caller);
         $requester->call(self::METHOD, self::PARAMS);
         $requester->call(self::METHOD, self::PARAMS);
         $requester->call(self::METHOD, self::PARAMS);
@@ -67,7 +67,7 @@ class HighLevelBatchRequesterTest extends TestCase
     {
         $this->givenMultipleRequestsInQueueWithIds(1, 2, 3);
         $this->givenMultipleResponsesWithIds(null, 1, 2);
-        $requester = new HighLevelBatchRequester($this->requestObjectFactory, $this->caller);
+        $requester = new ProcessingBatchRequester($this->requestObjectFactory, $this->caller);
         $requester->call(self::METHOD, self::PARAMS);
         $requester->call(self::METHOD, self::PARAMS);
         $requester->call(self::METHOD, self::PARAMS);

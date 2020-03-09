@@ -11,15 +11,14 @@
 namespace Strider2038\JsonRpcClient\Tests\Unit\Service;
 
 use PHPUnit\Framework\TestCase;
-use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
-use Strider2038\JsonRpcClient\Service\HighLevelBatchRequester;
-use Strider2038\JsonRpcClient\Service\HighLevelClient;
+use Strider2038\JsonRpcClient\Service\RawBatchRequester;
+use Strider2038\JsonRpcClient\Service\RawClient;
 use Strider2038\JsonRpcClient\Tests\TestCase\ClientTestCaseTrait;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class HighLevelClientTest extends TestCase
+class RawClientTest extends TestCase
 {
     use ClientTestCaseTrait;
 
@@ -38,7 +37,7 @@ class HighLevelClientTest extends TestCase
 
         $requester = $client->batch();
 
-        $this->assertInstanceOf(HighLevelBatchRequester::class, $requester);
+        $this->assertInstanceOf(RawBatchRequester::class, $requester);
     }
 
     /** @test */
@@ -46,29 +45,13 @@ class HighLevelClientTest extends TestCase
     {
         $client = $this->createClient();
         $requestObject = $this->givenCreatedRequestObject();
-        $responseObject = $this->givenResponseReturnedByCaller();
-        $expectedResult = $this->givenResultInResponse($responseObject);
+        $expectedResult = $this->givenResultReturnedByCaller();
 
         $result = $client->call(self::METHOD, self::PARAMS);
 
         $this->assertRequestObjectCreatedWithExpectedMethodAndParams(self::METHOD, self::PARAMS);
         $this->assertRemoteProcedureWasCalledWithRequestObject($requestObject);
-        $this->assertResultWasExtractedFromResponse($responseObject);
         $this->assertSame($expectedResult, $result);
-    }
-
-    /** @test */
-    public function call_nullResponse_null(): void
-    {
-        $client = $this->createClient();
-        $requestObject = $this->givenCreatedRequestObject();
-        $this->givenCallerReturnsNull();
-
-        $result = $client->call(self::METHOD, self::PARAMS);
-
-        $this->assertRequestObjectCreatedWithExpectedMethodAndParams(self::METHOD, self::PARAMS);
-        $this->assertRemoteProcedureWasCalledWithRequestObject($requestObject);
-        $this->assertNull($result);
     }
 
     /** @test */
@@ -83,24 +66,8 @@ class HighLevelClientTest extends TestCase
         $this->assertRemoteProcedureWasCalledWithRequestObject($requestObject);
     }
 
-    private function createClient(): HighLevelClient
+    private function createClient(): RawClient
     {
-        return new HighLevelClient($this->requestObjectFactory, $this->caller);
-    }
-
-    private function assertResultWasExtractedFromResponse(ResponseObjectInterface $responseObject): void
-    {
-        \Phake::verify($responseObject)
-            ->getResult();
-    }
-
-    private function givenResultInResponse(ResponseObjectInterface $responseObject): string
-    {
-        $expectedResult = 'result';
-        \Phake::when($responseObject)
-            ->getResult()
-            ->thenReturn($expectedResult);
-
-        return $expectedResult;
+        return new RawClient($this->requestObjectFactory, $this->caller);
     }
 }

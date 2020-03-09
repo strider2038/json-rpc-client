@@ -18,13 +18,13 @@ use Strider2038\JsonRpcClient\Response\ExceptionalResponseValidator;
 use Strider2038\JsonRpcClient\Serialization\ContextGenerator;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Service\Caller;
-use Strider2038\JsonRpcClient\Service\HighLevelClient;
+use Strider2038\JsonRpcClient\Service\ProcessingClient;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class HighLevelClientTest extends TestCase
+class ProcessingClientTest extends TestCase
 {
     /** @var TransportInterface */
     private $transport;
@@ -37,7 +37,7 @@ class HighLevelClientTest extends TestCase
     /** @test */
     public function singleRequest_positionalParameters_resultReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer('{"jsonrpc": "2.0", "result": 19, "id": 1}');
 
         $result = $client->call('subtract', [42, 23]);
@@ -49,7 +49,7 @@ class HighLevelClientTest extends TestCase
     /** @test */
     public function singleRequest_namedParameters_resultReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer('{"jsonrpc": "2.0", "result": 19, "id": 1}');
         $params = new \stdClass();
         $params->subtrahend = 23;
@@ -64,7 +64,7 @@ class HighLevelClientTest extends TestCase
     /** @test */
     public function singleNotification_positionalParameters_nullReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer('');
 
         $client->notify('notify', [1, 2, 3]);
@@ -75,7 +75,7 @@ class HighLevelClientTest extends TestCase
     /** @test */
     public function nonExistentMethod_positionalParameters_exceptionThrown(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer(
             '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found"}, "id": "1"}'
         );
@@ -89,7 +89,7 @@ class HighLevelClientTest extends TestCase
     /** @test */
     public function batchRequest_validParameters_orderedResultsReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer('
         [
             {"jsonrpc": "2.0", "result": 19, "id": 2},
@@ -117,7 +117,7 @@ class HighLevelClientTest extends TestCase
     /** @test */
     public function batchNotification_validParameters_nullResultsReturned(): void
     {
-        $client = $this->createHighLevelClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer('');
 
         $results = $client->batch()
@@ -132,7 +132,7 @@ class HighLevelClientTest extends TestCase
         $this->assertNull($results[1]);
     }
 
-    private function createHighLevelClient(): HighLevelClient
+    private function createProcessingClient(): ProcessingClient
     {
         $idGenerator = new SequentialIntegerIdGenerator();
         $requestObjectFactory = new RequestObjectFactory($idGenerator);
@@ -141,7 +141,7 @@ class HighLevelClientTest extends TestCase
         $contextGenerator = new ContextGenerator();
         $caller = new Caller($serializer, $contextGenerator, $this->transport, $validator);
 
-        return new HighLevelClient($requestObjectFactory, $caller);
+        return new ProcessingClient($requestObjectFactory, $caller);
     }
 
     private function assertRequestWasSentByTransport(): void
