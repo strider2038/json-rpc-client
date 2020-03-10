@@ -11,6 +11,8 @@
 namespace Strider2038\JsonRpcClient;
 
 use Psr\Log\LoggerInterface;
+use Strider2038\JsonRpcClient\Bridge\Symfony\DependencyInjection\Factory\SerializerFactory;
+use Strider2038\JsonRpcClient\Bridge\Symfony\Serialization\SymfonySerializerAdapter;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Configuration\SerializationOptions;
 use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
@@ -31,6 +33,9 @@ class ClientFactory
         $this->transportFactory = new TransportFactory($logger);
     }
 
+    /**
+     * @throws Exception\InvalidConfigException on invalid options
+     */
     public function createClient(string $connection, array $options = []): ClientInterface
     {
         $generalOptions = GeneralOptions::createFromArray($options);
@@ -39,8 +44,16 @@ class ClientFactory
 
         $serializationOptions = $generalOptions->getSerializationOptions();
 
-        if (SerializationOptions::ARRAY_SERIALIZER === $serializationOptions->getSerializer()) {
+        $clientBuilder->setResultTypesByMethods($serializationOptions->getResultTypesByMethods());
+        $clientBuilder->setErrorType($serializationOptions->getErrorType());
+
+        $serializerType = $serializationOptions->getSerializer();
+
+        if (SerializationOptions::ARRAY_SERIALIZER === $serializerType) {
             $clientBuilder->setSerializer(new JsonArraySerializer());
+        } elseif (SerializationOptions::SYMFONY_SERIALIZER === $serializerType) {
+            $serializer = SerializerFactory::createSerializer();
+            $clientBuilder->setSerializer(new SymfonySerializerAdapter($serializer));
         }
 
         return $clientBuilder->getClient();

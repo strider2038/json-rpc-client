@@ -58,12 +58,12 @@ class ResponseObjectDenormalizer implements DenormalizerInterface, DenormalizerA
     {
         /** @var RequestObject $request */
         $request = $context['json_rpc']['request'];
-        $typesByMethods = $context['json_rpc']['types_by_methods'] ?? [];
+        $resultTypesByMethods = $context['json_rpc']['result_types_by_methods'] ?? [];
 
         $result = $data['result'] ?? null;
 
-        if (null !== $result && array_key_exists($request->method, $typesByMethods)) {
-            $resultType = $typesByMethods[$request->method];
+        if (null !== $result && array_key_exists($request->method, $resultTypesByMethods)) {
+            $resultType = $resultTypesByMethods[$request->method];
 
             $result = $this->denormalizer->denormalize($result, $resultType, $format, $context);
         }

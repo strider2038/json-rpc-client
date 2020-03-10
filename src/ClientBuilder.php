@@ -33,8 +33,8 @@ use Strider2038\JsonRpcClient\Transport\TransportInterface;
 class ClientBuilder
 {
     /**
-     * If enabled then HighLevelClient will be returned with response unpacking.
-     * If disabled then LowLevelClient will be returned, that will return ResponseObjectInterface
+     * If enabled then ProcessingClient will be returned with response unpacking.
+     * If disabled then RawClient will be returned, that will return ResponseObjectInterface
      * for each request.
      *
      * @var bool
@@ -49,6 +49,12 @@ class ClientBuilder
 
     /** @var IdGeneratorInterface */
     private $idGenerator;
+
+    /** @var string[] */
+    private $resultTypesByMethods = [];
+
+    /** @var string|null */
+    private $errorType = null;
 
     public function __construct(TransportInterface $transport)
     {
@@ -88,10 +94,24 @@ class ClientBuilder
         return $this;
     }
 
+    public function setResultTypesByMethods(array $resultTypesByMethods): self
+    {
+        $this->resultTypesByMethods = $resultTypesByMethods;
+
+        return $this;
+    }
+
+    public function setErrorType(?string $errorType): self
+    {
+        $this->errorType = $errorType;
+
+        return $this;
+    }
+
     public function getClient(): ClientInterface
     {
         $requestObjectFactory = $this->createRequestObjectFactory();
-        $contextGenerator = new ContextGenerator();
+        $contextGenerator = new ContextGenerator($this->resultTypesByMethods, $this->errorType);
 
         if ($this->enableResponseProcessing) {
             $caller = new Caller($this->serializer, $contextGenerator, $this->transport, new ExceptionalResponseValidator());

@@ -17,9 +17,24 @@ use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
  */
 class ContextGenerator
 {
+    /** @var string[] */
+    private $resultTypesByMethods;
+
+    /** @var string|null */
+    private $errorType;
+
+    public function __construct(array $resultTypesByMethods = [], string $errorType = null)
+    {
+        $this->resultTypesByMethods = $resultTypesByMethods;
+        $this->errorType = $errorType;
+    }
+
     public function createSerializationContext($request): array
     {
-        $context = [];
+        $context = [
+            'result_types_by_methods' => $this->resultTypesByMethods,
+            'error_type'              => $this->errorType,
+        ];
 
         if ($request instanceof RequestObjectInterface) {
             $context['request'] = $request;

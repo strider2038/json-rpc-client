@@ -27,14 +27,14 @@ class GeneralOptions
     private $requestTimeoutUs;
 
     /**
-     * Connection configuration
+     * Connection configuration.
      *
      * @var ConnectionOptions
      */
     private $connectionOptions;
 
     /**
-     * Serialization configuration
+     * Serialization configuration.
      *
      * @var SerializationOptions
      */

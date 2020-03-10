@@ -87,8 +87,8 @@ class ResponseObjectDenormalizerTest extends TestCase
         ];
         $context = [
             'json_rpc' => [
-                'request'          => $request,
-                'types_by_methods' => [
+                'request'                 => $request,
+                'result_types_by_methods' => [
                     'method' => 'denormalization_type',
                 ],
             ],

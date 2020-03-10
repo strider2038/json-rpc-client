@@ -12,8 +12,10 @@ namespace Strider2038\JsonRpcClient\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
+use Strider2038\JsonRpcClient\Bridge\Symfony\Serialization\SymfonySerializerAdapter;
 use Strider2038\JsonRpcClient\ClientFactory;
 use Strider2038\JsonRpcClient\ClientInterface;
+use Strider2038\JsonRpcClient\Configuration\SerializationOptions;
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
@@ -80,11 +82,25 @@ class ClientFactoryTest extends TestCase
 
         $client = $factory->createClient('tcp://localhost:3000', [
             'serialization' => [
-                'serializer' => 'array',
-            ]
+                'serializer' => SerializationOptions::ARRAY_SERIALIZER,
+            ],
         ]);
 
         $this->assertClientHasSerializerOfExpectedClass($client, JsonArraySerializer::class);
+    }
+
+    /** @test */
+    public function createClient_symfonySerializerOption_jsonArraySerializerIsUsed(): void
+    {
+        $factory = new ClientFactory();
+
+        $client = $factory->createClient('tcp://localhost:3000', [
+            'serialization' => [
+                'serializer' => SerializationOptions::SYMFONY_SERIALIZER,
+            ],
+        ]);
+
+        $this->assertClientHasSerializerOfExpectedClass($client, SymfonySerializerAdapter::class);
     }
 
     private function assertClientHasTransportOfExpectedClass(ClientInterface $client, string $transportClass): void

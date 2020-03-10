@@ -98,6 +98,13 @@ $result = $client->batch()
 * [x] json array serializer
 * [ ] unix socket transport
 * [ ] bridge for symfony serializer
+  * immutable error object
+  * inject normalizers via options
+* [ ] ci test matrix
+  * PHP 7.2, 7.3, 7.4
+  * Min deps
+  * Max deps
+  * Symfony 4.3, 4.4, 5.0
 * [ ] add http transport support via psr-18
 * [ ] symfony bundle
 * [ ] symfony example

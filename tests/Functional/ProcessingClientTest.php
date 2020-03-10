@@ -1,19 +1,26 @@
 <?php
+/*
+ * This file is part of JSON RPC Client.
+ *
+ * (c) Igor Lazarev <strider2038@yandex.ru>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-namespace Strider2038\JsonRpcClient\Tests\Functional\Service;
+namespace Strider2038\JsonRpcClient\Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
-use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
+use Strider2038\JsonRpcClient\ClientBuilder;
+use Strider2038\JsonRpcClient\ClientInterface;
+use Strider2038\JsonRpcClient\Exception\ErrorResponseException;
 use Strider2038\JsonRpcClient\Request\SequentialIntegerIdGenerator;
-use Strider2038\JsonRpcClient\Response\NullResponseValidator;
-use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
-use Strider2038\JsonRpcClient\Serialization\ContextGenerator;
-use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
-use Strider2038\JsonRpcClient\Service\Caller;
-use Strider2038\JsonRpcClient\Service\RawClient;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
 
-class RawClientTest extends TestCase
+/**
+ * @author Igor Lazarev <strider2038@yandex.ru>
+ */
+class ProcessingClientTest extends TestCase
 {
     /** @var TransportInterface */
     private $transport;
@@ -26,40 +33,34 @@ class RawClientTest extends TestCase
     /** @test */
     public function singleRequest_positionalParameters_resultReturned(): void
     {
-        $client = $this->createRawClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer('{"jsonrpc": "2.0", "result": 19, "id": 1}');
 
-        /** @var ResponseObjectInterface $response */
-        $response = $client->call('subtract', [42, 23]);
+        $result = $client->call('subtract', [42, 23]);
 
-        $this->assertInstanceOf(ResponseObjectInterface::class, $response);
-        $this->assertFalse($response->hasError());
         $this->assertRequestWasSentByTransport();
-        $this->assertSame(19, $response->getResult());
+        $this->assertSame(19, $result);
     }
 
     /** @test */
     public function singleRequest_namedParameters_resultReturned(): void
     {
-        $client = $this->createRawClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer('{"jsonrpc": "2.0", "result": 19, "id": 1}');
         $params = new \stdClass();
         $params->subtrahend = 23;
         $params->minuend = 42;
 
-        /** @var ResponseObjectInterface $response */
-        $response = $client->call('subtract', $params);
+        $result = $client->call('subtract', $params);
 
-        $this->assertInstanceOf(ResponseObjectInterface::class, $response);
-        $this->assertFalse($response->hasError());
         $this->assertRequestWasSentByTransport();
-        $this->assertSame(19, $response->getResult());
+        $this->assertSame(19, $result);
     }
 
     /** @test */
     public function singleNotification_positionalParameters_nullReturned(): void
     {
-        $client = $this->createRawClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer('');
 
         $client->notify('notify', [1, 2, 3]);
@@ -70,25 +71,21 @@ class RawClientTest extends TestCase
     /** @test */
     public function nonExistentMethod_positionalParameters_exceptionThrown(): void
     {
-        $client = $this->createRawClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer(
             '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found"}, "id": "1"}'
         );
 
-        /** @var ResponseObjectInterface $response */
-        $response = $client->call('non-existent-method', [1, 2, 3]);
+        $this->expectException(ErrorResponseException::class);
+        $this->expectExceptionMessage('Server response has error: code -32601, message "Method not found", data null.');
 
-        $this->assertInstanceOf(ResponseObjectInterface::class, $response);
-        $this->assertTrue($response->hasError());
-        $this->assertSame(-32601, $response->getError()->code);
-        $this->assertSame('Method not found', $response->getError()->message);
-        $this->assertNull($response->getError()->data);
+        $client->call('non-existent-method', [1, 2, 3]);
     }
 
     /** @test */
     public function batchRequest_validParameters_orderedResultsReturned(): void
     {
-        $client = $this->createRawClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer('
         [
             {"jsonrpc": "2.0", "result": 19, "id": 2},
@@ -97,8 +94,7 @@ class RawClientTest extends TestCase
         ]
         ');
 
-        /** @var ResponseObjectInterface[] $responses */
-        $responses = $client->batch()
+        $results = $client->batch()
             ->call('sum', [1, 2, 4])
             ->notify('notify_hello', [7])
             ->call('subtract', [42, 23])
@@ -106,39 +102,40 @@ class RawClientTest extends TestCase
             ->send();
 
         $this->assertRequestWasSentByTransport();
-        $this->assertIsArray($responses);
-        $this->assertCount(3, $responses);
-        $this->assertSame(19, $responses[0]->getResult());
-        $this->assertSame(7, $responses[1]->getResult());
-        $this->assertSame(['key' => 'value'], (array) $responses[2]->getResult());
+        $this->assertIsArray($results);
+        $this->assertCount(4, $results);
+        $this->assertSame(7, $results[0]);
+        $this->assertNull($results[1]);
+        $this->assertSame(19, $results[2]);
+        $this->assertSame(['key' => 'value'], (array) $results[3]);
     }
 
     /** @test */
     public function batchNotification_validParameters_nullResultsReturned(): void
     {
-        $client = $this->createRawClient();
+        $client = $this->createProcessingClient();
         $this->givenResponseFromServer('');
 
-        $responses = $client->batch()
+        $results = $client->batch()
             ->notify('notify_sum', [1, 2, 4])
             ->notify('notify_hello', [2])
             ->send();
 
         $this->assertRequestWasSentByTransport();
-        $this->assertIsArray($responses);
-        $this->assertCount(0, $responses);
+        $this->assertIsArray($results);
+        $this->assertCount(2, $results);
+        $this->assertNull($results[0]);
+        $this->assertNull($results[1]);
     }
 
-    private function createRawClient(): RawClient
+    private function createProcessingClient(): ClientInterface
     {
         $idGenerator = new SequentialIntegerIdGenerator();
-        $requestObjectFactory = new RequestObjectFactory($idGenerator);
-        $serializer = new JsonObjectSerializer();
-        $contextGenerator = new ContextGenerator();
-        $validator = new NullResponseValidator();
-        $caller = new Caller($serializer, $contextGenerator, $this->transport, $validator);
 
-        return new RawClient($requestObjectFactory, $caller);
+        $clientBuilder = new ClientBuilder($this->transport);
+        $clientBuilder = $clientBuilder->setIdGenerator($idGenerator);
+
+        return $clientBuilder->getClient();
     }
 
     private function assertRequestWasSentByTransport(): void
