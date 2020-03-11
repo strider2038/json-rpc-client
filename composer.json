@@ -28,9 +28,9 @@
     "psr/log": "^1.1",
     "symplify/easy-coding-standard": "^7.0",
     "phpstan/phpstan": "^0.12.5",
-    "symfony/serializer": "^4.3",
-    "symfony/property-access": "^4.3",
-    "symfony/property-info": "^4.3",
+    "symfony/serializer": "^4.3 || ^5.0",
+    "symfony/property-access": "^4.3 || ^5.0",
+    "symfony/property-info": "^4.3 || ^5.0",
     "doctrine/annotations": "^1.6"
   },
   "suggest": {

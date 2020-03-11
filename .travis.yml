@@ -1,0 +1,21 @@
+language: php
+dist: trusty
+
+php:
+  - 7.2
+  - 7.3
+  - 7.4
+
+env:
+  - SYMFONY_VERSION=4.3
+  - SYMFONY_VERSION=4.4
+  - SYMFONY_VERSION=5.0
+
+install:
+  - composer require --dev symfony/serializer:${SYMFONY_VERSION}
+  - composer require --dev symfony/property-access:${SYMFONY_VERSION}
+  - composer require --dev symfony/property-info:${SYMFONY_VERSION}
+  - composer install
+
+script:
+  - ./vendor/bin/phpunit --testsuite functional,unit

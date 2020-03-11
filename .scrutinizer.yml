@@ -1,5 +1,6 @@
 build:
   nodes:
+
     analysis:
       project_setup:
         override:
@@ -7,8 +8,10 @@ build:
       tests:
         override:
           - php-scrutinizer-run
+
     tests:
       environment:
+        php: 7.2
         variables:
           TEST_TCP_TRANSPORT_URL: 'tcp://localhost:4000'
           TEST_HTTP_TRANSPORT_URL: 'http://localhost:4001/rpc'
