@@ -33,10 +33,9 @@ class RequestObjectFactory
     public function createRequest(string $method, $params = null): RequestObject
     {
         $this->validateParams($params);
-        $object = new RequestObject($method, $params);
-        $object->id = $this->idGenerator->generateId();
+        $id = $this->idGenerator->generateId();
 
-        return $object;
+        return new RequestObject($id, $method, $params);
     }
 
     /**

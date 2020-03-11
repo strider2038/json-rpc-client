@@ -13,22 +13,23 @@ namespace Strider2038\JsonRpcClient\Request;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class RequestObject implements RequestObjectInterface
+class RequestObject implements RequestObjectInterface, \JsonSerializable
 {
     /** @var string */
-    public $jsonrpc = '2.0';
+    private $jsonrpc = '2.0';
 
     /** @var string */
-    public $method;
+    private $method;
 
     /** @var mixed */
-    public $params;
+    private $params;
 
     /** @var string|int */
-    public $id;
+    private $id;
 
-    public function __construct(string $method, $params)
+    public function __construct($id, string $method, $params)
     {
+        $this->id = $id;
         $this->method = $method;
         $this->params = $params;
     }
@@ -36,5 +37,30 @@ class RequestObject implements RequestObjectInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getProtocol(): string
+    {
+        return $this->jsonrpc;
+    }
+
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'jsonrpc' => $this->jsonrpc,
+            'method'  => $this->method,
+            'params'  => $this->params,
+            'id'      => $this->id,
+        ];
     }
 }

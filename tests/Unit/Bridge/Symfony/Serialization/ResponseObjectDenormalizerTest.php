@@ -13,7 +13,6 @@ namespace Strider2038\JsonRpcClient\Tests\Unit\Bridge\Symfony\Serialization;
 use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\Bridge\Symfony\Serialization\ResponseObjectDenormalizer;
 use Strider2038\JsonRpcClient\Request\RequestObject;
-use Strider2038\JsonRpcClient\Response\ErrorObject;
 use Strider2038\JsonRpcClient\Response\ResponseObject;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -66,10 +65,10 @@ class ResponseObjectDenormalizerTest extends TestCase
 
         $response = $denormalizer->denormalize($serializedResponse, ResponseObject::class);
 
-        $this->assertSame('2.0', $response->jsonrpc);
-        $this->assertSame('idValue', $response->id);
-        $this->assertSame(['key' => 'value'], $response->result);
-        $this->assertNull($response->error);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertSame(['key' => 'value'], $response->getResult());
+        $this->assertFalse($response->hasError());
     }
 
     /** @test */
@@ -77,7 +76,7 @@ class ResponseObjectDenormalizerTest extends TestCase
     {
         $denormalizer = new ResponseObjectDenormalizer();
         $denormalizer->setDenormalizer($this->denormalizer);
-        $request = new RequestObject('method', null);
+        $request = new RequestObject('id', 'method', null);
         $serializedResponse = [
             'jsonrpc' => '2.0',
             'id'      => 'idValue',
@@ -98,10 +97,10 @@ class ResponseObjectDenormalizerTest extends TestCase
         $response = $denormalizer->denormalize($serializedResponse, ResponseObject::class, self::FORMAT, $context);
 
         $this->assertDataOfTypeWasDenormalizedWithContext(['key' => 'value'], 'denormalization_type', $context);
-        $this->assertSame('2.0', $response->jsonrpc);
-        $this->assertSame('idValue', $response->id);
-        $this->assertSame($result, $response->result);
-        $this->assertNull($response->error);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertSame($result, $response->getResult());
+        $this->assertFalse($response->hasError());
     }
 
     /** @test */
@@ -130,13 +129,13 @@ class ResponseObjectDenormalizerTest extends TestCase
         $response = $denormalizer->denormalize($serializedResponse, ResponseObject::class, self::FORMAT, $context);
 
         $this->assertDataOfTypeWasDenormalizedWithContext(['errorKey' => 'errorValue'], 'denormalization_type', $context);
-        $this->assertSame('2.0', $response->jsonrpc);
-        $this->assertNull($response->result);
-        $this->assertSame('idValue', $response->id);
-        $this->assertInstanceOf(ErrorObject::class, $response->error);
-        $this->assertSame(1, $response->error->code);
-        $this->assertSame('errorMessage', $response->error->message);
-        $this->assertSame($errorData, $response->error->data);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertNull($response->getResult());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertTrue($response->hasError());
+        $this->assertSame(1, $response->getError()->getCode());
+        $this->assertSame('errorMessage', $response->getError()->getMessage());
+        $this->assertSame($errorData, $response->getError()->getData());
     }
 
     /** @test */
@@ -158,13 +157,13 @@ class ResponseObjectDenormalizerTest extends TestCase
 
         $response = $denormalizer->denormalize($serializedResponse, ResponseObject::class);
 
-        $this->assertSame('2.0', $response->jsonrpc);
-        $this->assertNull($response->result);
-        $this->assertSame('idValue', $response->id);
-        $this->assertInstanceOf(ErrorObject::class, $response->error);
-        $this->assertSame(1, $response->error->code);
-        $this->assertSame('errorMessage', $response->error->message);
-        $this->assertSame(['errorKey' => 'errorValue'], $response->error->data);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertNull($response->getResult());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertTrue($response->hasError());
+        $this->assertSame(1, $response->getError()->getCode());
+        $this->assertSame('errorMessage', $response->getError()->getMessage());
+        $this->assertSame(['errorKey' => 'errorValue'], $response->getError()->getData());
     }
 
     /** @test */

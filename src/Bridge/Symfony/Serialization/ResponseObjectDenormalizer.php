@@ -42,13 +42,14 @@ class ResponseObjectDenormalizer implements DenormalizerInterface, DenormalizerA
             throw new UnexpectedValueException('Denormalization data is expected to be an array');
         }
 
-        $response = new ResponseObject();
-        $response->jsonrpc = $data['jsonrpc'] ?? '';
-        $response->id = $data['id'] ?? null;
-        $response->result = $this->denormalizeResult($data, $format, $context);
+        $response = new ResponseObject(
+            $data['jsonrpc'] ?? '',
+            $this->denormalizeResult($data, $format, $context),
+            $data['id'] ?? null
+        );
 
         if (array_key_exists('error', $data)) {
-            $response->error = $this->denormalizeError($data, $format, $context);
+            $response->setError($this->denormalizeError($data, $format, $context));
         }
 
         return $response;
@@ -56,16 +57,20 @@ class ResponseObjectDenormalizer implements DenormalizerInterface, DenormalizerA
 
     private function denormalizeResult($data, $format, array $context)
     {
-        /** @var RequestObject $request */
-        $request = $context['json_rpc']['request'];
-        $resultTypesByMethods = $context['json_rpc']['result_types_by_methods'] ?? [];
-
         $result = $data['result'] ?? null;
 
-        if (null !== $result && array_key_exists($request->method, $resultTypesByMethods)) {
-            $resultType = $resultTypesByMethods[$request->method];
+        $request = $context['json_rpc']['request'] ?? null;
 
-            $result = $this->denormalizer->denormalize($result, $resultType, $format, $context);
+        if ($request instanceof RequestObject) {
+            $method = $request->getMethod();
+
+            $resultTypesByMethods = $context['json_rpc']['result_types_by_methods'] ?? [];
+
+            if (null !== $result && array_key_exists($method, $resultTypesByMethods)) {
+                $resultType = $resultTypesByMethods[$method];
+
+                $result = $this->denormalizer->denormalize($result, $resultType, $format, $context);
+            }
         }
 
         return $result;
@@ -73,12 +78,11 @@ class ResponseObjectDenormalizer implements DenormalizerInterface, DenormalizerA
 
     private function denormalizeError($data, $format, array $context): ErrorObject
     {
-        $error = new ErrorObject();
-        $error->code = $data['error']['code'] ?? null;
-        $error->message = $data['error']['message'] ?? null;
-        $error->data = $this->denormalizeErrorData($data['error']['data'] ?? null, $format, $context);
-
-        return $error;
+        return new ErrorObject(
+            $data['error']['code'] ?? null,
+            $data['error']['message'] ?? null,
+            $this->denormalizeErrorData($data['error']['data'] ?? null, $format, $context)
+        );
     }
 
     private function denormalizeErrorData($errorData, $format, array $context)

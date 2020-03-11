@@ -98,7 +98,6 @@ $result = $client->batch()
 * [x] json array serializer
 * [ ] unix socket transport
 * [ ] bridge for symfony serializer
-  * immutable error object
   * inject normalizers via options
 * [ ] ci test matrix
   * PHP 7.2, 7.3, 7.4

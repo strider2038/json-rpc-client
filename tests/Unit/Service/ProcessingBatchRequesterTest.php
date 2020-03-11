@@ -88,10 +88,7 @@ class ProcessingBatchRequesterTest extends TestCase
 
     private function givenRequestObjectWithId(?int $id): RequestObject
     {
-        $requestObject = new RequestObject(self::METHOD, self::PARAMS);
-        $requestObject->id = $id;
-
-        return $requestObject;
+        return new RequestObject($id, self::METHOD, self::PARAMS);
     }
 
     private function givenMultipleResponsesWithIds(?int ...$ids): void
@@ -109,11 +106,7 @@ class ProcessingBatchRequesterTest extends TestCase
 
     private function givenResponseObjectWithId(?int $id): ResponseObject
     {
-        $responseObject = new ResponseObject();
-        $responseObject->id = $id;
-        $responseObject->result = $id;
-
-        return $responseObject;
+        return new ResponseObject('2.0', $id, $id);
     }
 
     private function assertResultSequence(array $results, ?int ...$ids): void

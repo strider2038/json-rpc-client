@@ -40,10 +40,10 @@ class RequestObjectFactoryTest extends TestCase
         $object = $factory->createRequest(self::METHOD, self::PARAMS);
 
         $this->assertIdWasGenerated();
-        $this->assertSame('2.0', $object->jsonrpc);
-        $this->assertSame(self::METHOD, $object->method);
-        $this->assertSame(self::PARAMS, $object->params);
-        $this->assertSame($id, $object->id);
+        $this->assertSame('2.0', $object->getProtocol());
+        $this->assertSame(self::METHOD, $object->getMethod());
+        $this->assertSame(self::PARAMS, $object->getParams());
+        $this->assertSame($id, $object->getId());
     }
 
     /** @test */
@@ -55,10 +55,10 @@ class RequestObjectFactoryTest extends TestCase
         $object = $factory->createRequest(self::METHOD);
 
         $this->assertIdWasGenerated();
-        $this->assertSame('2.0', $object->jsonrpc);
-        $this->assertSame(self::METHOD, $object->method);
-        $this->assertNull($object->params);
-        $this->assertSame($id, $object->id);
+        $this->assertSame('2.0', $object->getProtocol());
+        $this->assertSame(self::METHOD, $object->getMethod());
+        $this->assertNull($object->getParams());
+        $this->assertSame($id, $object->getId());
     }
 
     /** @test */
@@ -68,9 +68,9 @@ class RequestObjectFactoryTest extends TestCase
 
         $object = $factory->createNotification(self::METHOD, self::PARAMS);
 
-        $this->assertSame('2.0', $object->jsonrpc);
-        $this->assertSame(self::METHOD, $object->method);
-        $this->assertSame(self::PARAMS, $object->params);
+        $this->assertSame('2.0', $object->getProtocol());
+        $this->assertSame(self::METHOD, $object->getMethod());
+        $this->assertSame(self::PARAMS, $object->getParams());
     }
 
     /** @test */

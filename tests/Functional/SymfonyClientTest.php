@@ -29,14 +29,14 @@ class SymfonyClientTest extends TestCase
 {
     private const CREATE_PRODUCT_REQUEST = '
     {
-        "id": 1,
         "jsonrpc": "2.0",
         "method": "createProduct", 
         "params": {
             "name": "New product",
             "productionDate": "2020-03-09T12:30:00+00:00",
             "price": 1000
-        }
+        },
+        "id": 1
     }';
 
     private const CREATE_PRODUCT_RESPONSE = '
@@ -111,14 +111,14 @@ class SymfonyClientTest extends TestCase
         /** @var ResponseObjectInterface $response */
         $response = $client->call('createProduct', $request);
         /** @var Violation $violation */
-        $violation = $response->getError()->data;
+        $violation = $response->getError()->getData();
 
         $this->assertInstanceOf(ResponseObjectInterface::class, $response);
         $this->assertNull($response->getResult());
         $this->assertTrue($response->hasError());
         $this->assertRequestWasSentByTransport(self::CREATE_PRODUCT_REQUEST);
-        $this->assertSame(-32602, $response->getError()->code);
-        $this->assertSame('Invalid params', $response->getError()->message);
+        $this->assertSame(-32602, $response->getError()->getCode());
+        $this->assertSame('Invalid params', $response->getError()->getMessage());
         $this->assertSame('name', $violation->propertyPath);
         $this->assertSame('Invalid name', $violation->message);
     }

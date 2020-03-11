@@ -16,11 +16,33 @@ namespace Strider2038\JsonRpcClient\Response;
 class ErrorObject
 {
     /** @var int */
-    public $code;
+    private $code;
 
     /** @var string */
-    public $message;
+    private $message;
 
     /** @var mixed */
-    public $data;
+    private $data;
+
+    public function __construct(int $code, string $message, $data)
+    {
+        $this->code = $code;
+        $this->message = $message;
+        $this->data = $data;
+    }
+
+    public function getCode(): int
+    {
+        return $this->code;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    public function getData()
+    {
+        return $this->data;
+    }
 }

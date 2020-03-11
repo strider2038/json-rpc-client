@@ -47,7 +47,7 @@ class ExceptionalResponseValidator implements ResponseValidatorInterface
             );
         }
 
-        if ('2.0' !== $response->getJsonRpcVersion()) {
+        if ('2.0' !== $response->getProtocol()) {
             throw new ResponseException('Invalid JSON RPC version in server request.');
         }
 

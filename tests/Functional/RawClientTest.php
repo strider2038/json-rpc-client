@@ -75,9 +75,9 @@ class RawClientTest extends TestCase
 
         $this->assertInstanceOf(ResponseObjectInterface::class, $response);
         $this->assertTrue($response->hasError());
-        $this->assertSame(-32601, $response->getError()->code);
-        $this->assertSame('Method not found', $response->getError()->message);
-        $this->assertNull($response->getError()->data);
+        $this->assertSame(-32601, $response->getError()->getCode());
+        $this->assertSame('Method not found', $response->getError()->getMessage());
+        $this->assertNull($response->getError()->getData());
     }
 
     /** @test */

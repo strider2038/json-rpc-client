@@ -26,7 +26,7 @@ class ContextGeneratorTest extends TestCase
     public function createSerializationContext_singleRequest_requestInContext(): void
     {
         $generator = new ContextGenerator();
-        $request = new RequestObject('method', ['params']);
+        $request = new RequestObject('id', 'method', ['params']);
 
         $context = $generator->createSerializationContext($request);
 
@@ -39,7 +39,7 @@ class ContextGeneratorTest extends TestCase
     public function createSerializationContext_serializationOptions_optionsInContext(): void
     {
         $generator = new ContextGenerator(self::RESULT_TYPES_BY_METHODS, self::ERROR_TYPE);
-        $request = new RequestObject('method', ['params']);
+        $request = new RequestObject('id', 'method', ['params']);
 
         $context = $generator->createSerializationContext($request);
 
@@ -54,10 +54,8 @@ class ContextGeneratorTest extends TestCase
     public function createSerializationContext_batchRequest_requestsInContext(): void
     {
         $generator = new ContextGenerator();
-        $request1 = new RequestObject('method1', ['params']);
-        $request1->id = 'id-1';
-        $request2 = new RequestObject('method2', ['params']);
-        $request2->id = 'id-2';
+        $request1 = new RequestObject('id-1', 'method1', ['params']);
+        $request2 = new RequestObject('id-2', 'method2', ['params']);
         $requests = [$request1, $request2];
 
         $context = $generator->createSerializationContext($requests);

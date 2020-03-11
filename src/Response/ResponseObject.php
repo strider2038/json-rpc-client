@@ -16,20 +16,27 @@ namespace Strider2038\JsonRpcClient\Response;
 class ResponseObject implements ResponseObjectInterface
 {
     /** @var string */
-    public $jsonrpc;
+    private $jsonrpc;
 
     /** @var mixed */
-    public $result;
+    private $result;
 
     /** @var ErrorObject|null */
-    public $error;
+    private $error;
 
     /** @var string|int|null */
-    public $id;
+    private $id;
 
-    public function getJsonRpcVersion(): string
+    public function __construct(string $protocol, $result, $id)
     {
-        return (string) $this->jsonrpc;
+        $this->jsonrpc = $protocol;
+        $this->result = $result;
+        $this->id = $id;
+    }
+
+    public function getProtocol(): string
+    {
+        return $this->jsonrpc;
     }
 
     public function getId()
@@ -50,5 +57,10 @@ class ResponseObject implements ResponseObjectInterface
     public function getError(): ErrorObject
     {
         return $this->error;
+    }
+
+    public function setError(ErrorObject $error): void
+    {
+        $this->error = $error;
     }
 }
