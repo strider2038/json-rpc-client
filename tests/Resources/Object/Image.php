@@ -13,17 +13,11 @@ namespace Strider2038\JsonRpcClient\Tests\Resources\Object;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class CreateProductRequest
+class Image
 {
     /** @var string */
-    public $name;
-
-    /** @var \DateTimeInterface */
-    public $productionDate;
+    public $filename;
 
     /** @var int */
-    public $price;
-
-    /** @var Image[] */
-    public $images;
+    public $size;
 }

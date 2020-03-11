@@ -17,8 +17,11 @@ use Strider2038\JsonRpcClient\ClientBuilder;
 use Strider2038\JsonRpcClient\ClientInterface;
 use Strider2038\JsonRpcClient\Request\SequentialIntegerIdGenerator;
 use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
+use Strider2038\JsonRpcClient\Tests\Resources\Normalizer\ComplexObjectNormalizer;
+use Strider2038\JsonRpcClient\Tests\Resources\Object\ComplexObject;
 use Strider2038\JsonRpcClient\Tests\Resources\Object\CreateProductRequest;
 use Strider2038\JsonRpcClient\Tests\Resources\Object\CreateProductResponse;
+use Strider2038\JsonRpcClient\Tests\Resources\Object\Image;
 use Strider2038\JsonRpcClient\Tests\Resources\Object\Violation;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
 
@@ -27,6 +30,9 @@ use Strider2038\JsonRpcClient\Transport\TransportInterface;
  */
 class SymfonyClientTest extends TestCase
 {
+    private const IMAGE_FILENAME = 'image.jpeg';
+    private const IMAGE_SIZE = 123456;
+
     private const CREATE_PRODUCT_REQUEST = '
     {
         "jsonrpc": "2.0",
@@ -34,7 +40,13 @@ class SymfonyClientTest extends TestCase
         "params": {
             "name": "New product",
             "productionDate": "2020-03-09T12:30:00+00:00",
-            "price": 1000
+            "price": 1000,
+            "images": [
+                {
+                    "filename": "image.jpeg",
+                    "size": 123456
+                }
+            ]
         },
         "id": 1
     }';
@@ -46,7 +58,34 @@ class SymfonyClientTest extends TestCase
             "id": 101,
             "name": "New product",
             "productionDate": "2020-03-09T12:30:00",
-            "price": 1000
+            "price": 1000,
+            "images": [
+                {
+                    "filename": "image.jpeg",
+                    "size": 123456
+                }
+            ]
+        }, 
+        "id": 1
+    }';
+
+    private const COMPLEX_OBJECT_REQUEST = '
+    {
+        "jsonrpc": "2.0",
+        "method": "sendComplexObject", 
+        "params": {
+            "id": 123,
+            "name": "name"
+        },
+        "id": 1
+    }';
+
+    private const COMPLEX_OBJECT_RESPONSE = '
+    {
+        "jsonrpc": "2.0", 
+        "result": {
+            "id": 123,
+            "name": "name"
         }, 
         "id": 1
     }';
@@ -57,10 +96,12 @@ class SymfonyClientTest extends TestCase
         "error": {
             "code": -32602,
             "message": "Invalid params",
-            "data": {
-                "propertyPath": "name",
-                "message": "Invalid name"
-            }
+            "data": [
+                {
+                    "propertyPath": "name",
+                    "message": "Invalid name"
+                }
+            ]
         }, 
         "id": 1
     }';
@@ -78,10 +119,7 @@ class SymfonyClientTest extends TestCase
     {
         $client = $this->createClient();
         $this->givenResponseFromServer(self::CREATE_PRODUCT_RESPONSE);
-        $request = new CreateProductRequest();
-        $request->name = 'New product';
-        $request->productionDate = new \DateTimeImmutable('2020-03-09T12:30:00');
-        $request->price = 1000;
+        $request = $this->givenCreateProductRequest();
 
         /** @var ResponseObjectInterface $response */
         $response = $client->call('createProduct', $request);
@@ -96,6 +134,9 @@ class SymfonyClientTest extends TestCase
         $this->assertSame($request->name, $result->name);
         $this->assertSame($request->productionDate->format(DATE_ATOM), $result->productionDate->format(DATE_ATOM));
         $this->assertSame($request->price, $result->price);
+        $this->assertCount(1, $result->images);
+        $this->assertSame(self::IMAGE_FILENAME, $result->images[0]->filename);
+        $this->assertSame(self::IMAGE_SIZE, $result->images[0]->size);
     }
 
     /** @test */
@@ -103,15 +144,12 @@ class SymfonyClientTest extends TestCase
     {
         $client = $this->createClient();
         $this->givenResponseFromServer(self::VIOLATION_RESPONSE);
-        $request = new CreateProductRequest();
-        $request->name = 'New product';
-        $request->productionDate = new \DateTimeImmutable('2020-03-09T12:30:00');
-        $request->price = 1000;
+        $request = $this->givenCreateProductRequest();
 
         /** @var ResponseObjectInterface $response */
         $response = $client->call('createProduct', $request);
-        /** @var Violation $violation */
-        $violation = $response->getError()->getData();
+        /** @var Violation[] $violations */
+        $violations = $response->getError()->getData();
 
         $this->assertInstanceOf(ResponseObjectInterface::class, $response);
         $this->assertNull($response->getResult());
@@ -119,8 +157,30 @@ class SymfonyClientTest extends TestCase
         $this->assertRequestWasSentByTransport(self::CREATE_PRODUCT_REQUEST);
         $this->assertSame(-32602, $response->getError()->getCode());
         $this->assertSame('Invalid params', $response->getError()->getMessage());
-        $this->assertSame('name', $violation->propertyPath);
-        $this->assertSame('Invalid name', $violation->message);
+        $this->assertCount(1, $violations);
+        $this->assertSame('name', $violations[0]->propertyPath);
+        $this->assertSame('Invalid name', $violations[0]->message);
+    }
+
+    /** @test */
+    public function singleRequest_complexObjectWithCustomNormalizer_complexObjectResultReturned(): void
+    {
+        $client = $this->createClient();
+        $this->givenResponseFromServer(self::COMPLEX_OBJECT_RESPONSE);
+        $request = new ComplexObject(123, 'name');
+
+        /** @var ResponseObjectInterface $response */
+        $response = $client->call('sendComplexObject', $request);
+        /** @var ComplexObject $result */
+        $result = $response->getResult();
+
+        $this->assertInstanceOf(ResponseObjectInterface::class, $response);
+        $this->assertInstanceOf(ComplexObject::class, $result);
+        $this->assertFalse($response->hasError());
+        $this->assertRequestWasSentByTransport(self::COMPLEX_OBJECT_REQUEST);
+        $this->assertSame(123, $result->getId());
+        $this->assertSame('name', $result->getName());
+        $this->assertSame(['meta' => 'data'], $result->getMeta());
     }
 
     private function createClient(): ClientInterface
@@ -129,11 +189,14 @@ class SymfonyClientTest extends TestCase
         $clientBuilder = $clientBuilder->disableResponseProcessing();
         $clientBuilder = $clientBuilder->setIdGenerator(new SequentialIntegerIdGenerator());
         $clientBuilder->setResultTypesByMethods([
-            'createProduct' => CreateProductResponse::class,
+            'createProduct'     => CreateProductResponse::class,
+            'sendComplexObject' => ComplexObject::class,
         ]);
-        $clientBuilder->setErrorType(Violation::class);
+        $clientBuilder->setErrorType(Violation::class.'[]');
 
-        $serializer = SerializerFactory::createSerializer();
+        $serializer = SerializerFactory::createSerializer([
+            new ComplexObjectNormalizer(),
+        ]);
         $serializerAdapter = new SymfonySerializerAdapter($serializer);
 
         $clientBuilder->setSerializer($serializerAdapter);
@@ -152,5 +215,19 @@ class SymfonyClientTest extends TestCase
         \Phake::when($this->transport)
             ->send(\Phake::anyParameters())
             ->thenReturn($response);
+    }
+
+    private function givenCreateProductRequest(): CreateProductRequest
+    {
+        $request = new CreateProductRequest();
+        $request->name = 'New product';
+        $request->productionDate = new \DateTimeImmutable('2020-03-09T12:30:00');
+        $request->price = 1000;
+        $image = new Image();
+        $image->filename = self::IMAGE_FILENAME;
+        $image->size = self::IMAGE_SIZE;
+        $request->images = [$image];
+
+        return $request;
     }
 }

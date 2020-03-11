@@ -97,8 +97,7 @@ $result = $client->batch()
 * [x] http authentication tests
 * [x] json array serializer
 * [ ] unix socket transport
-* [ ] bridge for symfony serializer
-  * inject normalizers via options
+* [x] bridge for symfony serializer
 * [ ] ci test matrix
   * PHP 7.2, 7.3, 7.4
   * Min deps

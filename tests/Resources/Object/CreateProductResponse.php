@@ -26,4 +26,7 @@ class CreateProductResponse
 
     /** @var int */
     public $price;
+
+    /** @var Image[] */
+    public $images;
 }

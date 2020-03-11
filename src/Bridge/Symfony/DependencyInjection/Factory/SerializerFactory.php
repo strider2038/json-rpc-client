@@ -22,6 +22,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactoryInterface;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\DateIntervalNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer;
@@ -38,7 +39,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class SerializerFactory
 {
-    public static function createSerializer(): SerializerInterface
+    public static function createSerializer(array $normalizers = []): SerializerInterface
     {
         $encoders = [new JsonEncoder()];
 
@@ -46,15 +47,19 @@ class SerializerFactory
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $propertyInfo = self::createPropertyInfo();
 
-        $normalizers = [
-            new DelegatingResponseDenormalizer(),
-            new ResponseObjectDenormalizer(),
-            new DateTimeNormalizer(),
-            new DateTimeZoneNormalizer(),
-            new DateIntervalNormalizer(),
-            new JsonSerializableNormalizer($classMetadataFactory),
-            new ObjectNormalizer($classMetadataFactory, null, $propertyAccessor, $propertyInfo),
-        ];
+        $normalizers = array_merge(
+            $normalizers,
+            [
+                new DelegatingResponseDenormalizer(),
+                new ResponseObjectDenormalizer(),
+                new DateTimeNormalizer(),
+                new DateTimeZoneNormalizer(),
+                new DateIntervalNormalizer(),
+                new JsonSerializableNormalizer($classMetadataFactory),
+                new ArrayDenormalizer(),
+                new ObjectNormalizer($classMetadataFactory, null, $propertyAccessor, $propertyInfo),
+            ]
+        );
 
         return new Serializer($normalizers, $encoders);
     }
