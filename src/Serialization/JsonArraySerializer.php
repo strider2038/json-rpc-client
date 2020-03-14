@@ -83,8 +83,8 @@ class JsonArraySerializer implements MessageSerializerInterface
             $decodedError = $decodedObject['error'];
 
             $errorObject = new ErrorObject(
-                $decodedError['code'] ?? null,
-                $decodedError['message'] ?? null,
+                $decodedError['code'] ?? 0,
+                $decodedError['message'] ?? 'unknown error',
                 $decodedError['data'] ?? null
             );
 

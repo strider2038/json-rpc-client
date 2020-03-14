@@ -22,7 +22,8 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
  */
 class ResponseObjectDenormalizerTest extends TestCase
 {
-    const FORMAT = 'format';
+    private const FORMAT = 'format';
+
     /** @var DenormalizerInterface */
     private $denormalizer;
 
@@ -164,6 +165,28 @@ class ResponseObjectDenormalizerTest extends TestCase
         $this->assertSame(1, $response->getError()->getCode());
         $this->assertSame('errorMessage', $response->getError()->getMessage());
         $this->assertSame(['errorKey' => 'errorValue'], $response->getError()->getData());
+    }
+
+    /** @test */
+    public function denormalize_singleErrorResponseWithEmptyError_responseWithErrorReturned(): void
+    {
+        $denormalizer = new ResponseObjectDenormalizer();
+        $denormalizer->setDenormalizer($this->denormalizer);
+        $serializedResponse = [
+            'jsonrpc' => '2.0',
+            'id'      => 'idValue',
+            'error'   => [],
+        ];
+
+        $response = $denormalizer->denormalize($serializedResponse, ResponseObject::class);
+
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertNull($response->getResult());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertTrue($response->hasError());
+        $this->assertSame(0, $response->getError()->getCode());
+        $this->assertSame('unknown error', $response->getError()->getMessage());
+        $this->assertNull($response->getError()->getData());
     }
 
     /** @test */

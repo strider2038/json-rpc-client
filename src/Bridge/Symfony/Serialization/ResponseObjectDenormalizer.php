@@ -79,8 +79,8 @@ class ResponseObjectDenormalizer implements DenormalizerInterface, DenormalizerA
     private function denormalizeError($data, $format, array $context): ErrorObject
     {
         return new ErrorObject(
-            $data['error']['code'] ?? null,
-            $data['error']['message'] ?? null,
+            $data['error']['code'] ?? 0,
+            $data['error']['message'] ?? 'unknown error',
             $this->denormalizeErrorData($data['error']['data'] ?? null, $format, $context)
         );
     }

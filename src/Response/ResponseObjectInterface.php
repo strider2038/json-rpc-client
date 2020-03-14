@@ -10,6 +10,8 @@
 
 namespace Strider2038\JsonRpcClient\Response;
 
+use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
+
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
@@ -39,8 +41,10 @@ interface ResponseObjectInterface
     public function hasError(): bool;
 
     /**
-     * Returns error description if response has error. Otherwise will be type exception.
+     * Returns error description if response has error. Otherwise exception will be thrown.
      * Always use hasError() method before retrieving error.
+     *
+     * @throws JsonRpcClientException when there is no error
      */
     public function getError(): ErrorObject;
 }

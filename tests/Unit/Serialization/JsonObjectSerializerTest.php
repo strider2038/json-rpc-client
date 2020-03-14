@@ -114,6 +114,30 @@ class JsonObjectSerializerTest extends TestCase
     }
 
     /** @test */
+    public function deserialize_singleErrorResponseWithEmptyError_responseWithErrorReturned(): void
+    {
+        $serializer = new JsonObjectSerializer();
+        $serializedResponse = '
+        {
+            "jsonrpc": "2.0",
+            "error": {},
+            "id": "idValue"
+        }
+        ';
+
+        $response = $serializer->deserialize($serializedResponse, []);
+
+        $this->assertInstanceOf(ResponseObject::class, $response);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertNull($response->getResult());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertTrue($response->hasError());
+        $this->assertSame(0, $response->getError()->getCode());
+        $this->assertSame('unknown error', $response->getError()->getMessage());
+        $this->assertNull($response->getError()->getData());
+    }
+
+    /** @test */
     public function deserialize_emptyObjectResponse_emptyResponseReturned(): void
     {
         $serializer = new JsonObjectSerializer();
