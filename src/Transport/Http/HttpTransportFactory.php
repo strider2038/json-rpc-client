@@ -70,14 +70,26 @@ class HttpTransportFactory implements TransportFactoryInterface
             );
         }
 
-        $config = array_merge(
-            $options->getTransportConfiguration(),
-            [
-                'timeout' => (float) $options->getRequestTimeoutUs() / 1000000,
-            ]
-        );
+        if (method_exists(HttpClient::class, 'createForBaseUri')) {
+            $config = array_merge(
+                $options->getTransportConfiguration(),
+                [
+                    'timeout' => (float)$options->getRequestTimeoutUs() / 1000000,
+                ]
+            );
 
-        $client = HttpClient::createForBaseUri($connection, $config);
+            $client = HttpClient::createForBaseUri($connection, $config);
+        } else {
+            $config = array_merge(
+                $options->getTransportConfiguration(),
+                [
+                    'base_uri' => $connection,
+                    'timeout' => (float)$options->getRequestTimeoutUs() / 1000000,
+                ]
+            );
+
+            $client = HttpClient::create($config);
+        }
 
         return new SymfonyTransport($client);
     }
