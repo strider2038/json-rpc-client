@@ -97,7 +97,7 @@ $result = $client->batch()
 * [x] integration testing for http transport with server mock
 * [x] http authentication tests
 * [x] json array serializer
-* [ ] unix socket transport
+* [x] unix socket transport
 * [x] bridge for symfony serializer
 * [x] ci test matrix
 * [ ] add http transport support via psr-18

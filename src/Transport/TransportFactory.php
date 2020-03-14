@@ -36,10 +36,10 @@ class TransportFactory
      */
     public function createTransport(string $connection, GeneralOptions $options): TransportInterface
     {
-        $protocol = strtolower(parse_url($connection, PHP_URL_SCHEME));
+        $protocol = $this->parseProtocol($connection);
 
-        if ('tcp' === $protocol) {
-            $transport = $this->createTcpTransport($connection, $options);
+        if ('tcp' === $protocol || 'unix' === $protocol) {
+            $transport = $this->createSocketTransport($connection, $options);
         } elseif ('http' === $protocol || 'https' === $protocol) {
             $transport = $this->createHttpTransport($connection, $options);
         } else {
@@ -61,7 +61,7 @@ class TransportFactory
     /**
      * @throws InvalidConfigException
      */
-    private function createTcpTransport(string $connection, GeneralOptions $options): SocketTransport
+    private function createSocketTransport(string $connection, GeneralOptions $options): SocketTransport
     {
         $connector = new SocketConnector();
         $client = new SocketClient($connector, $connection, $options->getConnectionOptions(), $options->getRequestTimeoutUs());
@@ -82,5 +82,16 @@ class TransportFactory
         $guzzle = new Client($config);
 
         return new GuzzleTransport($guzzle);
+    }
+
+    private function parseProtocol(string $connection): string
+    {
+        $protocol = '';
+
+        if (false !== preg_match('/^(.*):/U', $connection, $matches)) {
+            $protocol = strtolower($matches[1] ?? '');
+        }
+
+        return $protocol;
     }
 }

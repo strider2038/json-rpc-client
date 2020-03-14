@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
+use Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport;
 use Strider2038\JsonRpcClient\Transport\SocketTransport;
 use Strider2038\JsonRpcClient\Transport\TransportFactory;
 use Strider2038\JsonRpcClient\Transport\TransportLoggingDecorator;
@@ -41,8 +42,9 @@ class TransportFactoryTest extends TestCase
     public function connectionStringAndExpectedTransportClass(): \Iterator
     {
         yield ['tcp://localhost:3000', SocketTransport::class];
-        yield ['http://localhost:3000', \Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport::class];
-        yield ['https://localhost:3000', \Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport::class];
+        yield ['unix:///var/run/jsonrpc.sock', SocketTransport::class];
+        yield ['http://localhost:3000', GuzzleTransport::class];
+        yield ['https://localhost:3000', GuzzleTransport::class];
     }
 
     /** @test */
