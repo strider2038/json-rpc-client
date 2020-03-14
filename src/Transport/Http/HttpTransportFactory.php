@@ -84,7 +84,7 @@ class HttpTransportFactory implements TransportFactoryInterface
                 $options->getTransportConfiguration(),
                 [
                     'base_uri' => $connection,
-                    'timeout' => (float) $options->getRequestTimeoutUs() / 1000000,
+                    'timeout'  => (float) $options->getRequestTimeoutUs() / 1000000,
                 ]
             );
 
