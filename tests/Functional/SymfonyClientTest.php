@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of json-rpc-client.
+ * This file is part of JSON RPC Client.
  *
  * (c) Igor Lazarev <strider2038@yandex.ru>
  *
