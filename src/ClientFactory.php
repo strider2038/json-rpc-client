@@ -16,7 +16,8 @@ use Strider2038\JsonRpcClient\Bridge\Symfony\Serialization\SymfonySerializerAdap
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Configuration\SerializationOptions;
 use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
-use Strider2038\JsonRpcClient\Transport\TransportFactory;
+use Strider2038\JsonRpcClient\Transport\MultiTransportFactory;
+use Strider2038\JsonRpcClient\Transport\TransportFactoryInterface;
 
 /**
  * @experimental API may be changed
@@ -25,12 +26,12 @@ use Strider2038\JsonRpcClient\Transport\TransportFactory;
  */
 class ClientFactory
 {
-    /** @var TransportFactory */
+    /** @var TransportFactoryInterface */
     private $transportFactory;
 
     public function __construct(LoggerInterface $logger = null)
     {
-        $this->transportFactory = new TransportFactory($logger);
+        $this->transportFactory = new MultiTransportFactory($logger);
     }
 
     /**

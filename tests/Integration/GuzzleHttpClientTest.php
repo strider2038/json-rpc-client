@@ -13,17 +13,27 @@ namespace Strider2038\JsonRpcClient\Tests\Integration;
 use Strider2038\JsonRpcClient\ClientFactory;
 use Strider2038\JsonRpcClient\Service\ProcessingClient;
 use Strider2038\JsonRpcClient\Tests\TestCase\ClientIntegrationTestCase;
+use Strider2038\JsonRpcClient\Transport\Http\HttpTransportTypeInterface;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class TcpClientTest extends ClientIntegrationTestCase
+class GuzzleHttpClientTest extends ClientIntegrationTestCase
 {
     protected function createClient(): ProcessingClient
     {
-        $transportUrl = getenv('TEST_TCP_TRANSPORT_URL');
+        $transportUrl = getenv('TEST_HTTP_TRANSPORT_URL');
+        $bearerToken = getenv('TEST_HTTP_BEARER_TOKEN');
+
         $clientFactory = new ClientFactory();
-        $client = $clientFactory->createClient($transportUrl);
+        $client = $clientFactory->createClient($transportUrl, [
+            'http_client'             => HttpTransportTypeInterface::GUZZLE,
+            'transport_configuration' => [
+                'headers' => [
+                    'Authorization' => 'Bearer '.$bearerToken,
+                ],
+            ],
+        ]);
         assert($client instanceof ProcessingClient);
 
         return $client;

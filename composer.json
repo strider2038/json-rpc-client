@@ -22,6 +22,7 @@
     "ext-json": "*"
   },
   "require-dev": {
+    "ext-curl": "*",
     "phpunit/phpunit": "^8.0",
     "phake/phake": "^3.1",
     "ramsey/uuid": "^3.8",
@@ -29,19 +30,25 @@
     "psr/log": "^1.1",
     "symplify/easy-coding-standard": "^7.0",
     "phpstan/phpstan": "^0.12.5",
+    "symfony/http-client": "^4.3 || ^5.0",
     "symfony/serializer": "^4.3 || ^5.0",
     "symfony/property-access": "^4.3 || ^5.0",
     "symfony/property-info": "^4.3 || ^5.0",
     "doctrine/annotations": "^1.6"
   },
   "suggest": {
+    "ext-curl": "Recommended for use with HTTP transport to improve performance",
     "ramsey/uuid": "To generate UUID identifiers for request objects",
     "guzzlehttp/guzzle": "To use HTTP transport via Guzzle",
     "psr/log": "To use logging capabilities",
-    "symfony/serializer": "To use request and response serialization via Symfony serializer component",
-    "symfony/property-access": "Required for Symfony serializer",
-    "symfony/property-info": "Required for Symfony serializer",
+    "symfony/http-client": "To use HTTP transport via Symfony Http Client component",
+    "symfony/serializer": "To use request and response serialization via Symfony Serializer component",
+    "symfony/property-access": "Required for Symfony Serializer",
+    "symfony/property-info": "Required for Symfony Serializer",
     "doctrine/annotations": "To use serialization with annotation options"
+  },
+  "config": {
+    "sort-packages": true
   },
   "autoload": {
     "psr-4": {

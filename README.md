@@ -100,6 +100,7 @@ $result = $client->batch()
 * [x] unix socket transport
 * [x] bridge for symfony serializer
 * [x] ci test matrix
+* [x] symfony http client transport
 * [ ] add http transport support via psr-18
 * [ ] symfony bundle
 * [ ] symfony example

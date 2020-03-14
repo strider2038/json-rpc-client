@@ -21,7 +21,7 @@ use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Service\Caller;
 use Strider2038\JsonRpcClient\Service\ProcessingClient;
-use Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport;
+use Strider2038\JsonRpcClient\Transport\Http\SymfonyTransport;
 use Strider2038\JsonRpcClient\Transport\SocketTransport;
 use Strider2038\JsonRpcClient\Transport\TransportLoggingDecorator;
 
@@ -50,8 +50,8 @@ class ClientFactoryTest extends TestCase
     public function connectionStringAndExpectedTransportClass(): \Iterator
     {
         yield ['tcp://localhost:3000', SocketTransport::class];
-        yield ['http://localhost:3000', GuzzleTransport::class];
-        yield ['https://localhost:3000', GuzzleTransport::class];
+        yield ['http://localhost:3000', SymfonyTransport::class];
+        yield ['https://localhost:3000', SymfonyTransport::class];
     }
 
     /** @test */
@@ -60,7 +60,7 @@ class ClientFactoryTest extends TestCase
         $factory = new ClientFactory();
 
         $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('Unsupported protocol: "unknown". Supported protocols: "tcp", "http", "https".');
+        $this->expectExceptionMessage('Unsupported protocol: "unknown". Supported protocols: "unix", "tcp", "http", "https".');
 
         $factory->createClient('unknown://localhost:3000');
     }

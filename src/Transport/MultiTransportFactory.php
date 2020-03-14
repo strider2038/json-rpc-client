@@ -10,24 +10,29 @@
 
 namespace Strider2038\JsonRpcClient\Transport;
 
-use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
-use Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport;
+use Strider2038\JsonRpcClient\Transport\Http\HttpTransportFactory;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketClient;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketConnector;
 
 /**
+ * @internal
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class TransportFactory
+class MultiTransportFactory implements TransportFactoryInterface
 {
+    /** @var HttpTransportFactory */
+    private $httpTransportFactory;
+
     /** @var LoggerInterface|null */
     private $logger;
 
     public function __construct(LoggerInterface $logger = null)
     {
+        $this->httpTransportFactory = new HttpTransportFactory();
         $this->logger = $logger;
     }
 
@@ -41,11 +46,11 @@ class TransportFactory
         if ('tcp' === $protocol || 'unix' === $protocol) {
             $transport = $this->createSocketTransport($connection, $options);
         } elseif ('http' === $protocol || 'https' === $protocol) {
-            $transport = $this->createHttpTransport($connection, $options);
+            $transport = $this->httpTransportFactory->createTransport($connection, $options);
         } else {
             throw new InvalidConfigException(
                 sprintf(
-                    'Unsupported protocol: "%s". Supported protocols: "tcp", "http", "https".',
+                    'Unsupported protocol: "%s". Supported protocols: "unix", "tcp", "http", "https".',
                     $protocol
                 )
             );
@@ -67,21 +72,6 @@ class TransportFactory
         $client = new SocketClient($connector, $connection, $options->getConnectionOptions(), $options->getRequestTimeoutUs());
 
         return new SocketTransport($client);
-    }
-
-    private function createHttpTransport(string $connection, GeneralOptions $options): GuzzleTransport
-    {
-        $config = array_merge(
-            $options->getTransportConfiguration(),
-            [
-                'base_uri' => $connection,
-                'timeout'  => (float) $options->getRequestTimeoutUs() / 1000000,
-            ]
-        );
-
-        $guzzle = new Client($config);
-
-        return new GuzzleTransport($guzzle);
     }
 
     private function parseProtocol(string $connection): string

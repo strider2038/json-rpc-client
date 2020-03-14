@@ -8,10 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Tests\Integration;
+namespace Strider2038\JsonRpcClient\Tests\TestCase;
 
 use PHPUnit\Framework\TestCase;
-use Strider2038\JsonRpcClient\ClientFactory;
 use Strider2038\JsonRpcClient\Exception\ErrorResponseException;
 use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
 use Strider2038\JsonRpcClient\Service\ProcessingClient;
@@ -19,7 +18,7 @@ use Strider2038\JsonRpcClient\Service\ProcessingClient;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class HttpClientTest extends TestCase
+abstract class ClientIntegrationTestCase extends TestCase
 {
     /** @test */
     public function singleRequest_positionalParameters_resultReturned(): void
@@ -90,21 +89,5 @@ class HttpClientTest extends TestCase
         $client->call('sleep', [1500]);
     }
 
-    private function createClient(): ProcessingClient
-    {
-        $transportUrl = getenv('TEST_HTTP_TRANSPORT_URL');
-        $bearerToken = getenv('TEST_HTTP_BEARER_TOKEN');
-
-        $clientFactory = new ClientFactory();
-        $client = $clientFactory->createClient($transportUrl, [
-            'transport_configuration' => [
-                'headers' => [
-                    'Authorization' => 'Bearer '.$bearerToken,
-                ],
-            ],
-        ]);
-        assert($client instanceof ProcessingClient);
-
-        return $client;
-    }
+    abstract protected function createClient(): ProcessingClient;
 }
