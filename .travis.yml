@@ -13,9 +13,10 @@ env:
 
 install:
   - composer require --dev
-      symfony/serializer:${SYMFONY_VERSION}
+      symfony/http-client:${SYMFONY_VERSION}
       symfony/property-access:${SYMFONY_VERSION}
       symfony/property-info:${SYMFONY_VERSION}
+      symfony/serializer:${SYMFONY_VERSION}
   - composer install
 
 script:
