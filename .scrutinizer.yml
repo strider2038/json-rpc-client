@@ -2,6 +2,8 @@ build:
   nodes:
 
     analysis:
+      environment:
+        php: 7.2
       project_setup:
         override:
           - 'true'
