@@ -7,7 +7,8 @@
     "client",
     "http",
     "tcp",
-    "unix"
+    "unix",
+    "psr18"
   ],
   "type": "library",
   "license": "MIT",
@@ -23,29 +24,33 @@
   },
   "require-dev": {
     "ext-curl": "*",
-    "phpunit/phpunit": "^8.0",
-    "phake/phake": "^3.1",
-    "ramsey/uuid": "^3.8",
+    "doctrine/annotations": "^1.6",
     "guzzlehttp/guzzle": "^6.3",
-    "psr/log": "^1.1",
-    "symplify/easy-coding-standard": "^7.0",
+    "nyholm/psr7": "^1.0",
+    "phake/phake": "^3.1",
     "phpstan/phpstan": "^0.12.5",
+    "phpunit/phpunit": "^8.0",
+    "psr/http-client": "^1.0",
+    "psr/log": "^1.0",
+    "ramsey/uuid": "^3.8",
     "symfony/http-client": "^4.3 || ^5.0",
-    "symfony/serializer": "^4.3 || ^5.0",
     "symfony/property-access": "^4.3 || ^5.0",
     "symfony/property-info": "^4.3 || ^5.0",
-    "doctrine/annotations": "^1.6"
+    "symfony/serializer": "^4.3 || ^5.0",
+    "symplify/easy-coding-standard": "^7.0"
   },
   "suggest": {
     "ext-curl": "Recommended for use with HTTP transport to improve performance",
-    "ramsey/uuid": "To generate UUID identifiers for request objects",
+    "doctrine/annotations": "To use serialization with annotation options",
     "guzzlehttp/guzzle": "To use HTTP transport via Guzzle",
+    "nyholm/psr7": "To use HTTP transport compatible with PSR-18",
+    "psr/http-client": "To use HTTP transport compatible with PSR-18",
     "psr/log": "To use logging capabilities",
+    "ramsey/uuid": "To generate UUID identifiers for request objects",
     "symfony/http-client": "To use HTTP transport via Symfony Http Client component",
-    "symfony/serializer": "To use request and response serialization via Symfony Serializer component",
     "symfony/property-access": "Required for Symfony Serializer",
     "symfony/property-info": "Required for Symfony Serializer",
-    "doctrine/annotations": "To use serialization with annotation options"
+    "symfony/serializer": "To use request and response serialization via Symfony Serializer component"
   },
   "config": {
     "sort-packages": true
