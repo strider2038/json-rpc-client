@@ -58,7 +58,7 @@ class ResponseObject implements ResponseObjectInterface
 
     public function getError(): ErrorObject
     {
-        if ($this->error === null) {
+        if (null === $this->error) {
             throw new JsonRpcClientException(
                 'There is no error in response. Please, use hasError() method to check response for errors.'
             );

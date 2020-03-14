@@ -10,9 +10,9 @@
 
 namespace Strider2038\JsonRpcClient\Tests\Unit\Response;
 
+use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
 use Strider2038\JsonRpcClient\Response\ResponseObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
