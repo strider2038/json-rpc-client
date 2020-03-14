@@ -49,7 +49,7 @@ class RawClient implements ClientInterface
      *
      * @throws JsonRpcClientException
      *
-     * @return ResponseObjectInterface
+     * @return ResponseObjectInterface|ResponseObjectInterface[]|null
      */
     public function call(string $method, $params = null)
     {
