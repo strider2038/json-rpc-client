@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\Exception\InvalidResponseException;
 use Strider2038\JsonRpcClient\Request\NotificationObject;
 use Strider2038\JsonRpcClient\Request\RequestObject;
-use Strider2038\JsonRpcClient\Response\ErrorObject;
 use Strider2038\JsonRpcClient\Response\ResponseObject;
 use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
 
@@ -27,8 +26,7 @@ class JsonArraySerializerTest extends TestCase
     public function serialize_singleRequest_jsonStringReturned(): void
     {
         $serializer = new JsonArraySerializer();
-        $request = new RequestObject('method', ['parameterName' => 'parameterValue']);
-        $request->id = 'id';
+        $request = new RequestObject('id', 'method', ['parameterName' => 'parameterValue']);
 
         $serializedRequest = $serializer->serialize($request);
 
@@ -56,8 +54,7 @@ class JsonArraySerializerTest extends TestCase
     public function serialize_arrayWithRequest_jsonStringReturned(): void
     {
         $serializer = new JsonArraySerializer();
-        $request = new RequestObject('method', ['parameterName' => 'parameterValue']);
-        $request->id = 'id';
+        $request = new RequestObject('id', 'method', ['parameterName' => 'parameterValue']);
 
         $serializedRequest = $serializer->serialize([$request]);
 
@@ -79,13 +76,13 @@ class JsonArraySerializerTest extends TestCase
         }
         ';
 
-        $response = $serializer->deserialize($serializedResponse);
+        $response = $serializer->deserialize($serializedResponse, []);
 
         $this->assertInstanceOf(ResponseObject::class, $response);
-        $this->assertSame('2.0', $response->jsonrpc);
-        $this->assertSame('resultValue', $response->result);
-        $this->assertSame('idValue', $response->id);
-        $this->assertNull($response->error);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertSame('resultValue', $response->getResult());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertFalse($response->hasError());
     }
 
     /** @test */
@@ -104,16 +101,40 @@ class JsonArraySerializerTest extends TestCase
         }
         ';
 
-        $response = $serializer->deserialize($serializedResponse);
+        $response = $serializer->deserialize($serializedResponse, []);
 
         $this->assertInstanceOf(ResponseObject::class, $response);
-        $this->assertSame('2.0', $response->jsonrpc);
-        $this->assertNull($response->result);
-        $this->assertSame('idValue', $response->id);
-        $this->assertInstanceOf(ErrorObject::class, $response->error);
-        $this->assertSame(1, $response->error->code);
-        $this->assertSame('errorMessage', $response->error->message);
-        $this->assertSame(['errorDataKey' => 'errorDataValue'], $response->error->data);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertNull($response->getResult());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertTrue($response->hasError());
+        $this->assertSame(1, $response->getError()->getCode());
+        $this->assertSame('errorMessage', $response->getError()->getMessage());
+        $this->assertSame(['errorDataKey' => 'errorDataValue'], $response->getError()->getData());
+    }
+
+    /** @test */
+    public function deserialize_singleErrorResponseWithEmptyError_responseWithErrorReturned(): void
+    {
+        $serializer = new JsonArraySerializer();
+        $serializedResponse = '
+        {
+            "jsonrpc": "2.0",
+            "error": {},
+            "id": "idValue"
+        }
+        ';
+
+        $response = $serializer->deserialize($serializedResponse, []);
+
+        $this->assertInstanceOf(ResponseObject::class, $response);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertNull($response->getResult());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertTrue($response->hasError());
+        $this->assertSame(0, $response->getError()->getCode());
+        $this->assertSame('unknown error', $response->getError()->getMessage());
+        $this->assertNull($response->getError()->getData());
     }
 
     /** @test */
@@ -121,13 +142,13 @@ class JsonArraySerializerTest extends TestCase
     {
         $serializer = new JsonArraySerializer();
 
-        $response = $serializer->deserialize('{}');
+        $response = $serializer->deserialize('{}', []);
 
         $this->assertInstanceOf(ResponseObject::class, $response);
-        $this->assertSame('', $response->jsonrpc);
-        $this->assertNull($response->result);
-        $this->assertNull($response->id);
-        $this->assertNull($response->error);
+        $this->assertSame('', $response->getProtocol());
+        $this->assertNull($response->getResult());
+        $this->assertNull($response->getId());
+        $this->assertFalse($response->hasError());
     }
 
     /** @test */
@@ -135,7 +156,7 @@ class JsonArraySerializerTest extends TestCase
     {
         $serializer = new JsonArraySerializer();
 
-        $response = $serializer->deserialize(' ');
+        $response = $serializer->deserialize(' ', []);
 
         $this->assertNull($response);
     }
@@ -147,7 +168,7 @@ class JsonArraySerializerTest extends TestCase
 
         $this->expectException(InvalidResponseException::class);
 
-        $serializer->deserialize('invalid');
+        $serializer->deserialize('invalid', []);
     }
 
     /** @test */
@@ -164,15 +185,15 @@ class JsonArraySerializerTest extends TestCase
         ]
         ';
 
-        $responses = $serializer->deserialize($serializedResponse);
+        $responses = $serializer->deserialize($serializedResponse, []);
 
         $this->assertIsArray($responses);
         $response = $responses[0];
         $this->assertInstanceOf(ResponseObject::class, $response);
-        $this->assertSame('2.0', $response->jsonrpc);
-        $this->assertSame('resultValue', $response->result);
-        $this->assertSame('idValue', $response->id);
-        $this->assertNull($response->error);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertSame('resultValue', $response->getResult());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertFalse($response->hasError());
     }
 
     /** @test */
@@ -189,12 +210,12 @@ class JsonArraySerializerTest extends TestCase
         }
         ';
 
-        $response = $serializer->deserialize($serializedResponse);
+        $response = $serializer->deserialize($serializedResponse, []);
 
         $this->assertInstanceOf(ResponseObject::class, $response);
-        $this->assertSame('2.0', $response->jsonrpc);
-        $this->assertSame(['key' => 'value'], $response->result);
-        $this->assertSame('idValue', $response->id);
-        $this->assertNull($response->error);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertSame(['key' => 'value'], $response->getResult());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertFalse($response->hasError());
     }
 }

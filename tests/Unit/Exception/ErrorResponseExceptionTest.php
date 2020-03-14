@@ -22,7 +22,7 @@ class ErrorResponseExceptionTest extends TestCase
     /** @test */
     public function getError_errorObjectInjected_errorObjectReturned(): void
     {
-        $expectedError = new ErrorObject();
+        $expectedError = new ErrorObject(0, '', '');
         $exception = new ErrorResponseException($expectedError);
 
         $error = $exception->getError();

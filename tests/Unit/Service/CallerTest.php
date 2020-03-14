@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
 use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 use Strider2038\JsonRpcClient\Response\ResponseValidatorInterface;
+use Strider2038\JsonRpcClient\Serialization\ContextGenerator;
 use Strider2038\JsonRpcClient\Serialization\MessageSerializerInterface;
 use Strider2038\JsonRpcClient\Service\Caller;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
@@ -23,8 +24,13 @@ use Strider2038\JsonRpcClient\Transport\TransportInterface;
  */
 class CallerTest extends TestCase
 {
+    private const SERIALIZATION_CONTEXT = ['serializationContext'];
+
     /** @var MessageSerializerInterface */
     private $serializer;
+
+    /** @var ContextGenerator */
+    private $contextGenerator;
 
     /** @var TransportInterface */
     private $transport;
@@ -35,6 +41,7 @@ class CallerTest extends TestCase
     protected function setUp(): void
     {
         $this->serializer = \Phake::mock(MessageSerializerInterface::class);
+        $this->contextGenerator = \Phake::mock(ContextGenerator::class);
         $this->transport = \Phake::mock(TransportInterface::class);
         $this->validator = \Phake::mock(ResponseValidatorInterface::class);
     }
@@ -46,13 +53,16 @@ class CallerTest extends TestCase
         $request = \Phake::mock(RequestObjectInterface::class);
         $serializedRequest = $this->givenSerializedRequest();
         $serializedResponse = $this->givenSerializedResponse();
+        $serializationContext = $this->givenSerializationContext();
+
         $expectedResponse = $this->givenDeserializedResponse();
 
         $response = $caller->call($request);
 
         $this->assertRequestWasSerialized($request);
         $this->assertRequestWasSentByTransport($serializedRequest);
-        $this->assertResponseWasDeserialized($serializedResponse);
+        $this->assertSerializationContextWasCreated($request);
+        $this->assertResponseWasDeserializedWithContext($serializedResponse, $serializationContext);
         $this->assertResponseWasValidated($expectedResponse);
         $this->assertSame($expectedResponse, $response);
     }
@@ -80,10 +90,10 @@ class CallerTest extends TestCase
         return $serializedRequest;
     }
 
-    private function assertResponseWasDeserialized(string $serializedResponse): void
+    private function assertResponseWasDeserializedWithContext(string $serializedResponse, array $context): void
     {
         \Phake::verify($this->serializer)
-            ->deserialize($serializedResponse);
+            ->deserialize($serializedResponse, $context);
     }
 
     private function givenSerializedResponse(): string
@@ -99,7 +109,7 @@ class CallerTest extends TestCase
 
     private function createCaller(): Caller
     {
-        return new Caller($this->serializer, $this->transport, $this->validator);
+        return new Caller($this->serializer, $this->contextGenerator, $this->transport, $this->validator);
     }
 
     private function assertResponseWasValidated($response): void
@@ -117,5 +127,21 @@ class CallerTest extends TestCase
             ->thenReturn($response);
 
         return $response;
+    }
+
+    private function assertSerializationContextWasCreated($request): void
+    {
+        \Phake::verify($this->contextGenerator)
+            ->createSerializationContext($request);
+    }
+
+    private function givenSerializationContext(): array
+    {
+        $serializationContext = self::SERIALIZATION_CONTEXT;
+        \Phake::when($this->contextGenerator)
+            ->createSerializationContext(\Phake::anyParameters())
+            ->thenReturn($serializationContext);
+
+        return $serializationContext;
     }
 }

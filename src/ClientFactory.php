@@ -11,9 +11,13 @@
 namespace Strider2038\JsonRpcClient;
 
 use Psr\Log\LoggerInterface;
+use Strider2038\JsonRpcClient\Bridge\Symfony\DependencyInjection\Factory\SerializerFactory;
+use Strider2038\JsonRpcClient\Bridge\Symfony\Serialization\SymfonySerializerAdapter;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
+use Strider2038\JsonRpcClient\Configuration\SerializationOptions;
 use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
-use Strider2038\JsonRpcClient\Transport\TransportFactory;
+use Strider2038\JsonRpcClient\Transport\MultiTransportFactory;
+use Strider2038\JsonRpcClient\Transport\TransportFactoryInterface;
 
 /**
  * @experimental API may be changed
@@ -22,22 +26,35 @@ use Strider2038\JsonRpcClient\Transport\TransportFactory;
  */
 class ClientFactory
 {
-    /** @var TransportFactory */
+    /** @var TransportFactoryInterface */
     private $transportFactory;
 
     public function __construct(LoggerInterface $logger = null)
     {
-        $this->transportFactory = new TransportFactory($logger);
+        $this->transportFactory = new MultiTransportFactory($logger);
     }
 
+    /**
+     * @throws Exception\InvalidConfigException on invalid options
+     */
     public function createClient(string $connection, array $options = []): ClientInterface
     {
         $generalOptions = GeneralOptions::createFromArray($options);
         $transport = $this->transportFactory->createTransport($connection, $generalOptions);
         $clientBuilder = new ClientBuilder($transport);
 
-        if ('array' === $generalOptions->getSerializer()) {
+        $serializationOptions = $generalOptions->getSerializationOptions();
+
+        $clientBuilder->setResultTypesByMethods($serializationOptions->getResultTypesByMethods());
+        $clientBuilder->setErrorType($serializationOptions->getErrorType());
+
+        $serializerType = $serializationOptions->getSerializer();
+
+        if (SerializationOptions::ARRAY_SERIALIZER === $serializerType) {
             $clientBuilder->setSerializer(new JsonArraySerializer());
+        } elseif (SerializationOptions::SYMFONY_SERIALIZER === $serializerType) {
+            $serializer = SerializerFactory::createSerializer();
+            $clientBuilder->setSerializer(new SymfonySerializerAdapter($serializer));
         }
 
         return $clientBuilder->getClient();

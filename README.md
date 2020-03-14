@@ -3,6 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/strider2038/json-rpc-client/v/stable)](https://packagist.org/packages/strider2038/json-rpc-client)
 [![Total Downloads](https://poser.pugx.org/strider2038/json-rpc-client/downloads)](https://packagist.org/packages/strider2038/json-rpc-client)
 [![License](https://poser.pugx.org/strider2038/json-rpc-client/license)](https://packagist.org/packages/strider2038/json-rpc-client)
+[![Build Status](https://travis-ci.org/strider2038/json-rpc-client.svg?branch=master)](https://travis-ci.org/strider2038/json-rpc-client)
 [![Build Status](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/badges/build.png?b=master)](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/?branch=master)
@@ -96,7 +97,14 @@ $result = $client->batch()
 * [x] integration testing for http transport with server mock
 * [x] http authentication tests
 * [x] json array serializer
-* [ ] bridge for symfony serializer
+* [x] unix socket transport
+* [x] bridge for symfony serializer
+* [x] ci test matrix
+* [x] symfony http client transport
+* [x] add http transport support via psr-18
+* [ ] symfony bundle
+* [ ] symfony example
+* [ ] documentation
+* [ ] caller context for possible authorization
 * [ ] bridge for jms serializer
-* [ ] middleware interfaces
-* [ ] add http transport support via psr-18
+* [ ] web socket transport

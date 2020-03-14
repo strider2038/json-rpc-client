@@ -11,6 +11,7 @@
 namespace Strider2038\JsonRpcClient\Configuration;
 
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
+use Strider2038\JsonRpcClient\Transport\Http\HttpTransportTypeInterface;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
@@ -18,7 +19,12 @@ use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 class GeneralOptions
 {
     public const DEFAULT_REQUEST_TIMEOUT = 1000000;
-    public const DEFAULT_SERIALIZER = 'object';
+
+    private const SUPPORTED_HTTP_CLIENTS = [
+        HttpTransportTypeInterface::AUTODETECT,
+        HttpTransportTypeInterface::GUZZLE,
+        HttpTransportTypeInterface::SYMFONY,
+    ];
 
     /**
      * Request timeout in microseconds.
@@ -28,11 +34,27 @@ class GeneralOptions
     private $requestTimeoutUs;
 
     /**
-     * Connection timeout in microseconds.
+     * Connection configuration.
      *
      * @var ConnectionOptions
      */
     private $connectionOptions;
+
+    /**
+     * Serialization configuration.
+     *
+     * @var SerializationOptions
+     */
+    private $serializationOptions;
+
+    /**
+     * Preferred HTTP client.
+     *
+     * @see HttpTransportTypeInterface for available options.
+     *
+     * @var string
+     */
+    private $httpClient;
 
     /**
      * @var array
@@ -40,30 +62,25 @@ class GeneralOptions
     private $transportConfiguration;
 
     /**
-     * @var string
-     */
-    private $serializer;
-
-    /**
      * @throws InvalidConfigException
      */
     public function __construct(
         int $requestTimeoutUs = self::DEFAULT_REQUEST_TIMEOUT,
         ConnectionOptions $connectionOptions = null,
+        SerializationOptions $serializationOptions = null,
         array $transportConfiguration = [],
-        string $serializer = 'object'
+        string $httpClient = HttpTransportTypeInterface::AUTODETECT
     ) {
         if ($requestTimeoutUs <= 0) {
             throw new InvalidConfigException('Request timeout must be greater than 0.');
         }
-        if (!in_array($serializer, [self::DEFAULT_SERIALIZER, 'array'], true)) {
-            throw new InvalidConfigException('Serializer option must be equal to one of: "object" or "array".');
-        }
+        $this->validateHttpClient($httpClient);
 
         $this->requestTimeoutUs = $requestTimeoutUs;
         $this->connectionOptions = $connectionOptions ?? new ConnectionOptions();
         $this->transportConfiguration = $transportConfiguration;
-        $this->serializer = $serializer;
+        $this->serializationOptions = $serializationOptions ?? new SerializationOptions();
+        $this->httpClient = $httpClient;
     }
 
     public function getRequestTimeoutUs(): int
@@ -81,9 +98,14 @@ class GeneralOptions
         return $this->transportConfiguration;
     }
 
-    public function getSerializer(): string
+    public function getSerializationOptions(): SerializationOptions
     {
-        return $this->serializer;
+        return $this->serializationOptions;
+    }
+
+    public function getHttpClient(): string
+    {
+        return $this->httpClient;
     }
 
     /**
@@ -94,8 +116,33 @@ class GeneralOptions
         return new self(
             $options['request_timeout_us'] ?? self::DEFAULT_REQUEST_TIMEOUT,
             ConnectionOptions::createFromArray($options['connection'] ?? []),
+            SerializationOptions::createFromArray($options['serialization'] ?? []),
             $options['transport_configuration'] ?? [],
-            $options['serializer'] ?? self::DEFAULT_SERIALIZER
+            $options['http_client'] ?? HttpTransportTypeInterface::AUTODETECT
         );
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    private function validateHttpClient(string $httpClient): void
+    {
+        if (!in_array($httpClient, self::SUPPORTED_HTTP_CLIENTS, true)) {
+            throw new InvalidConfigException(
+                sprintf(
+                    'Invalid value "%s" for http client option. Must be one of: %s.',
+                    $httpClient,
+                    implode(
+                        ', ',
+                        array_map(
+                            static function (string $s): string {
+                                return '"'.$s.'"';
+                            },
+                            self::SUPPORTED_HTTP_CLIENTS
+                        )
+                    )
+                )
+            );
+        }
     }
 }

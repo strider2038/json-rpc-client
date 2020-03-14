@@ -16,7 +16,25 @@ namespace Strider2038\JsonRpcClient\Request;
 interface RequestObjectInterface
 {
     /**
+     * JSON RPC protocol version
+     * Always returns '2.0'.
+     */
+    public function getProtocol(): string;
+
+    /**
+     * Returns request identifier unique for session. Returns null for notification.
+     *
      * @return string|int|null
      */
     public function getId();
+
+    /**
+     * Returns remote procedure method name.
+     */
+    public function getMethod(): string;
+
+    /**
+     * Returns request parameters.
+     */
+    public function getParams();
 }

@@ -27,9 +27,9 @@ class ErrorResponseException extends ResponseException
         parent::__construct(
             sprintf(
                 'Server response has error: code %d, message "%s", data %s.',
-                $error->code,
-                $error->message,
-                json_encode($error->data)
+                $error->getCode(),
+                $error->getMessage(),
+                json_encode($error->getData())
             )
         );
     }

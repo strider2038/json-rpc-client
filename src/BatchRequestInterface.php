@@ -42,8 +42,8 @@ interface BatchRequestInterface extends RequestInterface
     public function notify(string $method, $params = null): self;
 
     /**
-     * Executes batch request and returns unsorted responses (for low level client)
-     * or properly ordered results in array (for high level client).
+     * Executes batch request and returns unsorted responses (for raw client)
+     * or properly ordered results in array (for processing client).
      *
      * @throws JsonRpcClientException
      */

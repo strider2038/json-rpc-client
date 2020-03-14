@@ -13,6 +13,7 @@ namespace Strider2038\JsonRpcClient\Service;
 use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
 use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 use Strider2038\JsonRpcClient\Response\ResponseValidatorInterface;
+use Strider2038\JsonRpcClient\Serialization\ContextGenerator;
 use Strider2038\JsonRpcClient\Serialization\MessageSerializerInterface;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
 
@@ -26,6 +27,9 @@ class Caller
     /** @var MessageSerializerInterface */
     private $serializer;
 
+    /** @var ContextGenerator */
+    private $contextGenerator;
+
     /** @var TransportInterface */
     private $transport;
 
@@ -34,10 +38,12 @@ class Caller
 
     public function __construct(
         MessageSerializerInterface $serializer,
+        ContextGenerator $contextGenerator,
         TransportInterface $transport,
         ResponseValidatorInterface $validator
     ) {
         $this->serializer = $serializer;
+        $this->contextGenerator = $contextGenerator;
         $this->transport = $transport;
         $this->validator = $validator;
     }
@@ -51,7 +57,8 @@ class Caller
     {
         $serializedRequest = $this->serializer->serialize($request);
         $serializedResponse = $this->transport->send($serializedRequest);
-        $response = $this->serializer->deserialize($serializedResponse);
+        $context = $this->contextGenerator->createSerializationContext($request);
+        $response = $this->serializer->deserialize($serializedResponse, $context);
         $this->validator->validate($response);
 
         return $response;

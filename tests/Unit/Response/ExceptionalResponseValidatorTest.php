@@ -47,7 +47,7 @@ class ExceptionalResponseValidatorTest extends TestCase
     public function validate_singleResponseWithoutVersion_exceptionThrown(): void
     {
         $validator = new ExceptionalResponseValidator();
-        $response = new ResponseObject();
+        $response = new ResponseObject('', '', '');
 
         $this->expectException(ResponseException::class);
         $this->expectExceptionMessage('Invalid JSON RPC version in server request.');
@@ -59,12 +59,12 @@ class ExceptionalResponseValidatorTest extends TestCase
     public function validate_singleResponseWithError_exceptionThrown(): void
     {
         $validator = new ExceptionalResponseValidator();
-        $response = new ResponseObject();
-        $response->jsonrpc = '2.0';
-        $response->error = new ErrorObject();
-        $response->error->code = 123;
-        $response->error->message = 'error message';
-        $response->error->data = ['key' => 'value'];
+        $response = new ResponseObject('2.0', '', '');
+        $response->setError(new ErrorObject(
+            123,
+            'error message',
+            ['key' => 'value']
+        ));
 
         $this->expectException(ErrorResponseException::class);
         $this->expectExceptionMessage(
@@ -78,7 +78,7 @@ class ExceptionalResponseValidatorTest extends TestCase
     public function validate_responseInBatchWithoutVersion_exceptionThrown(): void
     {
         $validator = new ExceptionalResponseValidator();
-        $response = new ResponseObject();
+        $response = new ResponseObject('', '', '');
 
         $this->expectException(ResponseException::class);
         $this->expectExceptionMessage('Invalid JSON RPC version in server request.');
@@ -90,12 +90,12 @@ class ExceptionalResponseValidatorTest extends TestCase
     public function validate_responseInBatchWithError_exceptionThrown(): void
     {
         $validator = new ExceptionalResponseValidator();
-        $response = new ResponseObject();
-        $response->jsonrpc = '2.0';
-        $response->error = new ErrorObject();
-        $response->error->code = 123;
-        $response->error->message = 'error message';
-        $response->error->data = ['key' => 'value'];
+        $response = new ResponseObject('2.0', '', '');
+        $response->setError(new ErrorObject(
+            123,
+            'error message',
+            ['key' => 'value']
+        ));
 
         $this->expectException(ErrorResponseException::class);
         $this->expectExceptionMessage(

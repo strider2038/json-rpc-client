@@ -17,9 +17,13 @@ use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 
 /**
+ * Can be used for low-level operations. Remote procedure results returned as response objects.
+ * So client response data must be extracted from responses. Advantage of this type of client
+ * is possibility to handle errors from server without catching exceptions.
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class LowLevelClient implements ClientInterface
+class RawClient implements ClientInterface
 {
     /** @var RequestObjectFactory */
     private $requestObjectFactory;
@@ -35,7 +39,7 @@ class LowLevelClient implements ClientInterface
 
     public function batch(): BatchRequestInterface
     {
-        return new LowLevelBatchRequester($this->requestObjectFactory, $this->caller);
+        return new RawBatchRequester($this->requestObjectFactory, $this->caller);
     }
 
     /**
@@ -45,7 +49,7 @@ class LowLevelClient implements ClientInterface
      *
      * @throws JsonRpcClientException
      *
-     * @return ResponseObjectInterface
+     * @return ResponseObjectInterface|ResponseObjectInterface[]|null
      */
     public function call(string $method, $params = null)
     {

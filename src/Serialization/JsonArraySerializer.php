@@ -40,7 +40,7 @@ class JsonArraySerializer implements MessageSerializerInterface
         return json_encode($request, $this->encodeOptions, $this->depth);
     }
 
-    public function deserialize(string $response)
+    public function deserialize(string $response, array $context)
     {
         if ('' === trim($response)) {
             $result = null;
@@ -73,20 +73,22 @@ class JsonArraySerializer implements MessageSerializerInterface
 
     private function deserializeResponseObject(array $decodedObject): ResponseObject
     {
-        $responseObject = new ResponseObject();
-        $responseObject->jsonrpc = $decodedObject['jsonrpc'] ?? '';
-        $responseObject->result = $decodedObject['result'] ?? null;
-        $responseObject->id = $decodedObject['id'] ?? null;
+        $responseObject = new ResponseObject(
+            $decodedObject['jsonrpc'] ?? '',
+            $decodedObject['result'] ?? null,
+            $decodedObject['id'] ?? null
+        );
 
         if (array_key_exists('error', $decodedObject)) {
             $decodedError = $decodedObject['error'];
 
-            $errorObject = new ErrorObject();
-            $errorObject->code = $decodedError['code'] ?? null;
-            $errorObject->message = $decodedError['message'] ?? null;
-            $errorObject->data = $decodedError['data'] ?? null;
+            $errorObject = new ErrorObject(
+                $decodedError['code'] ?? 0,
+                $decodedError['message'] ?? 'unknown error',
+                $decodedError['data'] ?? null
+            );
 
-            $responseObject->error = $errorObject;
+            $responseObject->setError($errorObject);
         }
 
         return $responseObject;

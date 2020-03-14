@@ -10,24 +10,29 @@
 
 namespace Strider2038\JsonRpcClient\Transport;
 
-use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
-use Strider2038\JsonRpcClient\Transport\Http\GuzzleTransport;
+use Strider2038\JsonRpcClient\Transport\Http\HttpTransportFactory;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketClient;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketConnector;
 
 /**
+ * @internal
+ *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class TransportFactory
+class MultiTransportFactory implements TransportFactoryInterface
 {
+    /** @var HttpTransportFactory */
+    private $httpTransportFactory;
+
     /** @var LoggerInterface|null */
     private $logger;
 
     public function __construct(LoggerInterface $logger = null)
     {
+        $this->httpTransportFactory = new HttpTransportFactory();
         $this->logger = $logger;
     }
 
@@ -36,16 +41,16 @@ class TransportFactory
      */
     public function createTransport(string $connection, GeneralOptions $options): TransportInterface
     {
-        $protocol = strtolower(parse_url($connection, PHP_URL_SCHEME));
+        $protocol = $this->parseProtocol($connection);
 
-        if ('tcp' === $protocol) {
-            $transport = $this->createTcpTransport($connection, $options);
+        if ('tcp' === $protocol || 'unix' === $protocol) {
+            $transport = $this->createSocketTransport($connection, $options);
         } elseif ('http' === $protocol || 'https' === $protocol) {
-            $transport = $this->createHttpTransport($connection, $options);
+            $transport = $this->httpTransportFactory->createTransport($connection, $options);
         } else {
             throw new InvalidConfigException(
                 sprintf(
-                    'Unsupported protocol: "%s". Supported protocols: "tcp", "http", "https".',
+                    'Unsupported protocol: "%s". Supported protocols: "unix", "tcp", "http", "https".',
                     $protocol
                 )
             );
@@ -61,7 +66,7 @@ class TransportFactory
     /**
      * @throws InvalidConfigException
      */
-    private function createTcpTransport(string $connection, GeneralOptions $options): SocketTransport
+    private function createSocketTransport(string $connection, GeneralOptions $options): SocketTransport
     {
         $connector = new SocketConnector();
         $client = new SocketClient($connector, $connection, $options->getConnectionOptions(), $options->getRequestTimeoutUs());
@@ -69,18 +74,14 @@ class TransportFactory
         return new SocketTransport($client);
     }
 
-    private function createHttpTransport(string $connection, GeneralOptions $options): GuzzleTransport
+    private function parseProtocol(string $connection): string
     {
-        $config = array_merge(
-            $options->getTransportConfiguration(),
-            [
-                'base_uri' => $connection,
-                'timeout'  => (float) $options->getRequestTimeoutUs() / 1000000,
-            ]
-        );
+        $protocol = '';
 
-        $guzzle = new Client($config);
+        if (false !== preg_match('/^(.*):/U', $connection, $matches)) {
+            $protocol = strtolower($matches[1] ?? '');
+        }
 
-        return new GuzzleTransport($guzzle);
+        return $protocol;
     }
 }

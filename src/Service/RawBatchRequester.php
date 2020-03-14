@@ -17,7 +17,7 @@ use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class LowLevelBatchRequester implements BatchRequestInterface
+class RawBatchRequester implements BatchRequestInterface
 {
     /** @var RequestObjectFactory */
     private $requestObjectFactory;

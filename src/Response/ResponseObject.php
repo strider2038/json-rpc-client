@@ -10,26 +10,35 @@
 
 namespace Strider2038\JsonRpcClient\Response;
 
+use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
+
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class ResponseObject implements ResponseObjectInterface
 {
     /** @var string */
-    public $jsonrpc;
+    private $jsonrpc;
 
     /** @var mixed */
-    public $result;
+    private $result;
 
     /** @var ErrorObject|null */
-    public $error;
+    private $error;
 
     /** @var string|int|null */
-    public $id;
+    private $id;
 
-    public function getJsonRpcVersion(): string
+    public function __construct(string $protocol, $result, $id)
     {
-        return (string) $this->jsonrpc;
+        $this->jsonrpc = $protocol;
+        $this->result = $result;
+        $this->id = $id;
+    }
+
+    public function getProtocol(): string
+    {
+        return $this->jsonrpc;
     }
 
     public function getId()
@@ -49,6 +58,17 @@ class ResponseObject implements ResponseObjectInterface
 
     public function getError(): ErrorObject
     {
+        if (null === $this->error) {
+            throw new JsonRpcClientException(
+                'There is no error in response. Please, use hasError() method to check response for errors.'
+            );
+        }
+
         return $this->error;
+    }
+
+    public function setError(ErrorObject $error): void
+    {
+        $this->error = $error;
     }
 }

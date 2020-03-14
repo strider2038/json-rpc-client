@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of json-rpc-client.
+ * This file is part of JSON RPC Client.
  *
  * (c) Igor Lazarev <strider2038@yandex.ru>
  *
@@ -14,8 +14,8 @@ use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\ClientBuilder;
 use Strider2038\JsonRpcClient\Request\IdGeneratorInterface;
 use Strider2038\JsonRpcClient\Serialization\MessageSerializerInterface;
-use Strider2038\JsonRpcClient\Service\HighLevelClient;
-use Strider2038\JsonRpcClient\Service\LowLevelClient;
+use Strider2038\JsonRpcClient\Service\ProcessingClient;
+use Strider2038\JsonRpcClient\Service\RawClient;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
 
 /**
@@ -31,7 +31,7 @@ class ClientBuilderTest extends TestCase
         $clientBuilder = new ClientBuilder($transport);
         $client = $clientBuilder->getClient();
 
-        $this->assertInstanceOf(HighLevelClient::class, $client);
+        $this->assertInstanceOf(ProcessingClient::class, $client);
     }
 
     /** @test */
@@ -43,7 +43,7 @@ class ClientBuilderTest extends TestCase
         $clientBuilder->disableResponseProcessing();
         $client = $clientBuilder->getClient();
 
-        $this->assertInstanceOf(LowLevelClient::class, $client);
+        $this->assertInstanceOf(RawClient::class, $client);
     }
 
     /** @test */
@@ -57,6 +57,6 @@ class ClientBuilderTest extends TestCase
             ->disableResponseProcessing()
             ->getClient();
 
-        $this->assertInstanceOf(LowLevelClient::class, $client);
+        $this->assertInstanceOf(RawClient::class, $client);
     }
 }

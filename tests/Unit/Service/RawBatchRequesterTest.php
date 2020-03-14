@@ -11,13 +11,13 @@
 namespace Strider2038\JsonRpcClient\Tests\Unit\Service;
 
 use PHPUnit\Framework\TestCase;
-use Strider2038\JsonRpcClient\Service\LowLevelBatchRequester;
+use Strider2038\JsonRpcClient\Service\RawBatchRequester;
 use Strider2038\JsonRpcClient\Tests\TestCase\ClientTestCaseTrait;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class LowLevelBatchRequesterTest extends TestCase
+class RawBatchRequesterTest extends TestCase
 {
     use ClientTestCaseTrait;
 
@@ -90,8 +90,8 @@ class LowLevelBatchRequesterTest extends TestCase
         $this->assertRemoteProcedureWasCalledWithRequestObjectInArray($requestObject);
     }
 
-    private function createLowLevelBatchRequester(): LowLevelBatchRequester
+    private function createLowLevelBatchRequester(): RawBatchRequester
     {
-        return new LowLevelBatchRequester($this->requestObjectFactory, $this->caller);
+        return new RawBatchRequester($this->requestObjectFactory, $this->caller);
     }
 }

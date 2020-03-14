@@ -10,21 +10,41 @@
 
 namespace Strider2038\JsonRpcClient\Response;
 
+use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
+
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 interface ResponseObjectInterface
 {
-    public function getJsonRpcVersion(): string;
+    /**
+     * JSON RPC protocol version
+     * Always returns '2.0'.
+     */
+    public function getProtocol(): string;
 
     /**
+     * Returns request identifier unique for session.
+     *
      * @return string|int|null
      */
     public function getId();
 
+    /**
+     * Returns remote procedure call result.
+     */
     public function getResult();
 
+    /**
+     * Always use this method to check for errors in response.
+     */
     public function hasError(): bool;
 
+    /**
+     * Returns error description if response has error. Otherwise exception will be thrown.
+     * Always use hasError() method before retrieving error.
+     *
+     * @throws JsonRpcClientException when there is no error
+     */
     public function getError(): ErrorObject;
 }

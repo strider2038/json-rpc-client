@@ -27,7 +27,8 @@ while (true) {
     $result = $client->call('ping');
     $now = DateTime::createFromFormat('U.u', microtime(true));
     echo sprintf(
-        '%s: ping response %s received in %d us%s', $now->format('Y-m-d H:i:s.u'),
+        '%s: ping response %s received in %d us%s',
+        $now->format('Y-m-d H:i:s.u'),
         json_encode($result),
         (microtime(true) - $timer) * 1000 * 1000,
         PHP_EOL
