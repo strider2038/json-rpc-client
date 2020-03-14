@@ -6,7 +6,8 @@
     "jsonrpc2",
     "client",
     "http",
-    "tcp"
+    "tcp",
+    "unix"
   ],
   "type": "library",
   "license": "MIT",
