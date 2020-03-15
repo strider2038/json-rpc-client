@@ -102,7 +102,9 @@ $result = $client->batch()
 * [x] ci test matrix
 * [x] symfony http client transport
 * [x] add http transport support via psr-18
+* [x] error types by methods + default error type
 * [ ] symfony bundle
+* [ ] symfony bundle object annotations
 * [ ] symfony example
 * [ ] documentation
 * [ ] caller context for possible authorization

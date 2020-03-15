@@ -87,12 +87,24 @@ class ResponseObjectDenormalizer implements DenormalizerInterface, DenormalizerA
 
     private function denormalizeErrorData($errorData, $format, array $context)
     {
-        $errorType = $context['json_rpc']['error_type'] ?? null;
+        $errorType = $this->detectErrorType($context);
 
         if (null !== $errorData && null !== $errorType) {
             $errorData = $this->denormalizer->denormalize($errorData, $errorType, $format, $context);
         }
 
         return $errorData;
+    }
+
+    private function detectErrorType(array $context): ?string
+    {
+        $errorType = $context['json_rpc']['default_error_type'] ?? null;
+
+        $request = $context['json_rpc']['request'] ?? null;
+        if ($request instanceof RequestObject) {
+            $errorType = $context['json_rpc']['error_types_by_methods'][$request->getMethod()] ?? $errorType;
+        }
+
+        return $errorType;
     }
 }

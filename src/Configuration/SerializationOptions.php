@@ -35,18 +35,23 @@ class SerializationOptions
     private $resultTypesByMethods;
 
     /** @var string|null */
-    private $errorType;
+    private $defaultErrorType;
+
+    /** @var string[] */
+    private $errorTypesByMethods;
 
     public function __construct(
         string $serializer = self::DEFAULT_SERIALIZER,
         array $resultTypesByMethods = [],
-        string $errorType = null
+        string $errorType = null,
+        array $errorTypesByMethods = []
     ) {
         $this->validateSerializer($serializer);
 
         $this->serializer = $serializer;
         $this->resultTypesByMethods = $resultTypesByMethods;
-        $this->errorType = $errorType;
+        $this->defaultErrorType = $errorType;
+        $this->errorTypesByMethods = $errorTypesByMethods;
     }
 
     public function getSerializer(): string
@@ -59,9 +64,14 @@ class SerializationOptions
         return $this->resultTypesByMethods;
     }
 
-    public function getErrorType(): ?string
+    public function getDefaultErrorType(): ?string
     {
-        return $this->errorType;
+        return $this->defaultErrorType;
+    }
+
+    public function getErrorTypesByMethods(): array
+    {
+        return $this->errorTypesByMethods;
     }
 
     public static function createFromArray(array $options): self
@@ -69,7 +79,8 @@ class SerializationOptions
         return new self(
             $options['serializer'] ?? self::DEFAULT_SERIALIZER,
             $options['result_types_by_methods'] ?? [],
-            $options['error_type'] ?? null
+            $options['default_error_type'] ?? null,
+            $options['error_types_by_methods'] ?? []
         );
     }
 

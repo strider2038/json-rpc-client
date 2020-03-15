@@ -46,7 +46,7 @@ class ClientFactory
         $serializationOptions = $generalOptions->getSerializationOptions();
 
         $clientBuilder->setResultTypesByMethods($serializationOptions->getResultTypesByMethods());
-        $clientBuilder->setErrorType($serializationOptions->getErrorType());
+        $clientBuilder->setDefaultErrorType($serializationOptions->getDefaultErrorType());
 
         $serializerType = $serializationOptions->getSerializer();
 

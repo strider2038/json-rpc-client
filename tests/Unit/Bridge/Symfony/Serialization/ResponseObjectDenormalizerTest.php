@@ -105,7 +105,7 @@ class ResponseObjectDenormalizerTest extends TestCase
     }
 
     /** @test */
-    public function denormalize_singleErrorResponseAndNoErrorType_responseWithErrorAndDataAsIsReturned(): void
+    public function denormalize_singleErrorResponseAndDefaultErrorType_responseWithErrorAndDenormalizedDataReturned(): void
     {
         $denormalizer = new ResponseObjectDenormalizer();
         $denormalizer->setDenormalizer($this->denormalizer);
@@ -122,7 +122,7 @@ class ResponseObjectDenormalizerTest extends TestCase
         ];
         $context = [
             'json_rpc' => [
-                'error_type' => 'denormalization_type',
+                'default_error_type' => 'denormalization_type',
             ],
         ];
         $errorData = $this->givenDenormalizedObject();
@@ -140,7 +140,47 @@ class ResponseObjectDenormalizerTest extends TestCase
     }
 
     /** @test */
-    public function denormalize_singleErrorResponseAndErrorType_responseWithErrorAndDenormalizedDataReturned(): void
+    public function denormalize_singleErrorResponseAndMethodErrorType_responseWithErrorAndDenormalizedDataReturned(): void
+    {
+        $denormalizer = new ResponseObjectDenormalizer();
+        $denormalizer->setDenormalizer($this->denormalizer);
+        $serializedResponse = [
+            'jsonrpc' => '2.0',
+            'id'      => 'idValue',
+            'error'   => [
+                'code'    => 1,
+                'message' => 'errorMessage',
+                'data'    => [
+                    'errorKey' => 'errorValue',
+                ],
+            ],
+        ];
+        $request = new RequestObject('id', 'method', null);
+        $context = [
+            'json_rpc' => [
+                'request'                => $request,
+                'default_error_type'     => 'denormalization_type',
+                'error_types_by_methods' => [
+                    'method' => 'method_denormalization_type',
+                ],
+            ],
+        ];
+        $errorData = $this->givenDenormalizedObject();
+
+        $response = $denormalizer->denormalize($serializedResponse, ResponseObject::class, self::FORMAT, $context);
+
+        $this->assertDataOfTypeWasDenormalizedWithContext(['errorKey' => 'errorValue'], 'method_denormalization_type', $context);
+        $this->assertSame('2.0', $response->getProtocol());
+        $this->assertNull($response->getResult());
+        $this->assertSame('idValue', $response->getId());
+        $this->assertTrue($response->hasError());
+        $this->assertSame(1, $response->getError()->getCode());
+        $this->assertSame('errorMessage', $response->getError()->getMessage());
+        $this->assertSame($errorData, $response->getError()->getData());
+    }
+
+    /** @test */
+    public function denormalize_singleErrorResponseAndNoErrorType_responseWithErrorAndDataAsIsReturned(): void
     {
         $denormalizer = new ResponseObjectDenormalizer();
         $denormalizer->setDenormalizer($this->denormalizer);
