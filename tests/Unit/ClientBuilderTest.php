@@ -35,7 +35,7 @@ class ClientBuilderTest extends TestCase
     }
 
     /** @test */
-    public function getClient_disableResponseProcessing_lowLevelClient(): void
+    public function getClient_disableResponseProcessing_rawClient(): void
     {
         $transport = \Phake::mock(TransportInterface::class);
 
@@ -47,7 +47,7 @@ class ClientBuilderTest extends TestCase
     }
 
     /** @test */
-    public function getClient_fullCustomizationWithFluentInterface_lowLevelClient(): void
+    public function getClient_fullCustomizationWithFluentInterface_rawClient(): void
     {
         $transport = \Phake::mock(TransportInterface::class);
 

@@ -49,8 +49,9 @@ class BundleConfigurationTest extends TestCase
                 'default' => [
                     'url'     => 'tcp://localhost:4000',
                     'options' => [
-                        'request_timeout_us' => 1000000,
-                        'connection'         => [
+                        'request_timeout_us'         => 1000000,
+                        'enable_response_processing' => false,
+                        'connection'                 => [
                             'attempt_timeout_us' => 100000,
                             'timeout_multiplier' => 2.0,
                             'max_attempts'       => 5,

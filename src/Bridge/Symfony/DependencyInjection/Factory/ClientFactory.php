@@ -12,52 +12,34 @@ namespace Strider2038\JsonRpcClient\Bridge\Symfony\DependencyInjection\Factory;
 
 use Psr\Log\LoggerInterface;
 use Strider2038\JsonRpcClient\Bridge\Symfony\Serialization\SymfonySerializerAdapter;
-use Strider2038\JsonRpcClient\ClientBuilder;
-use Strider2038\JsonRpcClient\ClientFactoryInterface;
-use Strider2038\JsonRpcClient\ClientInterface;
-use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
+use Strider2038\JsonRpcClient\ClientFactory as BaseClientFactory;
 use Strider2038\JsonRpcClient\Configuration\SerializationOptions;
 use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
-use Strider2038\JsonRpcClient\Transport\MultiTransportFactory;
-use Strider2038\JsonRpcClient\Transport\TransportFactoryInterface;
+use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
+use Strider2038\JsonRpcClient\Serialization\MessageSerializerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class ClientFactory implements ClientFactoryInterface
+class ClientFactory extends BaseClientFactory
 {
-    /** @var SerializerInterface */
-    private $serializer;
-
-    /** @var TransportFactoryInterface */
-    private $transportFactory;
+    /** @var MessageSerializerInterface[] */
+    private $serializers;
 
     public function __construct(SerializerInterface $serializer, LoggerInterface $logger = null)
     {
-        $this->serializer = $serializer;
-        $this->transportFactory = new MultiTransportFactory($logger);
+        parent::__construct($logger);
+
+        $this->serializers = [
+            SerializationOptions::OBJECT_SERIALIZER  => new JsonObjectSerializer(),
+            SerializationOptions::ARRAY_SERIALIZER   => new JsonArraySerializer(),
+            SerializationOptions::SYMFONY_SERIALIZER => new SymfonySerializerAdapter($serializer),
+        ];
     }
 
-    public function createClient(string $url, array $options = []): ClientInterface
+    protected function createSerializer(string $serializerType): MessageSerializerInterface
     {
-        $generalOptions = GeneralOptions::createFromArray($options);
-        $transport = $this->transportFactory->createTransport($url, $generalOptions);
-        $clientBuilder = new ClientBuilder($transport);
-
-        $serializationOptions = $generalOptions->getSerializationOptions();
-
-        $clientBuilder->setResultTypesByMethods($serializationOptions->getResultTypesByMethods());
-        $clientBuilder->setDefaultErrorType($serializationOptions->getDefaultErrorType());
-
-        $serializerType = $serializationOptions->getSerializerType();
-
-        if (SerializationOptions::ARRAY_SERIALIZER === $serializerType) {
-            $clientBuilder->setSerializer(new JsonArraySerializer());
-        } elseif (SerializationOptions::SYMFONY_SERIALIZER === $serializerType) {
-            $clientBuilder->setSerializer(new SymfonySerializerAdapter($this->serializer));
-        }
-
-        return $clientBuilder->getClient();
+        return $this->serializers[$serializerType];
     }
 }

@@ -21,6 +21,7 @@ use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
 use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
 use Strider2038\JsonRpcClient\Service\Caller;
 use Strider2038\JsonRpcClient\Service\ProcessingClient;
+use Strider2038\JsonRpcClient\Service\RawClient;
 use Strider2038\JsonRpcClient\Transport\Http\SymfonyTransport;
 use Strider2038\JsonRpcClient\Transport\SocketTransport;
 use Strider2038\JsonRpcClient\Transport\TransportLoggingDecorator;
@@ -73,6 +74,18 @@ class ClientFactoryTest extends TestCase
         $client = $factory->createClient('tcp://localhost:3000');
 
         $this->assertClientHasTransportOfExpectedClass($client, TransportLoggingDecorator::class);
+    }
+
+    /** @test */
+    public function createClient_disableResponseProcessing_rawClientCreated(): void
+    {
+        $factory = new ClientFactory();
+
+        $client = $factory->createClient('tcp://localhost:3000', [
+            'enable_response_processing' => false,
+        ]);
+
+        $this->assertInstanceOf(RawClient::class, $client);
     }
 
     /** @test */

@@ -16,6 +16,8 @@ use Strider2038\JsonRpcClient\Bridge\Symfony\Serialization\SymfonySerializerAdap
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Configuration\SerializationOptions;
 use Strider2038\JsonRpcClient\Serialization\JsonArraySerializer;
+use Strider2038\JsonRpcClient\Serialization\JsonObjectSerializer;
+use Strider2038\JsonRpcClient\Serialization\MessageSerializerInterface;
 use Strider2038\JsonRpcClient\Transport\MultiTransportFactory;
 use Strider2038\JsonRpcClient\Transport\TransportFactoryInterface;
 
@@ -46,14 +48,28 @@ class ClientFactory implements ClientFactoryInterface
         $clientBuilder->setDefaultErrorType($serializationOptions->getDefaultErrorType());
 
         $serializerType = $serializationOptions->getSerializerType();
+        $serializer = $this->createSerializer($serializerType);
+        $clientBuilder->setSerializer($serializer);
 
-        if (SerializationOptions::ARRAY_SERIALIZER === $serializerType) {
-            $clientBuilder->setSerializer(new JsonArraySerializer());
-        } elseif (SerializationOptions::SYMFONY_SERIALIZER === $serializerType) {
-            $serializer = SerializerFactory::createSerializer();
-            $clientBuilder->setSerializer(new SymfonySerializerAdapter($serializer));
+        if ($generalOptions->isResponseProcessingEnabled()) {
+            $clientBuilder->enableResponseProcessing();
+        } else {
+            $clientBuilder->disableResponseProcessing();
         }
 
         return $clientBuilder->getClient();
+    }
+
+    protected function createSerializer(string $serializerType): MessageSerializerInterface
+    {
+        if (SerializationOptions::OBJECT_SERIALIZER === $serializerType) {
+            $serializer = new JsonObjectSerializer();
+        } elseif (SerializationOptions::SYMFONY_SERIALIZER === $serializerType) {
+            $serializer = new SymfonySerializerAdapter(SerializerFactory::createSerializer());
+        } else {
+            $serializer = new JsonArraySerializer();
+        }
+
+        return $serializer;
     }
 }

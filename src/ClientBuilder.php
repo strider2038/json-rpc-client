@@ -86,7 +86,19 @@ class ClientBuilder
     }
 
     /**
-     * If response processing is disabled then LowLevelClient will be constructed.
+     * If response processing is enabled then ProcessingClient will be constructed.
+     *
+     * @return $this
+     */
+    public function enableResponseProcessing(): self
+    {
+        $this->enableResponseProcessing = true;
+
+        return $this;
+    }
+
+    /**
+     * If response processing is disabled then RawClient will be constructed.
      *
      * @return $this
      */

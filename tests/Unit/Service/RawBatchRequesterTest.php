@@ -32,7 +32,7 @@ class RawBatchRequesterTest extends TestCase
     /** @test */
     public function send_noRequestsInQueue_emptyArrayReturned(): void
     {
-        $requester = $this->createLowLevelBatchRequester();
+        $requester = $this->createRawBatchRequester();
 
         $responses = $requester->send();
 
@@ -43,7 +43,7 @@ class RawBatchRequesterTest extends TestCase
     /** @test */
     public function call_requestObjectInQueueAndSingleResponseReturnedFromCaller_responseReturnedInArray(): void
     {
-        $requester = $this->createLowLevelBatchRequester();
+        $requester = $this->createRawBatchRequester();
         $requestObject = $this->givenCreatedRequestObject();
         $responseObject = $this->givenResponseReturnedByCaller();
         $requester->call(self::METHOD, self::PARAMS);
@@ -60,7 +60,7 @@ class RawBatchRequesterTest extends TestCase
     /** @test */
     public function send_requestObjectInQueueAndArrayResponseReturnedFromCaller_responseReturnedInArray(): void
     {
-        $requester = $this->createLowLevelBatchRequester();
+        $requester = $this->createRawBatchRequester();
         $requestObject = $this->givenCreatedRequestObject();
         $responseObject = $this->givenResponseInArrayReturnedByCaller();
         $requester->call(self::METHOD, self::PARAMS);
@@ -77,7 +77,7 @@ class RawBatchRequesterTest extends TestCase
     /** @test */
     public function send_notificationObjectInQueueAndEmptyResponseReturnedFromCaller_arrayIsEmpty(): void
     {
-        $requester = $this->createLowLevelBatchRequester();
+        $requester = $this->createRawBatchRequester();
         $requestObject = $this->givenCreatedNotificationObject();
         $this->givenCallerReturnsNull();
         $requester->notify(self::METHOD, self::PARAMS);
@@ -90,7 +90,7 @@ class RawBatchRequesterTest extends TestCase
         $this->assertRemoteProcedureWasCalledWithRequestObjectInArray($requestObject);
     }
 
-    private function createLowLevelBatchRequester(): RawBatchRequester
+    private function createRawBatchRequester(): RawBatchRequester
     {
         return new RawBatchRequester($this->requestObjectFactory, $this->caller);
     }

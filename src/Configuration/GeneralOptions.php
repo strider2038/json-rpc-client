@@ -41,6 +41,15 @@ class GeneralOptions
     private $connectionOptions;
 
     /**
+     * If enabled then ProcessingClient will be used with response unpacking.
+     * If disabled then RawClient will be used, that will return ResponseObjectInterface
+     * for each request.
+     *
+     * @var bool
+     */
+    private $enableResponseProcessing = true;
+
+    /**
      * Serialization configuration.
      *
      * @var SerializationOptions
@@ -67,6 +76,7 @@ class GeneralOptions
     public function __construct(
         int $requestTimeoutUs = self::DEFAULT_REQUEST_TIMEOUT,
         ConnectionOptions $connectionOptions = null,
+        bool $enableResponseProcessing = true,
         SerializationOptions $serializationOptions = null,
         array $transportConfiguration = [],
         string $httpClient = HttpTransportTypeInterface::AUTODETECT
@@ -78,6 +88,7 @@ class GeneralOptions
 
         $this->requestTimeoutUs = $requestTimeoutUs;
         $this->connectionOptions = $connectionOptions ?? new ConnectionOptions();
+        $this->enableResponseProcessing = $enableResponseProcessing;
         $this->transportConfiguration = $transportConfiguration;
         $this->serializationOptions = $serializationOptions ?? new SerializationOptions();
         $this->httpClientType = $httpClient;
@@ -91,6 +102,11 @@ class GeneralOptions
     public function getConnectionOptions(): ConnectionOptions
     {
         return $this->connectionOptions;
+    }
+
+    public function isResponseProcessingEnabled(): bool
+    {
+        return $this->enableResponseProcessing;
     }
 
     public function getTransportConfiguration(): array
@@ -116,6 +132,7 @@ class GeneralOptions
         return new self(
             $options['request_timeout_us'] ?? self::DEFAULT_REQUEST_TIMEOUT,
             ConnectionOptions::createFromArray($options['connection'] ?? []),
+            $options['enable_response_processing'] ?? true,
             SerializationOptions::createFromArray($options['serialization'] ?? []),
             $options['transport_configuration'] ?? [],
             $options['http_client_type'] ?? HttpTransportTypeInterface::AUTODETECT

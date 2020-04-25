@@ -31,13 +31,41 @@ class SerializationOptions
     /** @var string */
     private $serializerType;
 
-    /** @var string[] */
+    /**
+     * Used to deserialize successful server response to defined class or type.
+     *
+     * Example
+     *
+     * [
+     *     'createProduct' => CreateProductResponse::class,
+     * ]
+     *
+     * Works only with Symfony serializer.
+     *
+     * @var string[]
+     */
     private $resultTypesByMethods;
 
-    /** @var string|null */
+    /**
+     * Used to deserialize error data from server response to defined class or type. It can be used
+     * when all error data has same structure or as fallback type for errors. If server can respond
+     * with specific error data on method you can use errorTypesByMethods option.
+     *
+     * @var string|null
+     */
     private $defaultErrorType;
 
-    /** @var string[] */
+    /**
+     * Used to deserialize error data from server response after call to specific method.
+     *
+     * Example
+     *
+     * [
+     *     'createProduct' => CreateProductErrors::class,
+     * ]
+     *
+     * @var string[]
+     */
     private $errorTypesByMethods;
 
     public function __construct(

@@ -49,9 +49,15 @@ class Configuration implements ConfigurationInterface
         $node
             ->children()
                 ->integerNode('request_timeout_us')
+                    ->info('Request timeout in microseconds')
+                ->end()
+                ->booleanNode('enable_response_processing')
+                    ->info('If enabled then successful responses will be unpacked and exceptions will be thrown on errors')
+                    ->defaultTrue()
                 ->end()
                 ->append($this->addConnectionNode())
                 ->enumNode('http_client_type')
+                    ->info('Preferred HTTP client')
                     ->defaultValue('symfony')
                     ->values(['symfony', 'guzzle'])
                 ->end()
@@ -69,9 +75,15 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->children()
-                ->integerNode('attempt_timeout_us')->end()
-                ->floatNode('timeout_multiplier')->end()
-                ->integerNode('max_attempts')->end()
+                ->integerNode('attempt_timeout_us')
+                    ->info('Reconnection attempt timeout in microseconds. Must be greater than zero.')
+                ->end()
+                ->floatNode('timeout_multiplier')
+                    ->info('Used to increase timeout value with growing reconnection attempts. Must be greater than 1.0.')
+                ->end()
+                ->integerNode('max_attempts')
+                    ->info('Max sequential attempts to reconnect with remote server. Must be greater or equal to 1.')
+                ->end()
             ->end();
 
         return $node;
