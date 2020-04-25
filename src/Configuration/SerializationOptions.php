@@ -29,7 +29,7 @@ class SerializationOptions
     ];
 
     /** @var string */
-    private $serializer;
+    private $serializerType;
 
     /** @var string[] */
     private $resultTypesByMethods;
@@ -41,22 +41,22 @@ class SerializationOptions
     private $errorTypesByMethods;
 
     public function __construct(
-        string $serializer = self::DEFAULT_SERIALIZER,
+        string $serializerType = self::DEFAULT_SERIALIZER,
         array $resultTypesByMethods = [],
         string $errorType = null,
         array $errorTypesByMethods = []
     ) {
-        $this->validateSerializer($serializer);
+        $this->validateSerializerType($serializerType);
 
-        $this->serializer = $serializer;
+        $this->serializerType = $serializerType;
         $this->resultTypesByMethods = $resultTypesByMethods;
         $this->defaultErrorType = $errorType;
         $this->errorTypesByMethods = $errorTypesByMethods;
     }
 
-    public function getSerializer(): string
+    public function getSerializerType(): string
     {
-        return $this->serializer;
+        return $this->serializerType;
     }
 
     public function getResultTypesByMethods(): array
@@ -77,19 +77,19 @@ class SerializationOptions
     public static function createFromArray(array $options): self
     {
         return new self(
-            $options['serializer'] ?? self::DEFAULT_SERIALIZER,
+            $options['serializer_type'] ?? self::DEFAULT_SERIALIZER,
             $options['result_types_by_methods'] ?? [],
             $options['default_error_type'] ?? null,
             $options['error_types_by_methods'] ?? []
         );
     }
 
-    private function validateSerializer(string $serializer): void
+    private function validateSerializerType(string $serializer): void
     {
         if (!in_array($serializer, self::SUPPORTED_SERIALIZERS, true)) {
             throw new InvalidConfigException(
                 sprintf(
-                    'Serializer option must be equal to one of: %s.',
+                    'Serializer type option must be equal to one of: %s.',
                     implode(
                         ', ',
                         array_map(

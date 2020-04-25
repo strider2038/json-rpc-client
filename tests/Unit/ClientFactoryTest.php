@@ -82,7 +82,7 @@ class ClientFactoryTest extends TestCase
 
         $client = $factory->createClient('tcp://localhost:3000', [
             'serialization' => [
-                'serializer' => SerializationOptions::ARRAY_SERIALIZER,
+                'serializer_type' => SerializationOptions::ARRAY_SERIALIZER,
             ],
         ]);
 
@@ -96,7 +96,7 @@ class ClientFactoryTest extends TestCase
 
         $client = $factory->createClient('tcp://localhost:3000', [
             'serialization' => [
-                'serializer' => SerializationOptions::SYMFONY_SERIALIZER,
+                'serializer_type' => SerializationOptions::SYMFONY_SERIALIZER,
             ],
         ]);
 

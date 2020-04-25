@@ -54,7 +54,7 @@ class GeneralOptions
      *
      * @var string
      */
-    private $httpClient;
+    private $httpClientType;
 
     /**
      * @var array
@@ -80,7 +80,7 @@ class GeneralOptions
         $this->connectionOptions = $connectionOptions ?? new ConnectionOptions();
         $this->transportConfiguration = $transportConfiguration;
         $this->serializationOptions = $serializationOptions ?? new SerializationOptions();
-        $this->httpClient = $httpClient;
+        $this->httpClientType = $httpClient;
     }
 
     public function getRequestTimeoutUs(): int
@@ -103,9 +103,9 @@ class GeneralOptions
         return $this->serializationOptions;
     }
 
-    public function getHttpClient(): string
+    public function getHttpClientType(): string
     {
-        return $this->httpClient;
+        return $this->httpClientType;
     }
 
     /**
@@ -118,7 +118,7 @@ class GeneralOptions
             ConnectionOptions::createFromArray($options['connection'] ?? []),
             SerializationOptions::createFromArray($options['serialization'] ?? []),
             $options['transport_configuration'] ?? [],
-            $options['http_client'] ?? HttpTransportTypeInterface::AUTODETECT
+            $options['http_client_type'] ?? HttpTransportTypeInterface::AUTODETECT
         );
     }
 

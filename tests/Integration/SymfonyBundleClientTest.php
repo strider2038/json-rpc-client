@@ -10,26 +10,24 @@
 
 namespace Strider2038\JsonRpcClient\Tests\Integration;
 
-use PHPUnit\Framework\TestCase;
-use Strider2038\JsonRpcClient\ClientFactory;
 use Strider2038\JsonRpcClient\ClientInterface;
-use Strider2038\JsonRpcClient\Service\ProcessingClient;
 use Strider2038\JsonRpcClient\Tests\TestCase\ClientIntegrationTestCaseTrait;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class TcpClientTest extends TestCase
+class SymfonyBundleClientTest extends KernelTestCase
 {
     use ClientIntegrationTestCaseTrait;
 
+    protected function setUp(): void
+    {
+        self::bootKernel();
+    }
+
     protected function createClient(): ClientInterface
     {
-        $transportUrl = getenv('TEST_TCP_TRANSPORT_URL');
-        $clientFactory = new ClientFactory();
-        $client = $clientFactory->createClient($transportUrl);
-        assert($client instanceof ProcessingClient);
-
-        return $client;
+        return KernelTestCase::$container->get(ClientInterface::class);
     }
 }

@@ -103,10 +103,13 @@ $result = $client->batch()
 * [x] symfony http client transport
 * [x] add http transport support via psr-18
 * [x] error types by methods + default error type
-* [ ] symfony bundle
-* [ ] symfony bundle object annotations
-* [ ] symfony example
+* [x] symfony bundle
 * [ ] documentation
-* [ ] caller context for possible authorization
-* [ ] bridge for jms serializer
-* [ ] web socket transport
+
+## Possible features for next releases 
+
+* Object annotations for Symfony Bundle
+* Symfony application example
+* Caller context for possible authorization
+* Bridge for JMS Serializer
+* Web socket transport

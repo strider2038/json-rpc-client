@@ -8,18 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Transport;
+namespace Strider2038\JsonRpcClient;
 
-use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-interface TransportFactoryInterface
+interface ClientFactoryInterface
 {
     /**
-     * @throws InvalidConfigException
+     * @throws InvalidConfigException on invalid options
      */
-    public function createTransport(string $url, GeneralOptions $options): TransportInterface;
+    public function createClient(string $url, array $options = []): ClientInterface;
 }

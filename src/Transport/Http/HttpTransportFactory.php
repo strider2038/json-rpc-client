@@ -24,14 +24,14 @@ use Symfony\Component\HttpClient\HttpClient;
  */
 class HttpTransportFactory implements TransportFactoryInterface
 {
-    public function createTransport(string $connection, GeneralOptions $options): TransportInterface
+    public function createTransport(string $url, GeneralOptions $options): TransportInterface
     {
         $client = $this->detectHttpClientType($options);
 
         if (HttpTransportTypeInterface::SYMFONY === $client) {
-            $transport = $this->createSymfonyTransport($connection, $options);
+            $transport = $this->createSymfonyTransport($url, $options);
         } else {
-            $transport = $this->createGuzzleTransport($connection, $options);
+            $transport = $this->createGuzzleTransport($url, $options);
         }
 
         return $transport;
@@ -42,7 +42,7 @@ class HttpTransportFactory implements TransportFactoryInterface
      */
     private function detectHttpClientType(GeneralOptions $options): string
     {
-        $client = $options->getHttpClient();
+        $client = $options->getHttpClientType();
 
         if (HttpTransportTypeInterface::AUTODETECT === $client) {
             if (class_exists(HttpClient::class)) {

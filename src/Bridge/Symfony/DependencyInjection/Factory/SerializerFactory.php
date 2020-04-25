@@ -32,7 +32,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * Can be used to instantiate Symfony serializer as standalone component. For better user experience it
+ * Can be used to instantiate Symfony serializer as a standalone component. For better user experience it
  * is recommended to use library as Symfony bundle.
  *
  * @author Igor Lazarev <strider2038@yandex.ru>

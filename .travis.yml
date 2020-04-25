@@ -13,6 +13,7 @@ env:
 
 install:
   - composer require --dev
+      symfony/framework-bundle:${SYMFONY_VERSION}
       symfony/http-client:${SYMFONY_VERSION}
       symfony/property-access:${SYMFONY_VERSION}
       symfony/property-info:${SYMFONY_VERSION}

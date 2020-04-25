@@ -24,7 +24,7 @@ class SerializationOptionsTest extends TestCase
     {
         $options = new SerializationOptions();
 
-        $this->assertSame(SerializationOptions::DEFAULT_SERIALIZER, $options->getSerializer());
+        $this->assertSame(SerializationOptions::DEFAULT_SERIALIZER, $options->getSerializerType());
         $this->assertSame([], $options->getResultTypesByMethods());
         $this->assertNull($options->getDefaultErrorType());
         $this->assertSame([], $options->getErrorTypesByMethods());
@@ -34,7 +34,7 @@ class SerializationOptionsTest extends TestCase
     public function construct_invalidSerializer_exceptionThrown(): void
     {
         $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('Serializer option must be equal to one of: "object", "array", "symfony".');
+        $this->expectExceptionMessage('Serializer type option must be equal to one of: "object", "array", "symfony".');
 
         new SerializationOptions('');
     }
@@ -44,7 +44,7 @@ class SerializationOptionsTest extends TestCase
     {
         $options = SerializationOptions::createFromArray([]);
 
-        $this->assertSame(SerializationOptions::DEFAULT_SERIALIZER, $options->getSerializer());
+        $this->assertSame(SerializationOptions::DEFAULT_SERIALIZER, $options->getSerializerType());
         $this->assertSame([], $options->getResultTypesByMethods());
         $this->assertNull($options->getDefaultErrorType());
         $this->assertSame([], $options->getErrorTypesByMethods());
@@ -54,13 +54,13 @@ class SerializationOptionsTest extends TestCase
     public function createFromArray_optionsInArray_optionsWithValuesCreated(): void
     {
         $options = SerializationOptions::createFromArray([
-            'serializer'              => 'array',
+            'serializer_type'         => 'array',
             'result_types_by_methods' => ['method' => 'type'],
             'default_error_type'      => 'errorType',
             'error_types_by_methods'  => ['method' => 'error_type'],
         ]);
 
-        $this->assertSame(SerializationOptions::ARRAY_SERIALIZER, $options->getSerializer());
+        $this->assertSame(SerializationOptions::ARRAY_SERIALIZER, $options->getSerializerType());
         $this->assertSame(['method' => 'type'], $options->getResultTypesByMethods());
         $this->assertSame('errorType', $options->getDefaultErrorType());
         $this->assertSame(['method' => 'error_type'], $options->getErrorTypesByMethods());
