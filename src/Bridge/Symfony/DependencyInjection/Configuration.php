@@ -37,8 +37,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->append($this->addOptionsNode())
                 ->end()
-            ->end()
-        ;
+            ->end();
 
         return $treeBuilder;
     }
@@ -59,8 +58,7 @@ class Configuration implements ConfigurationInterface
                 ->variableNode('transport_configuration')
                 ->end()
                 ->append($this->addSerializationNode())
-            ->end()
-        ;
+            ->end();
 
         return $node;
     }
@@ -74,8 +72,7 @@ class Configuration implements ConfigurationInterface
                 ->integerNode('attempt_timeout_us')->end()
                 ->floatNode('timeout_multiplier')->end()
                 ->integerNode('max_attempts')->end()
-            ->end()
-        ;
+            ->end();
 
         return $node;
     }
@@ -100,8 +97,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue([])
                     ->scalarPrototype()->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
 
         return $node;
     }
