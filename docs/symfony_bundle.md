@@ -1,7 +1,5 @@
 # Using as Symfony Bundle
 
-- [Using as Symfony Bundle](#using-as-symfony-bundle)
-
 ## Installation
 
 This library is compatible with Symfony 4 and 5. It is recommended to use [Symfony Http Client](https://symfony.com/doc/current/components/http_client.html) and [Symfony Serializer](https://symfony.com/doc/current/components/serializer.html) components alongside. Alternatevily you can use [Guzzle](https://github.com/guzzle/guzzle) client.
