@@ -41,7 +41,7 @@ class JsonRpcClientExtension extends Extension implements PrependExtensionInterf
     public function load(array $configs, ContainerBuilder $container): void
     {
         $this->loadServices($container);
-        $configuration = $this->loadConfiguration($configs, $container);
+        $configuration = $this->loadConfiguration($configs);
 
         foreach ($configuration as $clientId => $clientConfig) {
             $definition = new Definition(ClientInterface::class);
@@ -67,7 +67,7 @@ class JsonRpcClientExtension extends Extension implements PrependExtensionInterf
         $loader->load('services.xml');
     }
 
-    private function loadConfiguration(array $configs, ContainerBuilder $container): array
+    private function loadConfiguration(array $configs): array
     {
         $configuration = new Configuration();
 
