@@ -33,7 +33,7 @@ composer require guzzlehttp/guzzle
 composer require symfony/http-client
 ```
 
-## Hot to use
+## How to use
 
 * [Quick start](docs/quick_start.md)
 * [Usage guide](docs/usage_guide.md)
