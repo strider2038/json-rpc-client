@@ -1,0 +1,12 @@
+json_rpc_client:
+  default:
+    url: '%env(TEST_HTTP_TRANSPORT_URL)%'
+    options:
+      request_timeout_us: 1000000
+      connection:
+        attempt_timeout_us: 100000
+        timeout_multiplier: 2.0
+        max_attempts: 5
+      transport_configuration:
+        headers:
+          Authorization: 'Bearer %env(TEST_HTTP_BEARER_TOKEN)%'

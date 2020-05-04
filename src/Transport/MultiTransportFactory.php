@@ -18,8 +18,6 @@ use Strider2038\JsonRpcClient\Transport\Socket\SocketClient;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketConnector;
 
 /**
- * @internal
- *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class MultiTransportFactory implements TransportFactoryInterface
@@ -39,14 +37,14 @@ class MultiTransportFactory implements TransportFactoryInterface
     /**
      * @throws InvalidConfigException
      */
-    public function createTransport(string $connection, GeneralOptions $options): TransportInterface
+    public function createTransport(string $url, GeneralOptions $options): TransportInterface
     {
-        $protocol = $this->parseProtocol($connection);
+        $protocol = $this->parseProtocol($url);
 
         if ('tcp' === $protocol || 'unix' === $protocol) {
-            $transport = $this->createSocketTransport($connection, $options);
+            $transport = $this->createSocketTransport($url, $options);
         } elseif ('http' === $protocol || 'https' === $protocol) {
-            $transport = $this->httpTransportFactory->createTransport($connection, $options);
+            $transport = $this->httpTransportFactory->createTransport($url, $options);
         } else {
             throw new InvalidConfigException(
                 sprintf(

@@ -10,15 +10,15 @@
 
 namespace Strider2038\JsonRpcClient\Tests\TestCase;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Assert;
+use Strider2038\JsonRpcClient\ClientInterface;
 use Strider2038\JsonRpcClient\Exception\ErrorResponseException;
 use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
-use Strider2038\JsonRpcClient\Service\ProcessingClient;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-abstract class ClientIntegrationTestCase extends TestCase
+trait ClientIntegrationTestCaseTrait
 {
     /** @test */
     public function singleRequest_positionalParameters_resultReturned(): void
@@ -27,20 +27,21 @@ abstract class ClientIntegrationTestCase extends TestCase
 
         $result = $client->call('sum', [1, 2, 4]);
 
-        $this->assertSame(7, $result);
+        Assert::assertSame(7, $result);
     }
 
     /** @test */
     public function singleRequest_namedParameters_resultReturned(): void
     {
         $client = $this->createClient();
-        $params = new \stdClass();
-        $params->subtrahend = 23;
-        $params->minuend = 42;
+        $params = [
+            'subtrahend' => 23,
+            'minuend'    => 42,
+        ];
 
         $result = $client->call('subtract', $params);
 
-        $this->assertSame(19, $result);
+        Assert::assertSame(19, $result);
     }
 
     /** @test */
@@ -48,21 +49,23 @@ abstract class ClientIntegrationTestCase extends TestCase
     {
         $client = $this->createClient();
 
-        $this->expectException(ErrorResponseException::class);
-        $this->expectExceptionMessage('Server response has error: code -32601');
-
-        $client->call('non-existent-method', [1, 2, 3]);
+        try {
+            $client->call('non-existent-method', [1, 2, 3]);
+        } catch (\Throwable $exception) {
+            Assert::assertInstanceOf(ErrorResponseException::class, $exception);
+            Assert::assertStringContainsString('Server response has error: code -32601', $exception->getMessage());
+        }
     }
 
     /** @test */
     public function batchRequest_validParameters_orderedResultsReturned(): void
     {
         $client = $this->createClient();
-        $subtractionParams = new \stdClass();
-        $subtractionParams->subtrahend = 23;
-        $subtractionParams->minuend = 42;
-        $reflectParams = new \stdClass();
-        $reflectParams->key = 'value';
+        $subtractionParams = [
+            'subtrahend' => 23,
+            'minuend'    => 42,
+        ];
+        $reflectParams = ['key' => 'value'];
 
         $results = $client->batch()
             ->call('sum', [1, 2, 4])
@@ -71,12 +74,12 @@ abstract class ClientIntegrationTestCase extends TestCase
             ->call('reflect', $reflectParams)
             ->send();
 
-        $this->assertIsArray($results);
-        $this->assertCount(4, $results);
-        $this->assertSame(7, $results[0]);
-        $this->assertNull($results[1]);
-        $this->assertSame(19, $results[2]);
-        $this->assertSame(['key' => 'value'], (array) $results[3]);
+        Assert::assertIsArray($results);
+        Assert::assertCount(4, $results);
+        Assert::assertSame(7, $results[0]);
+        Assert::assertNull($results[1]);
+        Assert::assertSame(19, $results[2]);
+        Assert::assertSame(['key' => 'value'], (array) $results[3]);
     }
 
     /** @test */
@@ -84,10 +87,12 @@ abstract class ClientIntegrationTestCase extends TestCase
     {
         $client = $this->createClient();
 
-        $this->expectException(RemoteProcedureCallFailedException::class);
-
-        $client->call('sleep', [1500]);
+        try {
+            $client->call('sleep', [1500]);
+        } catch (\Throwable $exception) {
+            Assert::assertInstanceOf(RemoteProcedureCallFailedException::class, $exception);
+        }
     }
 
-    abstract protected function createClient(): ProcessingClient;
+    abstract protected function createClient(): ClientInterface;
 }

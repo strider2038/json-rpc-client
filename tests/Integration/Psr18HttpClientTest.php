@@ -10,10 +10,12 @@
 
 namespace Strider2038\JsonRpcClient\Tests\Integration;
 
+use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\ClientBuilder;
+use Strider2038\JsonRpcClient\ClientInterface;
 use Strider2038\JsonRpcClient\Configuration\GeneralOptions;
 use Strider2038\JsonRpcClient\Service\ProcessingClient;
-use Strider2038\JsonRpcClient\Tests\TestCase\ClientIntegrationTestCase;
+use Strider2038\JsonRpcClient\Tests\TestCase\ClientIntegrationTestCaseTrait;
 use Strider2038\JsonRpcClient\Transport\Http\Psr18Transport;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
@@ -21,9 +23,11 @@ use Symfony\Component\HttpClient\Psr18Client;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class Psr18HttpClientTest extends ClientIntegrationTestCase
+class Psr18HttpClientTest extends TestCase
 {
-    protected function createClient(): ProcessingClient
+    use ClientIntegrationTestCaseTrait;
+
+    protected function createClient(): ClientInterface
     {
         $transportUrl = getenv('TEST_HTTP_TRANSPORT_URL');
         $bearerToken = getenv('TEST_HTTP_BEARER_TOKEN');

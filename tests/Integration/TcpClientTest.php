@@ -10,16 +10,20 @@
 
 namespace Strider2038\JsonRpcClient\Tests\Integration;
 
+use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\ClientFactory;
+use Strider2038\JsonRpcClient\ClientInterface;
 use Strider2038\JsonRpcClient\Service\ProcessingClient;
-use Strider2038\JsonRpcClient\Tests\TestCase\ClientIntegrationTestCase;
+use Strider2038\JsonRpcClient\Tests\TestCase\ClientIntegrationTestCaseTrait;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class TcpClientTest extends ClientIntegrationTestCase
+class TcpClientTest extends TestCase
 {
-    protected function createClient(): ProcessingClient
+    use ClientIntegrationTestCaseTrait;
+
+    protected function createClient(): ClientInterface
     {
         $transportUrl = getenv('TEST_TCP_TRANSPORT_URL');
         $clientFactory = new ClientFactory();

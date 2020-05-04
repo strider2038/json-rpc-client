@@ -19,8 +19,9 @@ use Strider2038\JsonRpcClient\Serialization\ContextGenerator;
  */
 class ContextGeneratorTest extends TestCase
 {
-    private const ERROR_TYPE = 'errorType';
+    private const DEFAULT_ERROR_TYPE = 'errorType';
     private const RESULT_TYPES_BY_METHODS = ['method' => 'type'];
+    private const ERROR_TYPES_BY_METHODS = ['method' => 'error_type'];
 
     /** @test  */
     public function createSerializationContext_singleRequest_requestInContext(): void
@@ -38,16 +39,21 @@ class ContextGeneratorTest extends TestCase
     /** @test  */
     public function createSerializationContext_serializationOptions_optionsInContext(): void
     {
-        $generator = new ContextGenerator(self::RESULT_TYPES_BY_METHODS, self::ERROR_TYPE);
+        $generator = new ContextGenerator(
+            self::RESULT_TYPES_BY_METHODS,
+            self::DEFAULT_ERROR_TYPE,
+            self::ERROR_TYPES_BY_METHODS
+        );
         $request = new RequestObject('id', 'method', ['params']);
 
         $context = $generator->createSerializationContext($request);
 
         $this->assertArrayHasKey('json_rpc', $context);
         $this->assertArrayHasKey('result_types_by_methods', $context['json_rpc']);
-        $this->assertArrayHasKey('error_type', $context['json_rpc']);
+        $this->assertArrayHasKey('default_error_type', $context['json_rpc']);
         $this->assertSame(self::RESULT_TYPES_BY_METHODS, $context['json_rpc']['result_types_by_methods']);
-        $this->assertSame(self::ERROR_TYPE, $context['json_rpc']['error_type']);
+        $this->assertSame(self::DEFAULT_ERROR_TYPE, $context['json_rpc']['default_error_type']);
+        $this->assertSame(self::ERROR_TYPES_BY_METHODS, $context['json_rpc']['error_types_by_methods']);
     }
 
     /** @test  */

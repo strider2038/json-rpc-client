@@ -10,7 +10,7 @@
 
 namespace Strider2038\JsonRpcClient;
 
-use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
+use Strider2038\JsonRpcClient\Exception\JsonRpcClientExceptionInterface;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
@@ -23,7 +23,7 @@ interface BatchRequestInterface extends RequestInterface
      *
      * @param array|object|null $params
      *
-     * @throws JsonRpcClientException
+     * @throws JsonRpcClientExceptionInterface
      *
      * @return BatchRequestInterface
      */
@@ -35,7 +35,7 @@ interface BatchRequestInterface extends RequestInterface
      *
      * @param array|object|null $params
      *
-     * @throws JsonRpcClientException
+     * @throws JsonRpcClientExceptionInterface
      *
      * @return BatchRequestInterface
      */
@@ -45,7 +45,7 @@ interface BatchRequestInterface extends RequestInterface
      * Executes batch request and returns unsorted responses (for raw client)
      * or properly ordered results in array (for processing client).
      *
-     * @throws JsonRpcClientException
+     * @throws JsonRpcClientExceptionInterface
      */
     public function send(): array;
 }

@@ -21,5 +21,5 @@ interface TransportFactoryInterface
     /**
      * @throws InvalidConfigException
      */
-    public function createTransport(string $connection, GeneralOptions $options): TransportInterface;
+    public function createTransport(string $url, GeneralOptions $options): TransportInterface;
 }

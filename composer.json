@@ -1,6 +1,6 @@
 {
   "name": "strider2038/json-rpc-client",
-  "description": "Flexible JSON RPC v2 client for PHP",
+  "description": "Flexible JSON RPC v2 client for PHP written in object-oriented style",
   "keywords": [
     "jsonrpc",
     "jsonrpc2",
@@ -29,10 +29,13 @@
     "nyholm/psr7": "^1.0",
     "phake/phake": "^3.1",
     "phpstan/phpstan": "^0.12.5",
+    "phpstan/phpstan-phpunit": "^0.12.8",
+    "phpstan/phpstan-symfony": "^0.12.6",
     "phpunit/phpunit": "^8.0",
     "psr/http-client": "^1.0",
     "psr/log": "^1.0",
     "ramsey/uuid": "^3.8",
+    "symfony/framework-bundle": "^4.3 || ^5.0",
     "symfony/http-client": "^4.3 || ^5.0",
     "symfony/property-access": "^4.3 || ^5.0",
     "symfony/property-info": "^4.3 || ^5.0",
@@ -76,6 +79,9 @@
     ],
     "test": [
       "phpunit"
+    ],
+    "coverage": [
+      "phpunit --coverage-html var/coverage"
     ]
   }
 }

@@ -8,11 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Strider2038\JsonRpcClient\Exception;
+namespace Strider2038\JsonRpcClient\Tests\Resources\Object;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class JsonRpcClientException extends \Exception
+class Error
 {
+    /** @var int */
+    public $code;
+
+    /** @var string */
+    public $message;
 }

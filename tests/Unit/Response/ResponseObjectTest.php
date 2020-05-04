@@ -11,7 +11,7 @@
 namespace Strider2038\JsonRpcClient\Tests\Unit\Response;
 
 use PHPUnit\Framework\TestCase;
-use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
+use Strider2038\JsonRpcClient\Exception\LogicException;
 use Strider2038\JsonRpcClient\Response\ResponseObject;
 
 /**
@@ -24,7 +24,7 @@ class ResponseObjectTest extends TestCase
     {
         $response = new ResponseObject('', '', '');
 
-        $this->expectException(JsonRpcClientException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('There is no error in response. Please, use hasError() method to check response for errors.');
 
         $response->getError();

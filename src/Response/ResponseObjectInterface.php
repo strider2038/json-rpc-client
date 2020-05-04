@@ -10,7 +10,7 @@
 
 namespace Strider2038\JsonRpcClient\Response;
 
-use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
+use Strider2038\JsonRpcClient\Exception\JsonRpcClientExceptionInterface;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
@@ -44,7 +44,7 @@ interface ResponseObjectInterface
      * Returns error description if response has error. Otherwise exception will be thrown.
      * Always use hasError() method before retrieving error.
      *
-     * @throws JsonRpcClientException when there is no error
+     * @throws JsonRpcClientExceptionInterface when there is no error
      */
     public function getError(): ErrorObject;
 }

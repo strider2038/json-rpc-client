@@ -13,7 +13,7 @@ namespace Strider2038\JsonRpcClient\Exception;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class ConnectionFailedException extends JsonRpcClientException
+class ConnectionFailedException extends \Exception implements JsonRpcClientExceptionInterface
 {
     public function __construct(string $url, string $reason)
     {

@@ -21,19 +21,27 @@ class ContextGenerator
     private $resultTypesByMethods;
 
     /** @var string|null */
-    private $errorType;
+    private $defaultErrorType;
 
-    public function __construct(array $resultTypesByMethods = [], string $errorType = null)
-    {
+    /** @var string[] */
+    private $errorTypesByMethods;
+
+    public function __construct(
+        array $resultTypesByMethods = [],
+        string $errorType = null,
+        array $errorTypesByMethods = []
+    ) {
         $this->resultTypesByMethods = $resultTypesByMethods;
-        $this->errorType = $errorType;
+        $this->defaultErrorType = $errorType;
+        $this->errorTypesByMethods = $errorTypesByMethods;
     }
 
     public function createSerializationContext($request): array
     {
         $context = [
             'result_types_by_methods' => $this->resultTypesByMethods,
-            'error_type'              => $this->errorType,
+            'default_error_type'      => $this->defaultErrorType,
+            'error_types_by_methods'  => $this->errorTypesByMethods,
         ];
 
         if ($request instanceof RequestObjectInterface) {

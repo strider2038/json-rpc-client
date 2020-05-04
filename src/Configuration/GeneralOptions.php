@@ -11,6 +11,7 @@
 namespace Strider2038\JsonRpcClient\Configuration;
 
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
+use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 use Strider2038\JsonRpcClient\Transport\Http\HttpTransportTypeInterface;
 
 /**
@@ -41,6 +42,18 @@ class GeneralOptions
     private $connectionOptions;
 
     /**
+     * If enabled then all responses will be processed and client will return response payload.
+     * All responses for a batch request will be sorted accordingly to request order.
+     * If server returns error response, then instance of @see ErrorResponseException will be thrown.
+     *
+     * If disabled then client will return @see ResponseObjectInterface for each request
+     * or an array of @see ResponseObjectInterface for each batch request.
+     *
+     * @var bool
+     */
+    private $enableResponseProcessing;
+
+    /**
      * Serialization configuration.
      *
      * @var SerializationOptions
@@ -54,7 +67,7 @@ class GeneralOptions
      *
      * @var string
      */
-    private $httpClient;
+    private $httpClientType;
 
     /**
      * @var array
@@ -67,6 +80,7 @@ class GeneralOptions
     public function __construct(
         int $requestTimeoutUs = self::DEFAULT_REQUEST_TIMEOUT,
         ConnectionOptions $connectionOptions = null,
+        bool $enableResponseProcessing = true,
         SerializationOptions $serializationOptions = null,
         array $transportConfiguration = [],
         string $httpClient = HttpTransportTypeInterface::AUTODETECT
@@ -78,9 +92,10 @@ class GeneralOptions
 
         $this->requestTimeoutUs = $requestTimeoutUs;
         $this->connectionOptions = $connectionOptions ?? new ConnectionOptions();
+        $this->enableResponseProcessing = $enableResponseProcessing;
         $this->transportConfiguration = $transportConfiguration;
         $this->serializationOptions = $serializationOptions ?? new SerializationOptions();
-        $this->httpClient = $httpClient;
+        $this->httpClientType = $httpClient;
     }
 
     public function getRequestTimeoutUs(): int
@@ -93,6 +108,11 @@ class GeneralOptions
         return $this->connectionOptions;
     }
 
+    public function isResponseProcessingEnabled(): bool
+    {
+        return $this->enableResponseProcessing;
+    }
+
     public function getTransportConfiguration(): array
     {
         return $this->transportConfiguration;
@@ -103,9 +123,9 @@ class GeneralOptions
         return $this->serializationOptions;
     }
 
-    public function getHttpClient(): string
+    public function getHttpClientType(): string
     {
-        return $this->httpClient;
+        return $this->httpClientType;
     }
 
     /**
@@ -116,9 +136,10 @@ class GeneralOptions
         return new self(
             $options['request_timeout_us'] ?? self::DEFAULT_REQUEST_TIMEOUT,
             ConnectionOptions::createFromArray($options['connection'] ?? []),
+            $options['enable_response_processing'] ?? true,
             SerializationOptions::createFromArray($options['serialization'] ?? []),
             $options['transport_configuration'] ?? [],
-            $options['http_client'] ?? HttpTransportTypeInterface::AUTODETECT
+            $options['http_client_type'] ?? HttpTransportTypeInterface::AUTODETECT
         );
     }
 

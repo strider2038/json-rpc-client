@@ -54,7 +54,10 @@ class ClientBuilder
     private $resultTypesByMethods = [];
 
     /** @var string|null */
-    private $errorType = null;
+    private $defaultErrorType = null;
+
+    /** @var string[] */
+    private $errorTypesByMethods = [];
 
     public function __construct(TransportInterface $transport)
     {
@@ -83,7 +86,19 @@ class ClientBuilder
     }
 
     /**
-     * If response processing is disabled then LowLevelClient will be constructed.
+     * If response processing is enabled then ProcessingClient will be constructed.
+     *
+     * @return $this
+     */
+    public function enableResponseProcessing(): self
+    {
+        $this->enableResponseProcessing = true;
+
+        return $this;
+    }
+
+    /**
+     * If response processing is disabled then RawClient will be constructed.
      *
      * @return $this
      */
@@ -101,17 +116,22 @@ class ClientBuilder
         return $this;
     }
 
-    public function setErrorType(?string $errorType): self
+    public function setDefaultErrorType(?string $defaultErrorType): self
     {
-        $this->errorType = $errorType;
+        $this->defaultErrorType = $defaultErrorType;
 
         return $this;
+    }
+
+    public function setErrorTypesByMethods(array $errorTypesByMethods): void
+    {
+        $this->errorTypesByMethods = $errorTypesByMethods;
     }
 
     public function getClient(): ClientInterface
     {
         $requestObjectFactory = $this->createRequestObjectFactory();
-        $contextGenerator = new ContextGenerator($this->resultTypesByMethods, $this->errorType);
+        $contextGenerator = new ContextGenerator($this->resultTypesByMethods, $this->defaultErrorType, $this->errorTypesByMethods);
 
         if ($this->enableResponseProcessing) {
             $caller = new Caller($this->serializer, $contextGenerator, $this->transport, new ExceptionalResponseValidator());

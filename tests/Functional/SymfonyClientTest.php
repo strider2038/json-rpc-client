@@ -21,6 +21,7 @@ use Strider2038\JsonRpcClient\Tests\Resources\Normalizer\ComplexObjectNormalizer
 use Strider2038\JsonRpcClient\Tests\Resources\Object\ComplexObject;
 use Strider2038\JsonRpcClient\Tests\Resources\Object\CreateProductRequest;
 use Strider2038\JsonRpcClient\Tests\Resources\Object\CreateProductResponse;
+use Strider2038\JsonRpcClient\Tests\Resources\Object\Error;
 use Strider2038\JsonRpcClient\Tests\Resources\Object\Image;
 use Strider2038\JsonRpcClient\Tests\Resources\Object\Violation;
 use Strider2038\JsonRpcClient\Transport\TransportInterface;
@@ -106,6 +107,28 @@ class SymfonyClientTest extends TestCase
         "id": 1
     }';
 
+    private const ERROR_REQUEST = '
+    {
+        "jsonrpc": "2.0",
+        "method": "requestError", 
+        "params": [1, 2, 3],
+        "id": 1
+    }';
+
+    private const ERROR_RESPONSE = '
+    {
+        "jsonrpc": "2.0", 
+        "error": {
+            "code": -32602,
+            "message": "Invalid params",
+            "data": {
+                "code": 123,
+                "message": "deserialized error"
+            }
+        }, 
+        "id": 1
+    }';
+
     /** @var TransportInterface */
     private $transport;
 
@@ -140,7 +163,7 @@ class SymfonyClientTest extends TestCase
     }
 
     /** @test */
-    public function singleRequest_objectRequestAndServerReturnsErrorResult_violationReturned(): void
+    public function singleRequest_objectRequestAndServerReturnsViolationResult_violationReturned(): void
     {
         $client = $this->createClient();
         $this->givenResponseFromServer(self::VIOLATION_RESPONSE);
@@ -158,8 +181,31 @@ class SymfonyClientTest extends TestCase
         $this->assertSame(-32602, $response->getError()->getCode());
         $this->assertSame('Invalid params', $response->getError()->getMessage());
         $this->assertCount(1, $violations);
+        $this->assertInstanceOf(Violation::class, $violations[0]);
         $this->assertSame('name', $violations[0]->propertyPath);
         $this->assertSame('Invalid name', $violations[0]->message);
+    }
+
+    /** @test */
+    public function singleRequest_objectRequestAndServerReturnsErrorResult_errorReturned(): void
+    {
+        $client = $this->createClient();
+        $this->givenResponseFromServer(self::ERROR_RESPONSE);
+
+        /** @var ResponseObjectInterface $response */
+        $response = $client->call('requestError', [1, 2, 3]);
+        /** @var Error $error */
+        $error = $response->getError()->getData();
+
+        $this->assertInstanceOf(ResponseObjectInterface::class, $response);
+        $this->assertNull($response->getResult());
+        $this->assertTrue($response->hasError());
+        $this->assertRequestWasSentByTransport(self::ERROR_REQUEST);
+        $this->assertSame(-32602, $response->getError()->getCode());
+        $this->assertSame('Invalid params', $response->getError()->getMessage());
+        $this->assertInstanceOf(Error::class, $error);
+        $this->assertSame(123, $error->code);
+        $this->assertSame('deserialized error', $error->message);
     }
 
     /** @test */
@@ -192,7 +238,10 @@ class SymfonyClientTest extends TestCase
             'createProduct'     => CreateProductResponse::class,
             'sendComplexObject' => ComplexObject::class,
         ]);
-        $clientBuilder->setErrorType(Violation::class.'[]');
+        $clientBuilder->setDefaultErrorType(Violation::class.'[]');
+        $clientBuilder->setErrorTypesByMethods([
+            'requestError' => Error::class,
+        ]);
 
         $serializer = SerializerFactory::createSerializer([
             new ComplexObjectNormalizer(),

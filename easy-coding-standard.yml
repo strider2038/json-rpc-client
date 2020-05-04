@@ -1,10 +1,3 @@
-imports:
-  - { resource: './vendor/symplify/easy-coding-standard/config/set/clean-code.yaml' }
-  - { resource: './vendor/symplify/easy-coding-standard/config/set/common.yaml' }
-  - { resource: './vendor/symplify/easy-coding-standard/config/set/php71.yaml' }
-  - { resource: './vendor/symplify/easy-coding-standard/config/set/psr12.yaml' }
-  - { resource: './vendor/symplify/easy-coding-standard/config/set/symfony.yaml' }
-
 services:
   PhpCsFixer\Fixer\PhpUnit\PhpUnitTestAnnotationFixer:
     style: 'annotation'
@@ -12,8 +5,18 @@ services:
     align_double_arrow: true
   PhpCsFixer\Fixer\Operator\IncrementStyleFixer:
     style: 'post'
+  PhpCsFixer\Fixer\Operator\ConcatSpaceFixer:
+    spacing: 'none'
 
 parameters:
+  sets:
+    - 'clean-code'
+    - 'common'
+    - 'psr12'
+    - 'symfony'
+    - 'php71'
+  exclude_files:
+    - 'src/Bridge/Symfony/DependencyInjection/Configuration.php'
   skip:
     PhpCsFixer\Fixer\PhpUnit\PhpUnitMethodCasingFixer: ~
     PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer: ~

@@ -12,6 +12,11 @@
 
     <php>
         <env name="TEST_TCP_TRANSPORT_URL" value="tcp://localhost:4000"/>
+        <env name="APP_ENV" value="test" />
+        <env name="APP_DEBUG" value="0" />
+        <env name="APP_SECRET" value="s$cretf0rt3st" />
+        <env name="KERNEL_DIR" value="tests/Resources/Symfony/Application" />
+        <env name="KERNEL_CLASS" value="Strider2038\JsonRpcClient\Tests\Resources\Symfony\Application\Kernel" />
     </php>
 
     <testsuites>

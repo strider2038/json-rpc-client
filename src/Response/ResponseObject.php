@@ -10,7 +10,7 @@
 
 namespace Strider2038\JsonRpcClient\Response;
 
-use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
+use Strider2038\JsonRpcClient\Exception\LogicException;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
@@ -59,7 +59,7 @@ class ResponseObject implements ResponseObjectInterface
     public function getError(): ErrorObject
     {
         if (null === $this->error) {
-            throw new JsonRpcClientException(
+            throw new LogicException(
                 'There is no error in response. Please, use hasError() method to check response for errors.'
             );
         }

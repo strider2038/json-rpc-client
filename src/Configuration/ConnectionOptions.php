@@ -50,7 +50,8 @@ class ConnectionOptions
     private $timeoutMultiplier;
 
     /**
-     * Max sequential attempts to reconnect with remote server. Must be greater or equal to 1.
+     * Max sequential attempts to reconnect with a remote server before fatal exception will be thrown.
+     * Must be greater than or equal to 1.
      *
      * @var int
      */

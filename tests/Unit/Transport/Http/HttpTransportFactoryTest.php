@@ -32,7 +32,7 @@ class HttpTransportFactoryTest extends TestCase
     ): void {
         $transportFactory = new HttpTransportFactory();
         $options = GeneralOptions::createFromArray([
-            'http_client' => $httpClientType,
+            'http_client_type' => $httpClientType,
         ]);
 
         $transport = $transportFactory->createTransport('http://localhost', $options);

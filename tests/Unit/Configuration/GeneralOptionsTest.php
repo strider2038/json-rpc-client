@@ -35,9 +35,10 @@ class GeneralOptionsTest extends TestCase
         $this->assertSame(ConnectionOptions::DEFAULT_ATTEMPT_TIMEOUT, $options->getConnectionOptions()->getAttemptTimeoutUs());
         $this->assertSame(ConnectionOptions::DEFAULT_TIMEOUT_MULTIPLIER, $options->getConnectionOptions()->getTimeoutMultiplier());
         $this->assertSame(ConnectionOptions::DEFAULT_MAX_ATTEMPTS, $options->getConnectionOptions()->getMaxAttempts());
-        $this->assertSame(SerializationOptions::DEFAULT_SERIALIZER, $options->getSerializationOptions()->getSerializer());
+        $this->assertTrue($options->isResponseProcessingEnabled());
+        $this->assertSame(SerializationOptions::DEFAULT_SERIALIZER, $options->getSerializationOptions()->getSerializerType());
         $this->assertSame([], $options->getTransportConfiguration());
-        $this->assertSame(HttpTransportTypeInterface::AUTODETECT, $options->getHttpClient());
+        $this->assertSame(HttpTransportTypeInterface::AUTODETECT, $options->getHttpClientType());
     }
 
     /** @test */
@@ -55,7 +56,7 @@ class GeneralOptionsTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('Invalid value "invalid" for http client option. Must be one of: "autodetect", "guzzle", "symfony".');
 
-        new GeneralOptions(10, null, null, [], 'invalid');
+        new GeneralOptions(10, null, false, null, [], 'invalid');
     }
 
     /** @test */
@@ -67,25 +68,27 @@ class GeneralOptionsTest extends TestCase
         $this->assertSame(ConnectionOptions::DEFAULT_ATTEMPT_TIMEOUT, $options->getConnectionOptions()->getAttemptTimeoutUs());
         $this->assertSame(ConnectionOptions::DEFAULT_TIMEOUT_MULTIPLIER, $options->getConnectionOptions()->getTimeoutMultiplier());
         $this->assertSame(ConnectionOptions::DEFAULT_MAX_ATTEMPTS, $options->getConnectionOptions()->getMaxAttempts());
-        $this->assertSame(SerializationOptions::DEFAULT_SERIALIZER, $options->getSerializationOptions()->getSerializer());
+        $this->assertTrue($options->isResponseProcessingEnabled());
+        $this->assertSame(SerializationOptions::DEFAULT_SERIALIZER, $options->getSerializationOptions()->getSerializerType());
         $this->assertSame([], $options->getTransportConfiguration());
-        $this->assertSame(HttpTransportTypeInterface::AUTODETECT, $options->getHttpClient());
+        $this->assertSame(HttpTransportTypeInterface::AUTODETECT, $options->getHttpClientType());
     }
 
     /** @test */
     public function createFromArray_optionsInArray_optionsWithValuesCreated(): void
     {
         $options = GeneralOptions::createFromArray([
-            'request_timeout_us' => 200,
-            'connection'         => [
+            'request_timeout_us'         => 200,
+            'enable_response_processing' => false,
+            'connection'                 => [
                 'attempt_timeout_us' => 1,
                 'timeout_multiplier' => 1.5,
                 'max_attempts'       => 3,
             ],
-            'http_client'             => HttpTransportTypeInterface::GUZZLE,
+            'http_client_type'        => HttpTransportTypeInterface::GUZZLE,
             'transport_configuration' => self::TRANSPORT_CONFIGURATION,
             'serialization'           => [
-                'serializer' => 'array',
+                'serializer_type' => 'array',
             ],
         ]);
 
@@ -93,8 +96,9 @@ class GeneralOptionsTest extends TestCase
         $this->assertSame(1, $options->getConnectionOptions()->getAttemptTimeoutUs());
         $this->assertSame(1.5, $options->getConnectionOptions()->getTimeoutMultiplier());
         $this->assertSame(3, $options->getConnectionOptions()->getMaxAttempts());
+        $this->assertFalse($options->isResponseProcessingEnabled());
         $this->assertSame(self::TRANSPORT_CONFIGURATION, $options->getTransportConfiguration());
-        $this->assertSame('array', $options->getSerializationOptions()->getSerializer());
-        $this->assertSame(HttpTransportTypeInterface::GUZZLE, $options->getHttpClient());
+        $this->assertSame('array', $options->getSerializationOptions()->getSerializerType());
+        $this->assertSame(HttpTransportTypeInterface::GUZZLE, $options->getHttpClientType());
     }
 }

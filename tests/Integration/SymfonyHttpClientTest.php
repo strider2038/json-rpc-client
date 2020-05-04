@@ -10,24 +10,28 @@
 
 namespace Strider2038\JsonRpcClient\Tests\Integration;
 
+use PHPUnit\Framework\TestCase;
 use Strider2038\JsonRpcClient\ClientFactory;
+use Strider2038\JsonRpcClient\ClientInterface;
 use Strider2038\JsonRpcClient\Service\ProcessingClient;
-use Strider2038\JsonRpcClient\Tests\TestCase\ClientIntegrationTestCase;
+use Strider2038\JsonRpcClient\Tests\TestCase\ClientIntegrationTestCaseTrait;
 use Strider2038\JsonRpcClient\Transport\Http\HttpTransportTypeInterface;
 
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class SymfonyHttpClientTest extends ClientIntegrationTestCase
+class SymfonyHttpClientTest extends TestCase
 {
-    protected function createClient(): ProcessingClient
+    use ClientIntegrationTestCaseTrait;
+
+    protected function createClient(): ClientInterface
     {
         $transportUrl = getenv('TEST_HTTP_TRANSPORT_URL');
         $bearerToken = getenv('TEST_HTTP_BEARER_TOKEN');
 
         $clientFactory = new ClientFactory();
         $client = $clientFactory->createClient($transportUrl, [
-            'http_client'             => HttpTransportTypeInterface::SYMFONY,
+            'http_client_type'        => HttpTransportTypeInterface::SYMFONY,
             'transport_configuration' => [
                 'headers' => [
                     'Authorization' => 'Bearer '.$bearerToken,

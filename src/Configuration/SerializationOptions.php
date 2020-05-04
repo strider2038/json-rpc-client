@@ -29,29 +29,62 @@ class SerializationOptions
     ];
 
     /** @var string */
-    private $serializer;
+    private $serializerType;
 
-    /** @var string[] */
+    /**
+     * Used to deserialize successful server response to defined class or type.
+     *
+     * Example
+     *
+     * [
+     *     'createProduct' => CreateProductResponse::class,
+     * ]
+     *
+     * Works only with Symfony serializer.
+     *
+     * @var string[]
+     */
     private $resultTypesByMethods;
 
-    /** @var string|null */
-    private $errorType;
+    /**
+     * Used to deserialize error data from server response to defined class or type. It can be used
+     * when all error data has the same structure or as fallback type for errors. If server can respond
+     * with specific error data on method you can use errorTypesByMethods option.
+     *
+     * @var string|null
+     */
+    private $defaultErrorType;
+
+    /**
+     * Used to deserialize error data from server response after call to specific method.
+     *
+     * Example
+     *
+     * [
+     *     'createProduct' => CreateProductErrors::class,
+     * ]
+     *
+     * @var string[]
+     */
+    private $errorTypesByMethods;
 
     public function __construct(
-        string $serializer = self::DEFAULT_SERIALIZER,
+        string $serializerType = self::DEFAULT_SERIALIZER,
         array $resultTypesByMethods = [],
-        string $errorType = null
+        string $errorType = null,
+        array $errorTypesByMethods = []
     ) {
-        $this->validateSerializer($serializer);
+        $this->validateSerializerType($serializerType);
 
-        $this->serializer = $serializer;
+        $this->serializerType = $serializerType;
         $this->resultTypesByMethods = $resultTypesByMethods;
-        $this->errorType = $errorType;
+        $this->defaultErrorType = $errorType;
+        $this->errorTypesByMethods = $errorTypesByMethods;
     }
 
-    public function getSerializer(): string
+    public function getSerializerType(): string
     {
-        return $this->serializer;
+        return $this->serializerType;
     }
 
     public function getResultTypesByMethods(): array
@@ -59,26 +92,32 @@ class SerializationOptions
         return $this->resultTypesByMethods;
     }
 
-    public function getErrorType(): ?string
+    public function getDefaultErrorType(): ?string
     {
-        return $this->errorType;
+        return $this->defaultErrorType;
+    }
+
+    public function getErrorTypesByMethods(): array
+    {
+        return $this->errorTypesByMethods;
     }
 
     public static function createFromArray(array $options): self
     {
         return new self(
-            $options['serializer'] ?? self::DEFAULT_SERIALIZER,
+            $options['serializer_type'] ?? self::DEFAULT_SERIALIZER,
             $options['result_types_by_methods'] ?? [],
-            $options['error_type'] ?? null
+            $options['default_error_type'] ?? null,
+            $options['error_types_by_methods'] ?? []
         );
     }
 
-    private function validateSerializer(string $serializer): void
+    private function validateSerializerType(string $serializer): void
     {
         if (!in_array($serializer, self::SUPPORTED_SERIALIZERS, true)) {
             throw new InvalidConfigException(
                 sprintf(
-                    'Serializer option must be equal to one of: %s.',
+                    'Serializer type option must be equal to one of: %s.',
                     implode(
                         ', ',
                         array_map(
