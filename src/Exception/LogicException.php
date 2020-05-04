@@ -13,6 +13,6 @@ namespace Strider2038\JsonRpcClient\Exception;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class JsonRpcClientException extends \Exception
+class LogicException extends \LogicException
 {
 }

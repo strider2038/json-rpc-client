@@ -18,8 +18,6 @@ use Strider2038\JsonRpcClient\Transport\Socket\SocketClient;
 use Strider2038\JsonRpcClient\Transport\Socket\SocketConnector;
 
 /**
- * @internal
- *
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
 class MultiTransportFactory implements TransportFactoryInterface

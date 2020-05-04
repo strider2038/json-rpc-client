@@ -15,7 +15,7 @@ use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class NoResponseReceivedException extends JsonRpcClientException
+class NoResponseReceivedException extends \Exception implements JsonRpcClientExceptionInterface
 {
     public function __construct(RequestObjectInterface $request)
     {

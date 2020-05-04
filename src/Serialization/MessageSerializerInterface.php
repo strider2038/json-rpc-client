@@ -10,6 +10,7 @@
 
 namespace Strider2038\JsonRpcClient\Serialization;
 
+use Strider2038\JsonRpcClient\Configuration\SerializationOptions;
 use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
 use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 
@@ -19,11 +20,23 @@ use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 interface MessageSerializerInterface
 {
     /**
+     * Serializes single request or a batch of requests into binary string that will be sent to server over transport.
+     *
      * @param RequestObjectInterface|RequestObjectInterface[] $request
      */
     public function serialize($request): string;
 
     /**
+     * Deserializes single response or a batch of responses into classes or objects.
+     *
+     * Context contains data that can be used for deserialization process:
+     *
+     * * $context['json_rpc']['result_types_by_methods'] - set from @see SerializationOptions
+     * * $context['json_rpc']['default_error_type'] - set from @see SerializationOptions
+     * * $context['json_rpc']['error_types_by_methods'] - set from @see SerializationOptions
+     * * $context['json_rpc']['request'] contains @see RequestObjectInterface for singe request
+     * * $context['json_rpc']['requests'] contains an array of @see RequestObjectInterface for batch request
+     *
      * @return ResponseObjectInterface|ResponseObjectInterface[]|null
      */
     public function deserialize(string $response, array $context);

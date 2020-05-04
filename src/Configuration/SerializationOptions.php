@@ -48,7 +48,7 @@ class SerializationOptions
 
     /**
      * Used to deserialize error data from server response to defined class or type. It can be used
-     * when all error data has same structure or as fallback type for errors. If server can respond
+     * when all error data has the same structure or as fallback type for errors. If server can respond
      * with specific error data on method you can use errorTypesByMethods option.
      *
      * @var string|null

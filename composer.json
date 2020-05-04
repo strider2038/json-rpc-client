@@ -1,6 +1,6 @@
 {
   "name": "strider2038/json-rpc-client",
-  "description": "Flexible JSON RPC v2 client for PHP",
+  "description": "Flexible JSON RPC v2 client for PHP written in object-oriented style",
   "keywords": [
     "jsonrpc",
     "jsonrpc2",

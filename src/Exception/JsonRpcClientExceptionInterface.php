@@ -13,10 +13,6 @@ namespace Strider2038\JsonRpcClient\Exception;
 /**
  * @author Igor Lazarev <strider2038@yandex.ru>
  */
-class ResponseException extends \Exception implements JsonRpcClientExceptionInterface
+interface JsonRpcClientExceptionInterface extends \Throwable
 {
-    public function __construct(string $message)
-    {
-        parent::__construct($message);
-    }
 }

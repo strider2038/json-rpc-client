@@ -12,7 +12,7 @@ namespace Strider2038\JsonRpcClient\Service;
 
 use Strider2038\JsonRpcClient\BatchRequestInterface;
 use Strider2038\JsonRpcClient\ClientInterface;
-use Strider2038\JsonRpcClient\Exception\JsonRpcClientException;
+use Strider2038\JsonRpcClient\Exception\JsonRpcClientExceptionInterface;
 use Strider2038\JsonRpcClient\Request\RequestObjectFactory;
 
 /**
@@ -45,7 +45,7 @@ class ProcessingClient implements ClientInterface
     /**
      * @param array|object|null $params
      *
-     * @throws JsonRpcClientException
+     * @throws JsonRpcClientExceptionInterface
      *
      * @return array|object|null
      */
@@ -65,7 +65,7 @@ class ProcessingClient implements ClientInterface
     /**
      * @param array|object|null $params
      *
-     * @throws JsonRpcClientException
+     * @throws JsonRpcClientExceptionInterface
      */
     public function notify(string $method, $params = null): void
     {

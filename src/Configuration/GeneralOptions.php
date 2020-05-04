@@ -11,6 +11,7 @@
 namespace Strider2038\JsonRpcClient\Configuration;
 
 use Strider2038\JsonRpcClient\Exception\InvalidConfigException;
+use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
 use Strider2038\JsonRpcClient\Transport\Http\HttpTransportTypeInterface;
 
 /**
@@ -41,13 +42,16 @@ class GeneralOptions
     private $connectionOptions;
 
     /**
-     * If enabled then ProcessingClient will be used with response unpacking.
-     * If disabled then RawClient will be used, that will return ResponseObjectInterface
-     * for each request.
+     * If enabled then all responses will be processed and client will return response payload.
+     * All responses for a batch request will be sorted accordingly to request order.
+     * If server returns error response, then instance of @see ErrorResponseException will be thrown.
+     *
+     * If disabled then client will return @see ResponseObjectInterface for each request
+     * or an array of @see ResponseObjectInterface for each batch request.
      *
      * @var bool
      */
-    private $enableResponseProcessing = true;
+    private $enableResponseProcessing;
 
     /**
      * Serialization configuration.
