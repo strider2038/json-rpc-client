@@ -25,7 +25,7 @@ jobs:
         run: composer check
 
       - name: Unit test
-        run: composer test
+        run: ./vendor/bin/phpunit --testsuite functional,unit
 
   matrix_test:
     runs-on: ubuntu-latest
@@ -52,4 +52,4 @@ jobs:
           php_version: ${{ matrix.php }}
 
       - name: Unit test
-        run: composer test
+        run: ./vendor/bin/phpunit --testsuite functional,unit
