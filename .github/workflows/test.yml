@@ -22,10 +22,10 @@ jobs:
         run: composer validate
 
       - name: Lint
-        run: composer lint
+        run: composer check
 
       - name: Unit test
-        run: ./vendor/bin/phpunit
+        run: composer test
 
   matrix_test:
     runs-on: ubuntu-latest
@@ -52,4 +52,4 @@ jobs:
           php_version: ${{ matrix.php }}
 
       - name: Unit test
-        run: ./vendor/bin/phpunit
+        run: composer test
