@@ -40,7 +40,7 @@
     "symfony/property-access": "^4.3 || ^5.0",
     "symfony/property-info": "^4.3 || ^5.0",
     "symfony/serializer": "^4.3 || ^5.0",
-    "symplify/easy-coding-standard": "^7.0"
+    "symplify/easy-coding-standard": "^9.0"
   },
   "suggest": {
     "ext-curl": "Recommended for use with HTTP transport to improve performance",
