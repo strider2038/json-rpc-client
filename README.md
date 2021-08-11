@@ -22,7 +22,7 @@ Flexible JSON RPC v2 client for PHP written in object-oriented style.
 Use composer to install library. It is recommended to fix minor version while library is under development.
 
 ```bash
-composer require strider2038/json-rpc-client ^0.4
+composer require strider2038/json-rpc-client ^0.5
 ```
 
 Also, if you want to use it over HTTP protocol you have to install one of those clients: [Guzzle](https://github.com/guzzle/guzzle) or [Symfony Http Client](https://symfony.com/doc/current/components/http_client.html).
