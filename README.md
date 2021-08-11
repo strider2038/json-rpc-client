@@ -3,7 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/strider2038/json-rpc-client/v/stable)](https://packagist.org/packages/strider2038/json-rpc-client)
 [![Total Downloads](https://poser.pugx.org/strider2038/json-rpc-client/downloads)](https://packagist.org/packages/strider2038/json-rpc-client)
 [![License](https://poser.pugx.org/strider2038/json-rpc-client/license)](https://packagist.org/packages/strider2038/json-rpc-client)
-[![Build Status](https://travis-ci.org/strider2038/json-rpc-client.svg?branch=master)](https://travis-ci.org/strider2038/json-rpc-client)
+[![Test](https://github.com/strider2038/json-rpc-client/actions/workflows/test.yml/badge.svg)](https://github.com/strider2038/json-rpc-client/actions/workflows/test.yml)
 [![Build Status](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/badges/build.png?b=master)](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/strider2038/json-rpc-client/?branch=master)

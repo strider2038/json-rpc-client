@@ -3,7 +3,7 @@ build:
 
     analysis:
       environment:
-        php: 7.4
+        php: 8.0
       project_setup:
         override:
           - 'true'
@@ -13,7 +13,7 @@ build:
 
     tests:
       environment:
-        php: 7.2
+        php: 8.0
         variables:
           TEST_TCP_TRANSPORT_URL: 'tcp://localhost:4000'
           TEST_HTTP_TRANSPORT_URL: 'http://localhost:4001/rpc'
