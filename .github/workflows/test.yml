@@ -1,0 +1,55 @@
+name: test
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  stable_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: 8.0
+
+      - name: Validate composer.json
+        run: composer validate
+
+      - name: Lint
+        run: composer lint
+
+      - name: Unit test
+        run: ./vendor/bin/phpunit
+
+  matrix_test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        symfony: ['4.4.*', '5.2.*', '5.3.*']
+        php: ['7.4', '8.0']
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install specific symfony version
+        run: composer require
+          symfony/property-access:${{ matrix.symfony }}
+          symfony/property-info:${{ matrix.symfony }}
+          symfony/serializer:${{ matrix.symfony }}
+          symfony/framework-bundle:${{ matrix.symfony }}
+          symfony/expression-language:${{ matrix.symfony }}
+
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: ${{ matrix.php }}
+
+      - name: Unit test
+        run: ./vendor/bin/phpunit
