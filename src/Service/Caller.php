@@ -24,17 +24,13 @@ use Strider2038\JsonRpcClient\Transport\TransportInterface;
  */
 class Caller
 {
-    /** @var MessageSerializerInterface */
-    private $serializer;
+    private MessageSerializerInterface $serializer;
 
-    /** @var ContextGenerator */
-    private $contextGenerator;
+    private ContextGenerator $contextGenerator;
 
-    /** @var TransportInterface */
-    private $transport;
+    private TransportInterface $transport;
 
-    /** @var ResponseValidatorInterface */
-    private $validator;
+    private ResponseValidatorInterface $validator;
 
     public function __construct(
         MessageSerializerInterface $serializer,

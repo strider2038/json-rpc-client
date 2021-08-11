@@ -28,8 +28,7 @@ class SerializationOptions
         self::SYMFONY_SERIALIZER,
     ];
 
-    /** @var string */
-    private $serializerType;
+    private string $serializerType;
 
     /**
      * Used to deserialize successful server response to defined class or type.
@@ -44,16 +43,14 @@ class SerializationOptions
      *
      * @var string[]
      */
-    private $resultTypesByMethods;
+    private array $resultTypesByMethods;
 
     /**
      * Used to deserialize error data from server response to defined class or type. It can be used
      * when all error data has the same structure or as fallback type for errors. If server can respond
      * with specific error data on method you can use errorTypesByMethods option.
-     *
-     * @var string|null
      */
-    private $defaultErrorType;
+    private ?string $defaultErrorType;
 
     /**
      * Used to deserialize error data from server response after call to specific method.
@@ -66,7 +63,7 @@ class SerializationOptions
      *
      * @var string[]
      */
-    private $errorTypesByMethods;
+    private array $errorTypesByMethods;
 
     public function __construct(
         string $serializerType = self::DEFAULT_SERIALIZER,

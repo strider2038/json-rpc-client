@@ -25,7 +25,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ClientFactory extends BaseClientFactory
 {
     /** @var MessageSerializerInterface[] */
-    private $serializers;
+    private array $serializers;
 
     public function __construct(SerializerInterface $serializer, LoggerInterface $logger = null)
     {

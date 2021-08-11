@@ -23,14 +23,11 @@ use Strider2038\JsonRpcClient\Transport\TransportInterface;
  */
 class Psr18Transport implements TransportInterface
 {
-    /** @var ClientInterface */
-    private $client;
+    private ClientInterface $client;
 
-    /** @var string */
-    private $uri;
+    private string $uri;
 
-    /** @var array */
-    private $headers;
+    private array $headers;
 
     /**
      * @throws InvalidConfigException

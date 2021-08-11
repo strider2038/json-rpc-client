@@ -18,13 +18,12 @@ use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
 class ContextGenerator
 {
     /** @var string[] */
-    private $resultTypesByMethods;
+    private array $resultTypesByMethods;
 
-    /** @var string|null */
-    private $defaultErrorType;
+    private ?string $defaultErrorType;
 
     /** @var string[] */
-    private $errorTypesByMethods;
+    private array $errorTypesByMethods;
 
     public function __construct(
         array $resultTypesByMethods = [],

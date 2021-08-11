@@ -17,8 +17,7 @@ use Strider2038\JsonRpcClient\Response\ErrorObject;
  */
 class ErrorResponseException extends \Exception implements JsonRpcClientExceptionInterface
 {
-    /** @var ErrorObject */
-    private $error;
+    private ErrorObject $error;
 
     public function __construct(ErrorObject $error)
     {

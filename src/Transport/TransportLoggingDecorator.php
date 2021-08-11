@@ -19,11 +19,9 @@ use Psr\Log\LoggerInterface;
  */
 class TransportLoggingDecorator implements TransportInterface
 {
-    /** @var TransportInterface */
-    private $decorated;
+    private TransportInterface $decorated;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
     public function __construct(TransportInterface $decorated, LoggerInterface $logger)
     {

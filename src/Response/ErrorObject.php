@@ -15,11 +15,9 @@ namespace Strider2038\JsonRpcClient\Response;
  */
 class ErrorObject
 {
-    /** @var int */
-    private $code;
+    private int $code;
 
-    /** @var string */
-    private $message;
+    private string $message;
 
     /** @var mixed */
     private $data;

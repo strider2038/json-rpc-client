@@ -15,8 +15,7 @@ namespace Strider2038\JsonRpcClient\Request;
  */
 class SequentialIntegerIdGenerator implements IdGeneratorInterface
 {
-    /** @var int */
-    private $currentId = 1;
+    private int $currentId = 1;
 
     public function generateId(): int
     {

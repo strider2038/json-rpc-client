@@ -32,16 +32,10 @@ jobs:
 
     strategy:
       matrix:
+        symfony: ['4.4.*', '5.2.*', '5.3.*']
+        php: ['7.4']
+        psr: ['^1.0']
         include:
-          - symfony: '4.4.*'
-            php: '7.4'
-            psr: '^1.0'
-          - symfony: '5.2.*'
-            php: '7.4'
-            psr: '^1.0'
-          - symfony: '5.3.*'
-            php: '7.4'
-            psr: '^1.0'
           - symfony: '5.2.*'
             php: '8.0'
             psr: '^2.0'

@@ -23,8 +23,7 @@ use Strider2038\JsonRpcClient\Transport\TransportInterface;
  */
 class GuzzleTransport implements TransportInterface
 {
-    /** @var ClientInterface */
-    private $client;
+    private ClientInterface $client;
 
     public function __construct(ClientInterface $client)
     {

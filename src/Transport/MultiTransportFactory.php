@@ -22,11 +22,9 @@ use Strider2038\JsonRpcClient\Transport\Socket\SocketConnector;
  */
 class MultiTransportFactory implements TransportFactoryInterface
 {
-    /** @var HttpTransportFactory */
-    private $httpTransportFactory;
+    private HttpTransportFactory $httpTransportFactory;
 
-    /** @var LoggerInterface|null */
-    private $logger;
+    private ?LoggerInterface $logger;
 
     public function __construct(LoggerInterface $logger = null)
     {

@@ -23,10 +23,8 @@ class ConnectionOptions
 
     /**
      * Reconnection attempt timeout in microseconds. Must be greater than zero.
-     *
-     * @var int
      */
-    private $attemptTimeoutUs;
+    private int $attemptTimeoutUs;
 
     /**
      * Used to increase timeout value with growing reconnection attempts. Must be greater than 1.0.
@@ -44,18 +42,14 @@ class ConnectionOptions
      *   3 attempt: timeout = 200 ms
      *   4 attempt: timeout = 400 ms
      *   5 attempt: timeout = 800 ms
-     *
-     * @var float
      */
-    private $timeoutMultiplier;
+    private float $timeoutMultiplier;
 
     /**
      * Max sequential attempts to reconnect with a remote server before fatal exception will be thrown.
      * Must be greater than or equal to 1.
-     *
-     * @var int
      */
-    private $maxAttempts;
+    private int $maxAttempts;
 
     /**
      * @throws InvalidConfigException

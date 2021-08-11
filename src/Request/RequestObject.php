@@ -15,11 +15,9 @@ namespace Strider2038\JsonRpcClient\Request;
  */
 class RequestObject implements RequestObjectInterface, \JsonSerializable
 {
-    /** @var string */
-    private $jsonrpc = '2.0';
+    private string $jsonrpc = '2.0';
 
-    /** @var string */
-    private $method;
+    private string $method;
 
     /** @var mixed */
     private $params;

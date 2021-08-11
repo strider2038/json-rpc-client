@@ -29,17 +29,13 @@ class GeneralOptions
 
     /**
      * Request timeout in microseconds.
-     *
-     * @var int
      */
-    private $requestTimeoutUs;
+    private int $requestTimeoutUs;
 
     /**
      * Connection configuration.
-     *
-     * @var ConnectionOptions
      */
-    private $connectionOptions;
+    private ConnectionOptions $connectionOptions;
 
     /**
      * If enabled then all responses will be processed and client will return response payload.
@@ -48,31 +44,22 @@ class GeneralOptions
      *
      * If disabled then client will return @see ResponseObjectInterface for each request
      * or an array of @see ResponseObjectInterface for each batch request.
-     *
-     * @var bool
      */
-    private $enableResponseProcessing;
+    private bool $enableResponseProcessing;
 
     /**
      * Serialization configuration.
-     *
-     * @var SerializationOptions
      */
-    private $serializationOptions;
+    private SerializationOptions $serializationOptions;
 
     /**
      * Preferred HTTP client.
      *
      * @see HttpTransportTypeInterface for available options.
-     *
-     * @var string
      */
-    private $httpClientType;
+    private string $httpClientType;
 
-    /**
-     * @var array
-     */
-    private $transportConfiguration;
+    private array $transportConfiguration;
 
     /**
      * @throws InvalidConfigException

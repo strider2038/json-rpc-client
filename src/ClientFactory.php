@@ -28,8 +28,7 @@ use Strider2038\JsonRpcClient\Transport\TransportFactoryInterface;
  */
 class ClientFactory implements ClientFactoryInterface
 {
-    /** @var TransportFactoryInterface */
-    private $transportFactory;
+    private TransportFactoryInterface $transportFactory;
 
     public function __construct(LoggerInterface $logger = null)
     {

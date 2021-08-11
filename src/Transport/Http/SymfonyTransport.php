@@ -23,8 +23,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 class SymfonyTransport implements TransportInterface
 {
-    /** @var HttpClientInterface */
-    private $client;
+    private HttpClientInterface $client;
 
     public function __construct(HttpClientInterface $client)
     {

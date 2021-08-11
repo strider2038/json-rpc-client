@@ -25,11 +25,9 @@ use Strider2038\JsonRpcClient\Response\ResponseObjectInterface;
  */
 class RawClient implements ClientInterface
 {
-    /** @var RequestObjectFactory */
-    private $requestObjectFactory;
+    private RequestObjectFactory $requestObjectFactory;
 
-    /** @var Caller */
-    private $caller;
+    private Caller $caller;
 
     public function __construct(RequestObjectFactory $requestObjectFactory, Caller $caller)
     {

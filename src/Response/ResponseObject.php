@@ -17,14 +17,12 @@ use Strider2038\JsonRpcClient\Exception\LogicException;
  */
 class ResponseObject implements ResponseObjectInterface
 {
-    /** @var string */
-    private $jsonrpc;
+    private string $jsonrpc;
 
     /** @var mixed */
     private $result;
 
-    /** @var ErrorObject|null */
-    private $error;
+    private ?ErrorObject $error = null;
 
     /** @var string|int|null */
     private $id;

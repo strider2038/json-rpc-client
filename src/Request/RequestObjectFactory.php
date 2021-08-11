@@ -17,8 +17,7 @@ use Strider2038\JsonRpcClient\Exception\InvalidRequestParamsException;
  */
 class RequestObjectFactory
 {
-    /** @var IdGeneratorInterface */
-    private $idGenerator;
+    private IdGeneratorInterface $idGenerator;
 
     public function __construct(IdGeneratorInterface $idGenerator)
     {

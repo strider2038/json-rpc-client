@@ -23,8 +23,7 @@ use Strider2038\JsonRpcClient\Transport\Socket\SocketClient;
  */
 class SocketTransport implements TransportInterface
 {
-    /** @var SocketClient */
-    private $client;
+    private SocketClient $client;
 
     /**
      * @throws InvalidConfigException

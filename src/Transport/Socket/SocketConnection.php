@@ -23,11 +23,9 @@ class SocketConnection
     /** @var resource */
     private $stream;
 
-    /** @var string */
-    private $url;
+    private string $url;
 
-    /** @var int */
-    private $requestTimeoutUs;
+    private int $requestTimeoutUs;
 
     public function __construct($stream, string $url, int $requestTimeoutUs)
     {

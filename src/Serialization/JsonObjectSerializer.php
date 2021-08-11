@@ -19,14 +19,11 @@ use Strider2038\JsonRpcClient\Response\ResponseObject;
  */
 class JsonObjectSerializer implements MessageSerializerInterface
 {
-    /** @var int */
-    private $encodeOptions;
+    private int $encodeOptions;
 
-    /** @var int */
-    private $decodeOptions;
+    private int $decodeOptions;
 
-    /** @var int */
-    private $depth;
+    private int $depth;
 
     public function __construct(int $encodeOptions = 0, int $decodeOptions = 0, int $depth = 512)
     {

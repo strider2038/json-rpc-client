@@ -19,8 +19,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class SymfonySerializerAdapter implements MessageSerializerInterface
 {
-    /** @var SerializerInterface */
-    private $serializer;
+    private SerializerInterface $serializer;
 
     public function __construct(SerializerInterface $serializer)
     {

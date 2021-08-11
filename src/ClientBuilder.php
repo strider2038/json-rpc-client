@@ -36,28 +36,22 @@ class ClientBuilder
      * If enabled then ProcessingClient will be returned with response unpacking.
      * If disabled then RawClient will be returned, that will return ResponseObjectInterface
      * for each request.
-     *
-     * @var bool
      */
-    private $enableResponseProcessing = true;
+    private bool $enableResponseProcessing = true;
 
-    /** @var TransportInterface */
-    private $transport;
+    private TransportInterface $transport;
 
-    /** @var MessageSerializerInterface */
-    private $serializer;
+    private MessageSerializerInterface $serializer;
 
-    /** @var IdGeneratorInterface */
-    private $idGenerator;
+    private IdGeneratorInterface $idGenerator;
 
     /** @var string[] */
-    private $resultTypesByMethods = [];
+    private array $resultTypesByMethods = [];
 
-    /** @var string|null */
-    private $defaultErrorType = null;
+    private ?string $defaultErrorType = null;
 
     /** @var string[] */
-    private $errorTypesByMethods = [];
+    private array $errorTypesByMethods = [];
 
     public function __construct(TransportInterface $transport)
     {

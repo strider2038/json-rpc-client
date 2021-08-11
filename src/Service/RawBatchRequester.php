@@ -19,14 +19,12 @@ use Strider2038\JsonRpcClient\Request\RequestObjectInterface;
  */
 class RawBatchRequester implements BatchRequestInterface
 {
-    /** @var RequestObjectFactory */
-    private $requestObjectFactory;
+    private RequestObjectFactory $requestObjectFactory;
 
-    /** @var Caller */
-    private $caller;
+    private Caller $caller;
 
     /** @var RequestObjectInterface[] */
-    private $queue = [];
+    private array $queue = [];
 
     public function __construct(RequestObjectFactory $requestObjectFactory, Caller $caller)
     {

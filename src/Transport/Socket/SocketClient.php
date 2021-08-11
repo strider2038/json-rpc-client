@@ -22,34 +22,21 @@ use Strider2038\JsonRpcClient\Exception\RemoteProcedureCallFailedException;
  */
 class SocketClient
 {
-    /**
-     * @var SocketConnector
-     */
-    private $connector;
+    private SocketConnector $connector;
 
-    /**
-     * @var SocketConnection|null
-     */
-    private $connection;
+    private ?SocketConnection $connection = null;
 
     /**
      * Connection in URL format.
-     *
-     * @var string
      */
-    private $url;
+    private string $url;
 
-    /**
-     * @var ConnectionOptions
-     */
-    private $options;
+    private ConnectionOptions $options;
 
     /**
      * Request timeout in microseconds.
-     *
-     * @var int
      */
-    private $requestTimeoutUs;
+    private int $requestTimeoutUs;
 
     public function __construct(
         SocketConnector $connector,
