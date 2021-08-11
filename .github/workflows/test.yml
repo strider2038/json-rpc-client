@@ -32,8 +32,22 @@ jobs:
 
     strategy:
       matrix:
-        symfony: ['4.4.*', '5.2.*', '5.3.*']
-        php: ['7.4', '8.0']
+        include:
+          - symfony: '4.4.*'
+            php: '7.4'
+            psr: '^1.0'
+          - symfony: '5.2.*'
+            php: '7.4'
+            psr: '^1.0'
+          - symfony: '5.3.*'
+            php: '7.4'
+            psr: '^1.0'
+          - symfony: '5.2.*'
+            php: '8.0'
+            psr: '^2.0'
+          - symfony: '5.3.*'
+            php: '8.0'
+            psr: '^2.0'
 
     steps:
       - uses: actions/checkout@v2
@@ -45,6 +59,7 @@ jobs:
           symfony/serializer:${{ matrix.symfony }}
           symfony/framework-bundle:${{ matrix.symfony }}
           symfony/expression-language:${{ matrix.symfony }}
+          psr/cache:${{ matrix.psr }}
 
       - name: Install dependencies
         uses: php-actions/composer@v6
